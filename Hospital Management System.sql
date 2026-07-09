@@ -1,0 +1,2 @@
+USE HospitalManagementDB;
+GO

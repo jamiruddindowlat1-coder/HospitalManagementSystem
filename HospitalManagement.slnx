@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="HospitalManagement.API/HospitalManagement.API.csproj" />
+  <Project Path="HospitalManagement.IntegrationTests/HospitalManagement.IntegrationTests.csproj" />
+  <Project Path="HospitalManagement.Tests/HospitalManagement.Tests.csproj" />
+</Solution>
