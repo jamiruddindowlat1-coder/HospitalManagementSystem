@@ -6,7 +6,6 @@ function PatientList() {
 
 
 const emptyForm = {
-    userId:0,
     fullName:"",
     dateOfBirth:"",
     age:0,
@@ -45,7 +44,7 @@ const [submitting,setSubmitting] = useState(false);
 
 useEffect(()=>{
 
-loadPatients();
+    loadPatients();
 
 },[]);
 
@@ -55,33 +54,31 @@ loadPatients();
 
 const loadPatients = async()=>{
 
-try{
+    try{
 
-setLoading(true);
+        setLoading(true);
 
-const response = await api.get("/patients");
+        const response = await api.get("/patients");
 
-setPatients(response.data);
+        setPatients(response.data);
 
-setError("");
+        setError("");
 
-}
-catch(error){
+    }
+    catch(error){
 
-console.log(error);
+        console.log(error);
 
-setError("Patient load failed");
+        setError("Patient load failed");
 
-}
-finally{
+    }
+    finally{
 
-setLoading(false);
+        setLoading(false);
 
-}
+    }
 
 };
-
-
 
 
 
@@ -89,40 +86,33 @@ setLoading(false);
 
 const calculateAge=(dob)=>{
 
-if(!dob)
-
-return 0;
-
-
-const birth = new Date(dob);
-
-const today = new Date();
+    if(!dob)
+        return 0;
 
 
-let age = today.getFullYear() - birth.getFullYear();
+    const birth = new Date(dob);
+
+    const today = new Date();
 
 
-const month = today.getMonth() - birth.getMonth();
+    let age = today.getFullYear() - birth.getFullYear();
 
 
-if(
-month < 0 ||
-(month === 0 && today.getDate() < birth.getDate())
-)
-
-{
-
-age--;
-
-}
+    const month = today.getMonth() - birth.getMonth();
 
 
-return age;
+    if(
+        month < 0 ||
+        (month === 0 && today.getDate() < birth.getDate())
+    )
+    {
+        age--;
+    }
+
+
+    return age;
 
 };
-
-
-
 
 
 
@@ -130,17 +120,15 @@ return age;
 
 const handleChange=(e)=>{
 
-setForm({
+    setForm({
 
-...form,
+        ...form,
 
-[e.target.name]:e.target.value
+        [e.target.name]:e.target.value
 
-});
+    });
 
 };
-
-
 
 
 
@@ -159,48 +147,68 @@ try{
 setSubmitting(true);
 
 
+
 const patientData = {
 
-...form,
+    fullName: form.fullName,
 
-age:calculateAge(form.dateOfBirth),
+    dateOfBirth: form.dateOfBirth,
 
-registeredAt:new Date().toISOString()
+    age: calculateAge(form.dateOfBirth),
+
+    gender: form.gender,
+
+    bloodGroup: form.bloodGroup,
+
+    contactNumber: form.contactNumber,
+
+    email: form.email,
+
+    address: form.address,
+
+    emergencyContactName: form.emergencyContactName,
+
+    emergencyContactNumber: form.emergencyContactNumber,
+
+    medicalHistory: form.medicalHistory,
+
+    registeredAt:new Date().toISOString()
 
 };
+
+
 
 
 
 if(editId){
 
 
-await api.put(
+    await api.put(
 
-`/patients/${editId}`,
+        `/patients/${editId}`,
 
-{
+        {
 
-patientId:editId,
+            patientId:editId,
 
-...patientData
+            ...patientData
+
+        }
+
+    );
+
 
 }
-
-);
-
-
-}
-
 else{
 
 
-await api.post(
+    await api.post(
 
-"/patients",
+        "/patients",
 
-patientData
+        patientData
 
-);
+    );
 
 
 }
@@ -225,14 +233,14 @@ loadPatients();
 }
 catch(error){
 
-console.log(error);
+    console.log(error);
 
-alert("Save Failed");
+    alert("Save Failed");
 
 }
 finally{
 
-setSubmitting(false);
+    setSubmitting(false);
 
 }
 
@@ -255,19 +263,21 @@ setEditId(patient.patientId);
 
 setForm({
 
-...patient,
+    ...emptyForm,
 
-dateOfBirth:
+    ...patient,
 
-patient.dateOfBirth
+    dateOfBirth:
 
-?
+    patient.dateOfBirth
 
-patient.dateOfBirth.substring(0,10)
+    ?
 
-:
+    patient.dateOfBirth.substring(0,10)
 
-""
+    :
+
+    ""
 
 });
 
@@ -309,9 +319,7 @@ loadPatients();
 }
 catch(error){
 
-
 console.log(error);
-
 
 alert("Delete Failed");
 
@@ -320,7 +328,6 @@ alert("Delete Failed");
 
 
 };
-
 
 
 
@@ -369,6 +376,7 @@ Total Patient : {patients.length}
 
 
 
+
 <button
 
 onClick={()=>{
@@ -397,12 +405,16 @@ showForm
 
 }
 
+
 </button>
 
 
 
 
+
 <br/><br/>
+
+
 
 
 
@@ -421,6 +433,7 @@ onChange={(e)=>setSearch(e.target.value)}
 
 
 {
+
 error &&
 
 <p style={{color:"red"}}>
@@ -436,14 +449,18 @@ error &&
 
 
 
+
 {
 
-showForm && (
+showForm &&
+
+(
 
 <form onSubmit={savePatient}>
 
 
 <br/>
+
 
 <input
 
@@ -456,6 +473,7 @@ value={form.fullName}
 onChange={handleChange}
 
 />
+
 
 
 <br/>
@@ -475,6 +493,8 @@ onChange={handleChange}
 
 
 
+
+
 <br/>
 
 
@@ -490,16 +510,22 @@ onChange={handleChange}
 
 
 <option value="Male">
+
 Male
+
 </option>
 
 
 <option value="Female">
+
 Female
+
 </option>
 
 
 </select>
+
+
 
 
 
@@ -520,6 +546,8 @@ onChange={handleChange}
 
 
 
+
+
 <br/>
 
 
@@ -534,6 +562,8 @@ value={form.contactNumber}
 onChange={handleChange}
 
 />
+
+
 
 
 
@@ -554,10 +584,13 @@ onChange={handleChange}
 
 
 
+
+
 <br/>
 
 
 <button disabled={submitting}>
+
 
 {
 
@@ -582,6 +615,7 @@ editId
 }
 
 
+
 </button>
 
 
@@ -590,6 +624,8 @@ editId
 )
 
 }
+
+
 
 
 
@@ -637,32 +673,41 @@ filteredPatients.map(patient=>(
 
 
 <td>
+
 {patient.patientId}
+
 </td>
 
 
+
 <td>
+
 {patient.fullName}
+
 </td>
 
 
 
 <td>
-{
-calculateAge(patient.dateOfBirth)
-}
+
+{calculateAge(patient.dateOfBirth)}
+
 </td>
 
 
 
 <td>
+
 {patient.gender}
+
 </td>
 
 
 
 <td>
+
 {patient.contactNumber}
+
 </td>
 
 
@@ -682,9 +727,7 @@ onClick={()=>editPatient(patient)}
 </button>
 
 
-
 &nbsp;
-
 
 
 <button
@@ -698,9 +741,7 @@ onClick={()=>deletePatient(patient.patientId)}
 </button>
 
 
-
 </td>
-
 
 
 </tr>

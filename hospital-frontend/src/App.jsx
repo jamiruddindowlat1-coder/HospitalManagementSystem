@@ -1,316 +1,147 @@
-import { useState } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  Navigate
-} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+import Admission from "./components/Admission";
+import ProtectedRoute from "./components/ProtectedRoute";
 import PatientList from "./components/PatientList";
-import PatientDetails from "./components/PatientDetails";
 import DoctorList from "./components/DoctorList";
 import AppointmentList from "./components/AppointmentList";
 import BillingList from "./components/BillingList";
-import AdmissionList from "./components/AdmissionList";
 import MedicalRecordList from "./components/MedicalRecordList";
 import Medicine from "./components/Medicine";
-import Dashboard from "./components/Dashboard";
-import Login from "./components/Login";
-import ProtectedRoute from "./components/ProtectedRoute";
 
+import { isAuthenticated, removeToken } from "./services/auth";
+import api from "./services/api";
 
-import {
-  isAuthenticated,
-  removeToken
-} from "./services/auth";
+import AppLayout from "./components/Layout/AppLayout";
 
+function AdmissionList() {
+  const [admissions, setAdmissions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-import "./App.css";
+  const loadAdmissions = async () => {
+    try {
+      setLoading(true);
 
+      const response = await api.get("/admissions");
 
+      setAdmissions(response.data || response);
+    } catch (error) {
+      console.log(error);
+      setMessage("❌ Admission data load করতে সমস্যা হয়েছে");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-function App(){
+  useEffect(() => {
+    loadAdmissions();
+  }, []);
 
+  return (
+    <div style={containerStyle}>
+      <Admission onSuccess={loadAdmissions} />
 
-const [loggedIn,setLoggedIn]=
-useState(isAuthenticated());
+      <hr style={{ margin: "30px 0" }} />
 
+      <h3>📋 Current Admissions</h3>
 
+      {message && <p>{message}</p>}
 
-const handleLogout=()=>{
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <table style={tableStyle}>
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Room</th>
+              <th>Doctor</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
 
-removeToken();
+          <tbody>
+            {admissions.map((a) => (
+              <tr key={a.admissionId || a.id}>
+                <td>{a.patient?.fullName || a.patientName || "-"}</td>
 
-setLoggedIn(false);
+                <td>{a.room?.roomNumber || a.roomNumber || "-"}</td>
 
+                <td>{a.doctor?.fullName || a.doctorName || "-"}</td>
+
+                <td>{a.status}</td>
+
+                <td>
+                  {a.admissionDate
+                    ? new Date(a.admissionDate).toLocaleDateString()
+                    : "-"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+function App() {
+  const [loggedIn, setLoggedIn] = useState(isAuthenticated());
+
+  const handleLogout = () => {
+    removeToken();
+    setLoggedIn(false);
+  };
+
+  const wrap = (Component) => (
+    <ProtectedRoute>
+      <AppLayout>
+        <Component />
+      </AppLayout>
+    </ProtectedRoute>
+  );
+
+  return (
+    <Routes>
+      <Route
+        path="/login"
+        element={
+          loggedIn ? (
+            <Navigate to="/" replace />
+          ) : (
+            <Login onLogin={() => setLoggedIn(true)} />
+          )
+        }
+      />
+
+      <Route path="/" element={wrap(Dashboard)} />
+      <Route path="/patients" element={wrap(PatientList)} />
+      <Route path="/doctors" element={wrap(DoctorList)} />
+      <Route path="/appointments" element={wrap(AppointmentList)} />
+      <Route path="/admissions" element={wrap(AdmissionList)} />
+      <Route path="/billing" element={wrap(BillingList)} />
+      <Route path="/records" element={wrap(MedicalRecordList)} />
+      <Route path="/medicines" element={wrap(Medicine)} />
+
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
+
+const containerStyle = {
+  padding: "24px",
+  maxWidth: "1000px",
+  margin: "auto",
 };
 
-
-
-return(
-
-<Router>
-
-
-<div className="App">
-
-
-
-<header className="app-header">
-
-<h1>
-🏥 Hospital Management System
-</h1>
-
-<p>
-International-ready healthcare admin portal
-</p>
-
-
-{
-loggedIn &&
-
-<button
-onClick={handleLogout}
->
-লগআউট
-</button>
-
-}
-
-
-</header>
-
-
-
-
-
-{
-loggedIn &&
-
-<nav className="navbar">
-
-
-<Link to="/">
-ড্যাশবোর্ড
-</Link>
-
-
-<Link to="/patients">
-রোগী
-</Link>
-
-
-<Link to="/doctors">
-ডাক্তার
-</Link>
-
-
-<Link to="/appointments">
-অ্যাপয়েন্টমেন্ট
-</Link>
-
-
-<Link to="/admissions">
-ভর্তি
-</Link>
-
-
-<Link to="/medical-records">
-মেডিকেল রেকর্ড
-</Link>
-
-
-<Link to="/billing">
-বিলিং
-</Link>
-
-
-<Link to="/medicines">
-💊 মেডিসিন
-</Link>
-
-
-</nav>
-
-}
-
-
-
-
-
-<main>
-
-
-<Routes>
-
-
-
-<Route
-
-path="/login"
-
-element={
-
-loggedIn
-
-?
-
-<Navigate to="/" />
-
-:
-
-<Login onLogin={()=>setLoggedIn(true)}/>
-
-}
-
-/>
-
-
-
-
-<Route
-
-path="/"
-
-element={
-
-<ProtectedRoute>
-
-<Dashboard/>
-
-</ProtectedRoute>
-
-}
-
-/>
-
-
-
-<Route
-path="/patients"
-element={
-<ProtectedRoute>
-<PatientList/>
-</ProtectedRoute>
-}
-/>
-
-
-
-<Route
-path="/patients/:id"
-element={
-<ProtectedRoute>
-<PatientDetails/>
-</ProtectedRoute>
-}
-/>
-
-
-
-<Route
-path="/doctors"
-element={
-<ProtectedRoute>
-<DoctorList/>
-</ProtectedRoute>
-}
-/>
-
-
-
-<Route
-path="/appointments"
-element={
-<ProtectedRoute>
-<AppointmentList/>
-</ProtectedRoute>
-}
-/>
-
-
-
-<Route
-path="/admissions"
-element={
-<ProtectedRoute>
-<AdmissionList/>
-</ProtectedRoute>
-}
-/>
-
-
-
-<Route
-path="/medical-records"
-element={
-<ProtectedRoute>
-<MedicalRecordList/>
-</ProtectedRoute>
-}
-/>
-
-
-
-<Route
-path="/billing"
-element={
-<ProtectedRoute>
-<BillingList/>
-</ProtectedRoute>
-}
-/>
-
-
-
-<Route
-path="/medicines"
-element={
-<ProtectedRoute>
-<Medicine/>
-</ProtectedRoute>
-}
-/>
-
-
-
-<Route
-path="*"
-element={
-<Navigate to="/" />
-}
-/>
-
-
-
-</Routes>
-
-
-</main>
-
-
-
-
-<footer>
-
-© 2026 Hospital Management System
-
-</footer>
-
-
-</div>
-
-
-</Router>
-
-
-);
-
-
-}
-
+const tableStyle = {
+  width: "100%",
+  borderCollapse: "collapse",
+  background: "#fff",
+};
 
 export default App;

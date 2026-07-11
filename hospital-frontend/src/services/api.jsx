@@ -1,51 +1,85 @@
 ﻿import axios from "axios";
 import { getToken } from "./auth";
 
-
-const API_BASE_URL = "http://localhost:5151/api";
-
-
 const api = axios.create({
 
-    baseURL: API_BASE_URL,
+  baseURL: "http://localhost:5151/api",
 
-    headers: {
-        "Content-Type": "application/json"
-    }
+  headers:{
+    "Content-Type":"application/json",
+  },
 
 });
 
 
-// JWT Token Add Automatically
-
 api.interceptors.request.use(
 
-    (config) => {
+(config)=>{
 
-        const token = getToken();
-
-
-        if (token) {
-
-            config.headers = config.headers || {};
-
-            config.headers.Authorization = 
-                `Bearer ${token}`;
-
-        }
+const token = getToken();
 
 
-        return config;
+if(token){
 
-    },
+config.headers.Authorization =
+`Bearer ${token}`;
 
-    (error) => {
+}
 
-        return Promise.reject(error);
 
-    }
+console.log(
+"API:",
+config.method?.toUpperCase(),
+config.url
+);
+
+
+return config;
+
+},
+
+(error)=>Promise.reject(error)
 
 );
+
+
+
+api.interceptors.response.use(
+
+(response)=>response,
+
+(error)=>{
+
+
+console.error(
+"Status:",
+error.response?.status
+);
+
+
+console.error(
+"Response:",
+error.response?.data
+);
+
+
+
+if(error.response?.status===401){
+
+console.warn(
+"Token expired"
+);
+
+}
+
+
+return Promise.reject(error);
+
+
+}
+
+);
+
 
 
 export default api;
