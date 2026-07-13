@@ -16,10 +16,27 @@ function Login({ onLogin }) {
     setLoading(true);
 
     try {
-      const response = await api.post('/auth/login', { email, password });
-      saveToken(response.data.token);
-      onLogin();
-      navigate('/');
+      const response = await api.post('/auth/login', { 
+    email, 
+    password 
+});
+
+
+console.log("LOGIN RESPONSE:", response.data);
+
+
+saveToken(response.data.token);
+
+
+localStorage.setItem(
+    "role",
+    response.data.role
+);
+
+
+onLogin();
+
+navigate('/');
     } catch (err) {
       setError('লগইন ব্যর্থ হয়েছে। ইমেইল/পাসওয়ার্ড চেক করুন।');
       console.error(err);

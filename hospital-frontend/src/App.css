@@ -316,3 +316,50 @@ tbody tr:last-child td {
     padding: 15px;
   }
 }
+.dashboard{
+    padding:20px;
+}
+
+
+.dashboard h2{
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:25px;
+    color:#1e293b;
+}
+
+
+.card-grid{
+
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(230px,1fr));
+
+    gap:20px;
+
+}
+
+
+
+/* Dashboard responsive */
+
+@media(max-width:768px){
+
+.dashboard{
+    padding:10px;
+}
+
+
+.dashboard h2{
+    font-size:22px;
+}
+
+
+.card-grid{
+
+grid-template-columns:
+repeat(1,1fr);
+
+}
+
+}

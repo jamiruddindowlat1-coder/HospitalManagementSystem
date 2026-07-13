@@ -38,7 +38,7 @@ namespace HospitalManagement.API.Controllers
                 return Unauthorized(new { message = "Invalid credentials." });
             }
 
-            var jwtSettings = _configuration.GetSection("Jwt").Get<JwtSettings>(); if (jwtSettings != null) { jwtSettings.Key = Environment.GetEnvironmentVariable("JWT_SECRET_KEY") ?? string.Empty; }
+            var jwtSettings = _configuration.GetSection("Jwt").Get<JwtSettings>(); if (jwtSettings != null) { }
             if (jwtSettings == null)
             {
                 return StatusCode(500, new { message = "JWT settings missing." });

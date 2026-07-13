@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using HospitalManagement.API.Data;
 using HospitalManagement.API.Models;
 using HospitalManagement.API.DTOs;
+using HospitalManagement.API.Services;
+using HospitalManagement.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
 
 namespace HospitalManagement.API.Controllers
@@ -13,13 +15,14 @@ namespace HospitalManagement.API.Controllers
     public class DoctorsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IActivityLogService _activityLog;
 
-        public DoctorsController(ApplicationDbContext context)
+        public DoctorsController(ApplicationDbContext context, IActivityLogService activityLog)
         {
             _context = context;
+            _activityLog = activityLog;
         }
 
-        // GET: api/doctors  (returns clean DTOs, no circular references)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DoctorDto>>> GetDoctors()
         {
@@ -79,8 +82,9 @@ namespace HospitalManagement.API.Controllers
             _context.Doctors.Add(doctor);
             await _context.SaveChangesAsync();
 
-            // Reload with Department so DepartmentName is populated in the response
             var department = await _context.Departments.FindAsync(doctor.DepartmentId);
+
+            await _activityLog.LogAsync("Created", "Doctor", $"Doctor {doctor.FullName} added", User.GetUserId());
 
             var dto = new DoctorDto
             {
@@ -111,6 +115,7 @@ namespace HospitalManagement.API.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                await _activityLog.LogAsync("Updated", "Doctor", $"Doctor {doctor.FullName} updated", User.GetUserId());
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -129,6 +134,9 @@ namespace HospitalManagement.API.Controllers
             if (doctor == null) return NotFound();
             _context.Doctors.Remove(doctor);
             await _context.SaveChangesAsync();
+
+            await _activityLog.LogAsync("Deleted", "Doctor", $"Doctor {doctor.FullName} deleted", User.GetUserId());
+
             return NoContent();
         }
     }

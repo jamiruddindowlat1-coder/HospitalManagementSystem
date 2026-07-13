@@ -1,5 +1,7 @@
-﻿import { useState, useEffect } from 'react';
-import api from '../services/api';
+﻿import { useState, useEffect } from "react";
+import api from "../services/api";
+import "./AppointmentList.css";
+
 
 function AppointmentList() {
 

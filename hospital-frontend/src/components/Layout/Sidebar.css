@@ -1,0 +1,269 @@
+/* ==========================
+   HMS Sidebar Design
+========================== */
+
+
+.sidebar {
+
+    width:260px;
+
+    height:100vh;
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+
+    padding:25px 18px;
+
+
+    background:
+
+    linear-gradient(
+        180deg,
+        #0f172a 0%,
+        #2563eb 50%,
+        #7c3aed 100%
+    );
+
+
+    color:white;
+
+
+    box-sizing:border-box;
+
+
+    box-shadow:
+
+    8px 0 30px rgba(0,0,0,.25);
+
+
+    z-index:1000;
+
+
+    overflow-y:auto;
+
+}
+
+
+
+/* HMS Logo */
+
+.logo {
+
+    text-align:center;
+
+
+    font-size:32px;
+
+
+    font-weight:900;
+
+
+    margin-bottom:35px;
+
+
+    color:white;
+
+
+    letter-spacing:1px;
+
+
+}
+
+
+
+/* Menu */
+
+.menu {
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    gap:14px;
+
+
+    padding:14px 16px;
+
+
+    margin-bottom:10px;
+
+
+    border-radius:16px;
+
+
+    color:white;
+
+
+    text-decoration:none;
+
+
+    font-size:16px;
+
+
+    font-weight:500;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+.menu svg {
+
+
+    font-size:21px;
+
+
+}
+
+
+
+/* Hover */
+
+.menu:hover {
+
+
+    background:
+
+    rgba(255,255,255,.20);
+
+
+    transform:translateX(7px);
+
+
+    color:white;
+
+
+}
+
+
+
+/* Active */
+
+.menu.active {
+
+
+    background:white;
+
+
+    color:#2563eb;
+
+
+    box-shadow:
+
+
+    0 8px 20px rgba(0,0,0,.20);
+
+
+}
+
+
+
+/* Logout */
+
+.logout-btn {
+
+
+    width:100%;
+
+
+    margin-top:40px;
+
+
+    padding:14px;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    gap:10px;
+
+
+    border:none;
+
+
+    border-radius:16px;
+
+
+    cursor:pointer;
+
+
+    font-size:16px;
+
+
+    color:white;
+
+
+    background:
+
+
+    rgba(255,255,255,.18);
+
+
+    transition:.3s;
+
+
+}
+
+
+
+.logout-btn:hover {
+
+
+    background:#dc2626;
+
+
+    transform:translateY(-3px);
+
+
+}
+
+
+
+/* Scrollbar */
+
+.sidebar::-webkit-scrollbar{
+
+    width:5px;
+
+}
+
+
+.sidebar::-webkit-scrollbar-thumb{
+
+    background:rgba(255,255,255,.4);
+
+    border-radius:10px;
+
+}
+
+
+
+/* Mobile */
+
+@media(max-width:900px){
+
+
+.sidebar{
+
+    width:220px;
+
+}
+
+
+}

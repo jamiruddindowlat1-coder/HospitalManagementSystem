@@ -6,6 +6,7 @@ namespace HospitalManagement.API.Models
         public int PatientId { get; set; }
         public int RoomId { get; set; }
         public int DoctorId { get; set; }
+        public bool IsEmergency { get; set; } = false;
         public DateTime AdmissionDate { get; set; } = DateTime.Now;
         public DateTime? DischargeDate { get; set; }
         public string Status { get; set; } = "Admitted";

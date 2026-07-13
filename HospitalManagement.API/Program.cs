@@ -1,5 +1,5 @@
 ﻿using System.Text;
-
+using HospitalManagement.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -18,6 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 // ==========================
 // Controllers
 // ==========================
+
+builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -99,7 +101,7 @@ builder.Services.Configure<JwtSettings>(
 var jwtSettings =
     builder.Configuration
     .GetSection("Jwt")
-    .Get<JwtSettings>(); if (jwtSettings != null) { jwtSettings.Key = Environment.GetEnvironmentVariable("JWT_SECRET_KEY"); }
+    .Get<JwtSettings>(); if (jwtSettings != null) {  }
 
 
 if(jwtSettings == null ||
@@ -233,22 +235,10 @@ if(app.Environment.IsDevelopment() ||
 
 
 
-app.UseHttpsRedirection();
-
-
-app.UseCors("AllowReactApp");
-
-
-app.UseAuthentication();
-
-
-app.UseAuthorization();
-
-// ==========================
 // Middleware
 // ==========================
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseCors("AllowReactApp");
 

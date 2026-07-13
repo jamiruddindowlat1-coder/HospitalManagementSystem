@@ -1,219 +1,376 @@
+import "./Dashboard.css";
 import { useEffect, useState } from "react";
+import DashboardChart from "./Charts/DashboardChart";
+import AppointmentChart from "./Charts/AppointmentChart";
+import MonthlyRevenueChart from "./Charts/MonthlyRevenueChart";
+import PatientGrowthChart from "./Charts/PatientGrowthChart";
+import DepartmentDoctorsChart from "./Charts/DepartmentDoctorsChart";
+import MedicineStockChart from "./Charts/MedicineStockChart";
+import RoomOccupancyChart from "./Charts/RoomOccupancyChart";
+import {
+  FaUserDoctor,
+  FaUsers,
+  FaCalendarCheck,
+  FaHospitalUser,
+  FaFileMedical,
+  FaPills,
+  FaCircleCheck,
+  FaTriangleExclamation,
+  FaCircleXmark,
+  FaClock,
+  FaMoneyBillWave,
+  FaFileInvoiceDollar,
+  FaHourglassHalf,
+  FaBed,
+  FaDoorOpen,
+  FaDoorClosed,
+  FaTruckMedical,
 
-import { getMedicines } from "../services/medicineService";
-import { getPatients } from "../services/patientService";
-import { getDoctors } from "../services/doctorService";
-import { getAppointments } from "../services/appointmentService";
-import { getAdmissions } from "../services/admissionService";
-import { getMedicalRecords } from "../services/medicalRecordService";
+} from "react-icons/fa6";
+
+import {
+  getDashboardSummary,
+  getMonthlyRevenue,
+  getPatientGrowth,
+  getDoctorsByDepartment,
+  getMedicineStock,
+  getRoomOccupancy,
+  getRecentActivities
+} from "../services/dashboardService";
+
+import {
+  getMedicines
+} from "../services/medicineService";
+
+import StatCard from "./UI/StatCard";
 
 
 function Dashboard(){
 
-
 const [dashboard,setDashboard]=useState({
 
-    doctors:0,
-    patients:0,
-    appointments:0,
-    medicines:0,
-    admissions:0,
-    records:0,
-    available:0,
-    lowStock:0,
-    outStock:0,
-    expiry:0
+doctors:0,
+patients:0,
+appointments:0,
+records:0,
+medicines:0,
+admissions:0,
+
+available:0,
+lowStock:0,
+outStock:0,
+expiry:0,
+
+appointmentStatus:[],
+
+// Billing Summary
+totalBills:0,
+paidBills:0,
+pendingBills:0,
+totalRevenue:0,
+
+// Room Summary
+totalRooms:0,
+occupiedRooms:0,
+availableRooms:0,
+
+// Lists
+todaysAppointments:[],
+emergencyPatients:[],
+recentAdmissions:[]
 
 });
 
+const [chartsData, setChartsData] = useState({
+  monthlyRevenue: [],
+  patientGrowth: [],
+  doctorsByDepartment: [],
+  medicineStock: [],
+  roomOccupancy: []
+});
+
+const [recentActivities, setRecentActivities] = useState([]);
+
+
+const [loading,setLoading]=useState(true);
 
 
 useEffect(()=>{
 
-
-const loadDashboard=async()=>{
+const loadDashboard = async()=>{
 
 try{
 
-
-const doctors = await getDoctors();
-const patients = await getPatients();
-const appointments = await getAppointments();
+const summary = await getDashboardSummary();
 const medicines = await getMedicines();
-const admissions = await getAdmissions();
-const records = await getMedicalRecords();
 
+const [monthlyRevenue, patientGrowth, doctorsByDepartment, medicineStock, roomOccupancy, activities] =
+  await Promise.all([
+    getMonthlyRevenue(),
+    getPatientGrowth(),
+    getDoctorsByDepartment(),
+    getMedicineStock(),
+    getRoomOccupancy(),
+    getRecentActivities(10)
+  ]);
 
+setChartsData({
+  monthlyRevenue,
+  patientGrowth,
+  doctorsByDepartment,
+  medicineStock,
+  roomOccupancy
+});
+
+setRecentActivities(activities || []);
 
 setDashboard({
 
-doctors:doctors.length,
+doctors: summary.doctors,
+patients: summary.patients,
+appointments: summary.appointments,
+records: summary.medicalRecords,
 
-patients:patients.length,
+appointmentStatus: summary.appointmentStatus || [],
 
-appointments:appointments.length,
-
-medicines:medicines.length,
-
-admissions:admissions.length,
-
-records:records.length,
-
+medicines: summary.medicines,
+admissions: summary.admissions,
 
 available:
-medicines.filter(
-x=>Number(x.stockQuantity)>10
-).length,
-
+medicines.filter(m=>Number(m.stockQuantity)>10).length,
 
 lowStock:
-medicines.filter(
-x=>Number(x.stockQuantity)>0 &&
-Number(x.stockQuantity)<=10
+medicines.filter(m=>
+Number(m.stockQuantity)>0 &&
+Number(m.stockQuantity)<=10
 ).length,
-
 
 outStock:
-medicines.filter(
-x=>Number(x.stockQuantity)<=0
-).length,
-
+medicines.filter(m=>Number(m.stockQuantity)<=0).length,
 
 expiry:
-medicines.filter(x=>{
-
-if(!x.expiryDate)
-return false;
-
-
-let days=
-(new Date(x.expiryDate)-new Date())
-/(1000*60*60*24);
-
-
+medicines.filter(m=>{
+if(!m.expiryDate) return false;
+const days =
+(new Date(m.expiryDate)-new Date())/(1000*60*60*24);
 return days<=90 && days>0;
+}).length,
 
+// Billing Summary
+totalBills: summary.totalBills,
+paidBills: summary.paidBills,
+pendingBills: summary.pendingBills,
+totalRevenue: summary.totalRevenue,
 
-}).length
+// Room Summary
+totalRooms: summary.totalRooms,
+occupiedRooms: summary.occupiedRooms,
+availableRooms: summary.availableRooms,
 
+// Lists
+todaysAppointments: summary.todaysAppointments || [],
+emergencyPatients: summary.emergencyPatients || [],
+recentAdmissions: summary.recentAdmissions || []
 
 });
 
-
 }
 catch(error){
-
-console.log(error);
-
+console.log("Dashboard Loading Error:", error);
 }
-
+finally{
+setLoading(false);
+}
 
 };
 
-
 loadDashboard();
-
 
 },[]);
 
 
+const chartData=[
+{ name:"Doctors", value:dashboard.doctors },
+{ name:"Patients", value:dashboard.patients },
+{ name:"Appointments", value:dashboard.appointments },
+{ name:"Medical Records", value:dashboard.records },
+{ name:"Medicine", value:dashboard.medicines }
+];
 
 
-
-return (
-
-<div className="container">
-
-
-<h2>
-🏥 Dashboard
-</h2>
+if(loading){
+return(
+<div className="dashboard">
+<h2>Loading Dashboard...</h2>
+</div>
+);
+}
 
 
+return(
+<div className="dashboard">
+
+<h2>🏥 Dashboard Overview</h2>
 
 <div className="card-grid">
 
-
-
-<div className="card">
-<h3>👨‍⚕️ Doctors</h3>
-<h2>{dashboard.doctors}</h2>
-</div>
-
-
-
-<div className="card">
-<h3>🧑 Patients</h3>
-<h2>{dashboard.patients}</h2>
-</div>
-
-
-
-<div className="card">
-<h3>📅 Appointments</h3>
-<h2>{dashboard.appointments}</h2>
-</div>
-
-
-
-<div className="card">
-<h3>🏥 Admissions</h3>
-<h2>{dashboard.admissions}</h2>
-</div>
-
-
-
-<div className="card">
-<h3>📋 Medical Records</h3>
-<h2>{dashboard.records}</h2>
-</div>
-
-
-
-<div className="card">
-<h3>💊 Total Medicine</h3>
-<h2>{dashboard.medicines}</h2>
-</div>
-
-
-
-<div className="card">
-<h3>✅ Available</h3>
-<h2>{dashboard.available}</h2>
-</div>
-
-
-
-<div className="card">
-<h3>⚠ Low Stock</h3>
-<h2>{dashboard.lowStock}</h2>
-</div>
-
-
-
-<div className="card">
-<h3>❌ Out Stock</h3>
-<h2>{dashboard.outStock}</h2>
-</div>
-
-
-
-<div className="card">
-<h3>⏰ Expiring</h3>
-<h2>{dashboard.expiry}</h2>
-</div>
-
-
+<StatCard title="Doctors" value={dashboard.doctors} icon={<FaUserDoctor/>} color="#2563eb" />
+<StatCard title="Patients" value={dashboard.patients} icon={<FaUsers/>} color="#16a34a" />
+<StatCard title="Appointments" value={dashboard.appointments} icon={<FaCalendarCheck/>} color="#9333ea" />
+<StatCard title="Admissions" value={dashboard.admissions} icon={<FaHospitalUser/>} color="#ea580c" />
+<StatCard title="Medical Records" value={dashboard.records} icon={<FaFileMedical/>} color="#0891b2" />
+<StatCard title="Total Medicine" value={dashboard.medicines} icon={<FaPills/>} color="#be123c" />
+<StatCard title="Available" value={dashboard.available} icon={<FaCircleCheck/>} color="#15803d" />
+<StatCard title="Low Stock" value={dashboard.lowStock} icon={<FaTriangleExclamation/>} color="#ca8a04" />
+<StatCard title="Out Stock" value={dashboard.outStock} icon={<FaCircleXmark/>} color="#dc2626" />
+<StatCard title="Expiring Soon" value={dashboard.expiry} icon={<FaClock/>} color="#7c3aed" />
 
 </div>
 
-
+{/* 💰 Billing Summary */}
+<h2>💰 Billing Summary</h2>
+<div className="card-grid">
+<StatCard title="Total Bills" value={dashboard.totalBills} icon={<FaFileInvoiceDollar/>} color="#2563eb" />
+<StatCard title="Paid Bills" value={dashboard.paidBills} icon={<FaCircleCheck/>} color="#15803d" />
+<StatCard title="Pending Bills" value={dashboard.pendingBills} icon={<FaHourglassHalf/>} color="#ca8a04" />
+<StatCard title="Total Revenue" value={`৳${dashboard.totalRevenue.toLocaleString()}`} icon={<FaMoneyBillWave/>} color="#16a34a" />
 </div>
 
+{/* 🛏 Room Summary */}
+<h2>🛏 Room Summary</h2>
+<div className="card-grid">
+<StatCard title="Total Rooms" value={dashboard.totalRooms} icon={<FaBed/>} color="#2563eb" />
+<StatCard title="Occupied Rooms" value={dashboard.occupiedRooms} icon={<FaDoorClosed/>} color="#dc2626" />
+<StatCard title="Available Rooms" value={dashboard.availableRooms} icon={<FaDoorOpen/>} color="#15803d" />
+</div>
+
+<DashboardChart data={chartData} />
+<AppointmentChart data={dashboard.appointmentStatus} />
+
+<MonthlyRevenueChart data={chartsData.monthlyRevenue} />
+<PatientGrowthChart data={chartsData.patientGrowth} />
+<DepartmentDoctorsChart data={chartsData.doctorsByDepartment} />
+<MedicineStockChart data={chartsData.medicineStock} />
+<RoomOccupancyChart data={chartsData.roomOccupancy} />
+
+{/* 📅 Today's Appointments */}
+<h2>📅 Today's Appointments</h2>
+<div className="list-panel">
+{dashboard.todaysAppointments.length === 0 ? (
+<p className="empty-text">No appointments scheduled for today.</p>
+) : (
+<table className="dashboard-table">
+<thead>
+<tr>
+<th>Patient</th>
+<th>Doctor</th>
+<th>Time</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+{dashboard.todaysAppointments.map(a=>(
+<tr key={a.appointmentId}>
+<td>{a.patientName}</td>
+<td>{a.doctorName}</td>
+<td>{a.appointmentTime}</td>
+<td>{a.status}</td>
+</tr>
+))}
+</tbody>
+</table>
+)}
+</div>
+
+{/* 🚨 Emergency Patients */}
+<h2>🚨 Emergency Patients</h2>
+<div className="list-panel">
+{dashboard.emergencyPatients.length === 0 ? (
+<p className="empty-text">No emergency patients currently admitted.</p>
+) : (
+<table className="dashboard-table">
+<thead>
+<tr>
+<th>Patient</th>
+<th>Room</th>
+<th>Admission Date</th>
+</tr>
+</thead>
+<tbody>
+{dashboard.emergencyPatients.map(e=>(
+<tr key={e.admissionId} className="emergency-row">
+<td><FaTruckMedical style={{marginRight:6, color:"#dc2626"}}/>{e.patientName}</td>
+<td>{e.roomNumber}</td>
+<td>{new Date(e.admissionDate).toLocaleDateString()}</td>
+</tr>
+))}
+</tbody>
+</table>
+)}
+</div>
+
+{/* 📢 Recent Admissions */}
+<h2>📢 Recent Admissions</h2>
+<div className="list-panel">
+{dashboard.recentAdmissions.length === 0 ? (
+<p className="empty-text">No recent admissions.</p>
+) : (
+<table className="dashboard-table">
+<thead>
+<tr>
+<th>Patient</th>
+<th>Room</th>
+<th>Admission Date</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+{dashboard.recentAdmissions.map(r=>(
+<tr key={r.admissionId}>
+<td>{r.patientName}</td>
+<td>{r.roomNumber}</td>
+<td>{new Date(r.admissionDate).toLocaleDateString()}</td>
+<td>{r.status}</td>
+</tr>
+))}
+</tbody>
+</table>
+)}
+</div>
+
+{/* 🕒 Recent Activities */}
+<h2><FaClock style={{marginRight:8}}/>Recent Activities</h2>
+<div className="list-panel">
+{recentActivities.length === 0 ? (
+<p className="empty-text">No recent activity recorded.</p>
+) : (
+<table className="dashboard-table">
+<thead>
+<tr>
+<th>Action</th>
+<th>Entity</th>
+<th>Description</th>
+<th>By</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+{recentActivities.map((log, index)=>(
+<tr key={index}>
+<td>{log.action}</td>
+<td>{log.entity}</td>
+<td>{log.description}</td>
+<td>{log.userName || "System"}</td>
+<td>{new Date(log.createdAt).toLocaleString()}</td>
+</tr>
+))}
+</tbody>
+</table>
+)}
+</div>
+
+</div>
 );
-
-
 }
-
 
 export default Dashboard;

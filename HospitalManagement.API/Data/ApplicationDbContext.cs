@@ -21,7 +21,7 @@ namespace HospitalManagement.API.Data
         public DbSet<Admission> Admissions { get; set; }
         public DbSet<Billing> Billings { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
-
+        public DbSet<ActivityLog> ActivityLogs { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Map entity to actual SQL table name (table is "Billing", not "Billings")

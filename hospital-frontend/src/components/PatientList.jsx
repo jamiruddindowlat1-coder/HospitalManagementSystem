@@ -60,16 +60,41 @@ const loadPatients = async()=>{
 
         const response = await api.get("/patients");
 
-        setPatients(response.data);
+        console.log("PATIENT API STATUS:", response.status);
+
+        console.log("PATIENT DATA:", response.data);
+
+
+        if(Array.isArray(response.data)){
+
+            setPatients(response.data);
+
+        }
+        else{
+
+            setPatients([]);
+
+            console.log(
+                "Patient data is not array"
+            );
+
+        }
+
 
         setError("");
 
     }
     catch(error){
 
-        console.log(error);
+        console.log(
+            "PATIENT ERROR:",
+            error.response || error
+        );
 
-        setError("Patient load failed");
+
+        setError(
+            "Patient load failed"
+        );
 
     }
     finally{
@@ -79,8 +104,6 @@ const loadPatients = async()=>{
     }
 
 };
-
-
 
 
 

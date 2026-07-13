@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using HospitalManagement.API.Data;
 using HospitalManagement.API.DTOs;
 using HospitalManagement.API.Models;
+using HospitalManagement.API.Services;
+using HospitalManagement.API.Helpers;
 
 namespace HospitalManagement.API.Controllers
 {
@@ -14,14 +16,15 @@ namespace HospitalManagement.API.Controllers
     public class MedicinesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IActivityLogService _activityLog;
 
-        public MedicinesController(ApplicationDbContext context)
+        public MedicinesController(ApplicationDbContext context, IActivityLogService activityLog)
         {
             _context = context;
+            _activityLog = activityLog;
         }
 
 
-        // GET: api/Medicines
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MedicineDto>>> GetMedicines()
         {
@@ -44,7 +47,6 @@ namespace HospitalManagement.API.Controllers
         }
 
 
-        // GET: api/Medicines/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MedicineDto>> GetMedicine(int id)
         {
@@ -53,12 +55,8 @@ namespace HospitalManagement.API.Controllers
 
             if (medicine == null)
             {
-                return NotFound(new
-                {
-                    message = "Medicine not found."
-                });
+                return NotFound(new { message = "Medicine not found." });
             }
-
 
             return Ok(new MedicineDto
             {
@@ -75,7 +73,6 @@ namespace HospitalManagement.API.Controllers
         }
 
 
-        // POST: api/Medicines
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<MedicineDto>> CreateMedicine(
@@ -83,7 +80,6 @@ namespace HospitalManagement.API.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
 
             var medicine = new Medicine
             {
@@ -97,11 +93,12 @@ namespace HospitalManagement.API.Controllers
                 CreatedDate = DateTime.UtcNow
             };
 
-
             _context.Medicines.Add(medicine);
 
             await _context.SaveChangesAsync();
 
+            await _activityLog.LogAsync("Created", "Medicine",
+                $"Medicine {medicine.MedicineName} added (Stock: {medicine.StockQuantity})", User.GetUserId());
 
             return CreatedAtAction(
                 nameof(GetMedicine),
@@ -110,8 +107,6 @@ namespace HospitalManagement.API.Controllers
         }
 
 
-
-        // PUT: api/Medicines/5
         [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateMedicine(
@@ -121,19 +116,15 @@ namespace HospitalManagement.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-
             var medicine = await _context.Medicines
                 .FirstOrDefaultAsync(m => m.MedicineId == id);
 
-
             if (medicine == null)
             {
-                return NotFound(new
-                {
-                    message = "Medicine not found."
-                });
+                return NotFound(new { message = "Medicine not found." });
             }
 
+            var oldStock = medicine.StockQuantity;
 
             medicine.MedicineName = dto.MedicineName;
             medicine.Manufacturer = dto.Manufacturer;
@@ -143,19 +134,23 @@ namespace HospitalManagement.API.Controllers
             medicine.Category = dto.Category;
             medicine.BatchNumber = dto.BatchNumber;
 
-
             await _context.SaveChangesAsync();
 
-
-            return Ok(new
+            if (oldStock != medicine.StockQuantity)
             {
-                message = "Medicine updated successfully."
-            });
+                await _activityLog.LogAsync("Updated", "Medicine",
+                    $"{medicine.MedicineName} stock changed from {oldStock} to {medicine.StockQuantity}", User.GetUserId());
+            }
+            else
+            {
+                await _activityLog.LogAsync("Updated", "Medicine",
+                    $"Medicine {medicine.MedicineName} updated", User.GetUserId());
+            }
+
+            return Ok(new { message = "Medicine updated successfully." });
         }
 
 
-
-        // DELETE: api/Medicines/5
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteMedicine(int id)
@@ -163,25 +158,19 @@ namespace HospitalManagement.API.Controllers
             var medicine = await _context.Medicines
                 .FirstOrDefaultAsync(m => m.MedicineId == id);
 
-
             if (medicine == null)
             {
-                return NotFound(new
-                {
-                    message = "Medicine not found."
-                });
+                return NotFound(new { message = "Medicine not found." });
             }
-
 
             _context.Medicines.Remove(medicine);
 
             await _context.SaveChangesAsync();
 
+            await _activityLog.LogAsync("Deleted", "Medicine",
+                $"Medicine {medicine.MedicineName} deleted", User.GetUserId());
 
-            return Ok(new
-            {
-                message = "Medicine deleted successfully."
-            });
+            return Ok(new { message = "Medicine deleted successfully." });
         }
     }
 }

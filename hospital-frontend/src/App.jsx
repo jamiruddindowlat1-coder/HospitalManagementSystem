@@ -11,6 +11,7 @@ import AppointmentList from "./components/AppointmentList";
 import BillingList from "./components/BillingList";
 import MedicalRecordList from "./components/MedicalRecordList";
 import Medicine from "./components/Medicine";
+import ActivityLogPage from "./components/ActivityLogPage";
 
 import { isAuthenticated, removeToken } from "./services/auth";
 import api from "./services/api";
@@ -31,7 +32,7 @@ function AdmissionList() {
       setAdmissions(response.data || response);
     } catch (error) {
       console.log(error);
-      setMessage("❌ Admission data load করতে সমস্যা হয়েছে");
+      setMessage("একটা ভুল হয়েছে");
     } finally {
       setLoading(false);
     }
@@ -126,6 +127,7 @@ function App() {
       <Route path="/billing" element={wrap(BillingList)} />
       <Route path="/records" element={wrap(MedicalRecordList)} />
       <Route path="/medicines" element={wrap(Medicine)} />
+      <Route path="/activity-log" element={wrap(ActivityLogPage)} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
@@ -135,7 +137,6 @@ function App() {
 const containerStyle = {
   padding: "24px",
   maxWidth: "1000px",
-  margin: "auto",
 };
 
 const tableStyle = {

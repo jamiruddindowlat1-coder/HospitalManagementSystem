@@ -158,3 +158,4 @@ D:\HospitalManagementSystem\HospitalManagement.Tests\obj\Debug\net10.0\refint\Ho
 D:\HospitalManagementSystem\HospitalManagement.Tests\obj\Debug\net10.0\HospitalManagement.Tests.pdb
 D:\HospitalManagementSystem\HospitalManagement.Tests\obj\Debug\net10.0\HospitalManagement.Tests.genruntimeconfig.cache
 D:\HospitalManagementSystem\HospitalManagement.Tests\obj\Debug\net10.0\ref\HospitalManagement.Tests.dll
+D:\HospitalManagementSystem\HospitalManagement.Tests\obj\Debug\net10.0\HospitalManagement.Tests.sourcelink.json

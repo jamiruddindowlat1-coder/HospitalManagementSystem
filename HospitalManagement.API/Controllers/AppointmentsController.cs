@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using HospitalManagement.API.Data;
 using HospitalManagement.API.Models;
+using HospitalManagement.API.Services;
+using HospitalManagement.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
 
 namespace HospitalManagement.API.Controllers
@@ -12,13 +14,14 @@ namespace HospitalManagement.API.Controllers
     public class AppointmentsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IActivityLogService _activityLog;
 
-        public AppointmentsController(ApplicationDbContext context)
+        public AppointmentsController(ApplicationDbContext context, IActivityLogService activityLog)
         {
             _context = context;
+            _activityLog = activityLog;
         }
 
-        // GET: api/appointments (includes Patient and Doctor info)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointments()
         {
@@ -46,6 +49,10 @@ namespace HospitalManagement.API.Controllers
         {
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
+
+            await _activityLog.LogAsync("Created", "Appointment",
+                $"Appointment scheduled (Id: {appointment.AppointmentId})", User.GetUserId());
+
             return CreatedAtAction(nameof(GetAppointment), new { id = appointment.AppointmentId }, appointment);
         }
 
@@ -59,6 +66,8 @@ namespace HospitalManagement.API.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                await _activityLog.LogAsync("Updated", "Appointment",
+                    $"Appointment (Id: {appointment.AppointmentId}) updated", User.GetUserId());
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -77,6 +86,10 @@ namespace HospitalManagement.API.Controllers
             if (appointment == null) return NotFound();
             _context.Appointments.Remove(appointment);
             await _context.SaveChangesAsync();
+
+            await _activityLog.LogAsync("Deleted", "Appointment",
+                $"Appointment (Id: {appointment.AppointmentId}) deleted", User.GetUserId());
+
             return NoContent();
         }
     }

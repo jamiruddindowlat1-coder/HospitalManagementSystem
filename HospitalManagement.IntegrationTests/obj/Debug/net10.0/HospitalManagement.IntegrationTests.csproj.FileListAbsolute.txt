@@ -467,3 +467,4 @@ D:\HospitalManagementSystem\HospitalManagement.IntegrationTests\obj\Debug\net10.
 D:\HospitalManagementSystem\HospitalManagement.IntegrationTests\obj\Debug\net10.0\HospitalManagement.IntegrationTests.pdb
 D:\HospitalManagementSystem\HospitalManagement.IntegrationTests\obj\Debug\net10.0\HospitalManagement.IntegrationTests.genruntimeconfig.cache
 D:\HospitalManagementSystem\HospitalManagement.IntegrationTests\obj\Debug\net10.0\ref\HospitalManagement.IntegrationTests.dll
+D:\HospitalManagementSystem\HospitalManagement.IntegrationTests\obj\Debug\net10.0\HospitalManagement.IntegrationTests.sourcelink.json

@@ -1,0 +1,195 @@
+/* ==============================
+   HMS Global Hospital Theme
+============================== */
+
+
+body {
+
+    margin:0;
+
+    font-family:
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #e0f2fe,
+        #eef2ff,
+        #fdf4ff
+    );
+
+
+    min-height:100vh;
+
+}
+
+
+
+/* All Page Container */
+
+.list-panel,
+.medical-record-page,
+.patient-page,
+.appointment-page,
+.doctor-page {
+
+
+    background:
+
+    rgba(255,255,255,.90);
+
+
+    backdrop-filter:blur(10px);
+
+
+    border-radius:22px;
+
+
+    padding:25px;
+
+
+    box-shadow:
+
+
+    0 15px 35px rgba(0,0,0,.10);
+
+
+}
+
+
+
+/* All Table */
+
+table {
+
+
+    width:100%;
+
+
+    border-collapse:collapse;
+
+
+    overflow:hidden;
+
+
+    border-radius:18px;
+
+
+}
+
+
+
+/* Table Header */
+
+thead th {
+
+
+    background:
+
+
+    linear-gradient(
+
+        135deg,
+
+        #2563eb,
+
+        #7c3aed
+
+    );
+
+
+    color:white;
+
+
+    padding:15px;
+
+
+    font-size:15px;
+
+
+}
+
+
+
+/* Table Body */
+
+tbody td {
+
+
+    padding:14px;
+
+
+    background:white;
+
+
+    border-bottom:
+
+    1px solid #e5e7eb;
+
+
+    color:#334155;
+
+
+}
+
+
+
+/* Row Hover */
+
+tbody tr:hover {
+
+
+    background:#eff6ff;
+
+
+    transform:scale(1.01);
+
+
+    transition:.3s;
+
+
+}
+
+
+
+/* Title */
+
+h2,h3 {
+
+
+    color:#1e3a8a;
+
+
+    font-weight:800;
+
+
+}
+
+
+
+/* Buttons */
+
+button {
+
+
+    border-radius:12px;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+button:hover {
+
+
+    transform:translateY(-2px);
+
+
+}

@@ -1,4 +1,6 @@
 import { NavLink } from "react-router-dom";
+import "./Sidebar.css";
+
 import {
   FaTachometerAlt,
   FaUserInjured,
@@ -7,17 +9,36 @@ import {
   FaHospital,
   FaPills,
   FaNotesMedical,
+  FaClock,
+  FaSignOutAlt
 } from "react-icons/fa";
 
+
 export default function Sidebar() {
+
+  const handleLogout = () => {
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user");
+
+    window.location.href = "/login";
+
+  };
+
+
   return (
     <aside className="sidebar">
+
       <div>
+
         <div className="logo">
           🏥 HMS
         </div>
 
+
         <nav>
+
           <NavLink
             to="/"
             end
@@ -29,6 +50,7 @@ export default function Sidebar() {
             <span>Dashboard</span>
           </NavLink>
 
+
           <NavLink
             to="/patients"
             className={({ isActive }) =>
@@ -38,6 +60,7 @@ export default function Sidebar() {
             <FaUserInjured />
             <span>Patients</span>
           </NavLink>
+
 
           <NavLink
             to="/doctors"
@@ -49,6 +72,7 @@ export default function Sidebar() {
             <span>Doctors</span>
           </NavLink>
 
+
           <NavLink
             to="/appointments"
             className={({ isActive }) =>
@@ -58,6 +82,7 @@ export default function Sidebar() {
             <FaCalendarCheck />
             <span>Appointments</span>
           </NavLink>
+
 
           <NavLink
             to="/admissions"
@@ -69,6 +94,7 @@ export default function Sidebar() {
             <span>Admissions</span>
           </NavLink>
 
+
           <NavLink
             to="/medicines"
             className={({ isActive }) =>
@@ -79,6 +105,7 @@ export default function Sidebar() {
             <span>Medicines</span>
           </NavLink>
 
+
           <NavLink
             to="/records"
             className={({ isActive }) =>
@@ -88,8 +115,33 @@ export default function Sidebar() {
             <FaNotesMedical />
             <span>Medical Records</span>
           </NavLink>
+
+
+          <NavLink
+            to="/activity-log"
+            className={({ isActive }) =>
+              isActive ? "menu active" : "menu"
+            }
+          >
+            <FaClock />
+            <span>Activity Log</span>
+          </NavLink>
+
+
         </nav>
+
+
+        <button
+          onClick={handleLogout}
+          className="logout-btn"
+        >
+          <FaSignOutAlt />
+          Logout
+        </button>
+
+
       </div>
+
     </aside>
   );
 }

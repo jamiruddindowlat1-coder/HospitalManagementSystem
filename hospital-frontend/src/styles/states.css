@@ -1,0 +1,18 @@
+/* States: loading, error, empty */
+.loading-state {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.error-state {
+  text-align: center;
+  padding: 40px;
+  color: #dc2626;
+}
+
+.empty-text {
+  text-align: center;
+  color: #9ca3af;
+  padding: 20px;
+}

@@ -164,6 +164,7 @@ D:\HospitalManagementSystem\HospitalManagement.API\obj\Debug\net10.0\HospitalMan
 D:\HospitalManagementSystem\HospitalManagement.API\obj\Debug\net10.0\HospitalManagement.API.csproj.CoreCompileInputs.cache
 D:\HospitalManagementSystem\HospitalManagement.API\obj\Debug\net10.0\HospitalManagement.API.MvcApplicationPartsAssemblyInfo.cs
 D:\HospitalManagementSystem\HospitalManagement.API\obj\Debug\net10.0\HospitalManagement.API.MvcApplicationPartsAssemblyInfo.cache
+D:\HospitalManagementSystem\HospitalManagement.API\obj\Debug\net10.0\HospitalManagement.API.sourcelink.json
 D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\appsettings.Development.json
 D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\appsettings.json
 D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\HospitalManagement.API.staticwebassets.endpoints.json
@@ -174,6 +175,9 @@ D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\HospitalMan
 D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\HospitalManagement.API.pdb
 D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\Azure.Core.dll
 D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\Azure.Identity.dll
+D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\FluentValidation.dll
+D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\FluentValidation.AspNetCore.dll
+D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll
 D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\Humanizer.dll
 D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
@@ -319,6 +323,3 @@ D:\HospitalManagementSystem\HospitalManagement.API\obj\Debug\net10.0\refint\Hosp
 D:\HospitalManagementSystem\HospitalManagement.API\obj\Debug\net10.0\HospitalManagement.API.pdb
 D:\HospitalManagementSystem\HospitalManagement.API\obj\Debug\net10.0\HospitalManagement.API.genruntimeconfig.cache
 D:\HospitalManagementSystem\HospitalManagement.API\obj\Debug\net10.0\ref\HospitalManagement.API.dll
-D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\FluentValidation.dll
-D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\FluentValidation.AspNetCore.dll
-D:\HospitalManagementSystem\HospitalManagement.API\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll

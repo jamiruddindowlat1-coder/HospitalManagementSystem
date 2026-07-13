@@ -1,17 +1,47 @@
-﻿const TOKEN_KEY = 'hms_jwt_token';
+﻿export const saveToken = (token)=>{
 
-export const saveToken = (token) => {
-  localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(
+        "token",
+        token
+    );
+
 };
 
-export const getToken = () => {
-  return localStorage.getItem(TOKEN_KEY);
+
+export const getToken = ()=>{
+
+    return localStorage.getItem("token");
+
 };
 
-export const removeToken = () => {
-  localStorage.removeItem(TOKEN_KEY);
+
+export const isAuthenticated = ()=>{
+
+    return !!localStorage.getItem("token");
+
 };
 
-export const isAuthenticated = () => {
-  return Boolean(getToken());
+
+export const removeToken = ()=>{
+
+    localStorage.removeItem("token");
+
+    localStorage.removeItem("role");
+
+};
+
+
+export const getRole = ()=>{
+
+    return localStorage.getItem("role");
+
+};
+
+
+export const logout = ()=>{
+
+    removeToken();
+
+    window.location.href="/login";
+
 };
