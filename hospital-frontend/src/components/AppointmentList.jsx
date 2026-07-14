@@ -3,118 +3,120 @@ import api from "../services/api";
 import "./AppointmentList.css";
 
 
-function AppointmentList() {
+function AppointmentList(){
 
-  const [appointments, setAppointments] = useState([]);
-  const [patients, setPatients] = useState([]);
-  const [doctors, setDoctors] = useState([]);
+const [appointments,setAppointments]=useState([]);
+const [patients,setPatients]=useState([]);
+const [doctors,setDoctors]=useState([]);
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+const [loading,setLoading]=useState(true);
+const [error,setError]=useState("");
 
-  const [showForm, setShowForm] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+const [showForm,setShowForm]=useState(false);
+const [submitting,setSubmitting]=useState(false);
+const [editingId,setEditingId]=useState(null);
 
-  const [editingId, setEditingId] = useState(null);
 
+const emptyForm={
+patientId:"",
+doctorId:"",
+appointmentDate:"",
+appointmentTime:"",
+reason:"",
+status:"Scheduled"
+};
 
-  const emptyForm = {
-    patientId: '',
-    doctorId: '',
-    appointmentDate: '',
-    appointmentTime: '',
-    reason: '',
-    status: 'Scheduled'
-  };
 
+const [form,setForm]=useState(emptyForm);
 
-  const [form, setForm] = useState(emptyForm);
 
 
+useEffect(()=>{
 
-  useEffect(() => {
-    fetchAll();
-  }, []);
+loadData();
 
+},[]);
 
 
 
-  const fetchAll = async () => {
 
-    try {
 
-      setLoading(true);
+const loadData=async()=>{
 
+try{
 
-      const [
-        apRes,
-        ptRes,
-        drRes
-      ] = await Promise.all([
+setLoading(true);
 
-        api.get('/appointments'),
 
-        api.get('/patients'),
+const [
+appointmentRes,
+patientRes,
+doctorRes
+]=await Promise.all([
 
-        api.get('/doctors')
+api.get("/appointments"),
 
-      ]);
+api.get("/patients"),
 
+api.get("/doctors")
 
-      setAppointments(apRes.data);
+]);
 
-      setPatients(ptRes.data);
 
-      setDoctors(drRes.data);
+setAppointments(appointmentRes.data);
 
+setPatients(patientRes.data);
 
-      setError('');
+setDoctors(doctorRes.data);
 
+setError("");
 
-    } catch(err) {
+}
+catch(err){
 
-      console.error(err);
+console.log(err);
 
-      setError('অ্যাপয়েন্টমেন্ট লোড করতে ব্যর্থ হয়েছে।');
+setError("Appointment load failed");
 
+}
+finally{
 
-    } finally {
+setLoading(false);
 
-      setLoading(false);
+}
 
-    }
+};
 
-  };
 
 
 
 
 
 
-  const handleChange = (e) => {
+const handleChange=(e)=>{
 
-    setForm({
+setForm({
 
-      ...form,
+...form,
 
-      [e.target.name]: e.target.value
+[e.target.name]:e.target.value
 
-    });
+});
 
-  };
+};
 
 
 
 
 
 
-  const resetForm = () => {
+const resetForm=()=>{
 
-    setForm(emptyForm);
+setForm(emptyForm);
 
-    setEditingId(null);
+setEditingId(null);
 
-  };
+};
 
 
 
@@ -122,794 +124,624 @@ function AppointmentList() {
 
 
 
-  const handleEdit = (appointment) => {
 
+const saveAppointment=async(e)=>{
 
-    setEditingId(appointment.appointmentId);
+e.preventDefault();
 
 
+try{
 
-    setForm({
+setSubmitting(true);
 
-      patientId: appointment.patientId,
 
-      doctorId: appointment.doctorId,
 
-      appointmentDate:
-        appointment.appointmentDate.split('T')[0],
+const data={
 
-      appointmentTime:
-        appointment.appointmentTime,
+appointmentId:editingId || 0,
 
-      reason:
-        appointment.reason,
+patientId:Number(form.patientId),
 
-      status:
-        appointment.status
+doctorId:Number(form.doctorId),
 
-    });
+appointmentDate:form.appointmentDate,
 
+appointmentTime:form.appointmentTime,
 
+reason:form.reason,
 
-    setShowForm(true);
+status:form.status
 
+};
 
-  };
 
 
 
 
+if(editingId){
 
+await api.put(
+`/appointments/${editingId}`,
+data
+);
 
-  const handleDelete = async(id) => {
+}
+else{
 
+await api.post(
+"/appointments",
+data
+);
 
-    if(!window.confirm(
-      "এই অ্যাপয়েন্টমেন্ট ডিলিট করবেন?"
-    ))
-    return;
+}
 
 
 
-    try {
+alert("Appointment Saved");
 
 
-      await api.delete(
-        `/appointments/${id}`
-      );
+setShowForm(false);
 
+resetForm();
 
-      fetchAll();
+loadData();
 
 
+}
+catch(err){
 
-    } catch(err) {
+console.log(err);
 
+alert("Save Failed");
 
-      console.error(err);
+}
+finally{
 
+setSubmitting(false);
 
-      alert(
-        "Delete করা যায়নি"
-      );
+}
 
+};
 
-    }
 
 
-  };
 
 
 
 
+const editAppointment=(a)=>{
 
 
+setEditingId(a.appointmentId);
 
-  const handleSubmit = async(e)=>{
 
+setForm({
 
-    e.preventDefault();
+patientId:a.patientId,
 
+doctorId:a.doctorId,
 
-    setSubmitting(true);
+appointmentDate:
+a.appointmentDate?.substring(0,10),
 
+appointmentTime:a.appointmentTime,
 
+reason:a.reason,
 
-    const data = {
+status:a.status
 
+});
 
-      appointmentId:
-        editingId || 0,
 
+setShowForm(true);
 
-      patientId:
-        parseInt(form.patientId),
 
+};
 
-      doctorId:
-        parseInt(form.doctorId),
 
 
-      appointmentDate:
-        form.appointmentDate,
 
 
-      appointmentTime:
-        form.appointmentTime,
 
 
-      reason:
-        form.reason,
 
+const deleteAppointment=async(id)=>{
 
-      status:
-        form.status
 
+if(!window.confirm("Delete Appointment?"))
+return;
 
-    };
 
+try{
 
+await api.delete(
+`/appointments/${id}`
+);
 
-    try {
 
+loadData();
 
-      if(editingId){
 
+}
+catch(err){
 
-        await api.put(
-          `/appointments/${editingId}`,
-          data
-        );
+console.log(err);
 
+}
 
-      }
-      else{
 
+};
 
-        await api.post(
-          '/appointments',
-          data
-        );
 
 
-      }
 
 
 
-      setShowForm(false);
 
+if(loading)
 
-      resetForm();
+return <h3>Loading...</h3>;
 
 
-      fetchAll();
 
 
 
-    }
-    catch(err){
 
+return(
 
-      console.error(err);
 
+<div className="appointment-page">
 
-      alert(
-        "সংরক্ষণ করা যায়নি"
-      );
 
 
-    }
-    finally{
+<div className="appointment-header-box">
 
+<h2>
+📅 Appointment Management
+</h2>
 
-      setSubmitting(false);
+</div>
 
 
-    }
 
 
-  };
 
+<div className="appointment-count-box">
 
+Total Appointment : {appointments.length}
 
+</div>
 
 
-  if(loading)
-    return (
-      <div className="data-card">
-        লোড হচ্ছে...
-      </div>
-    );
 
 
 
-  if(error)
-    return (
-      <div className="data-card error">
-        {error}
-      </div>
-    );
+<div style={{textAlign:"center"}}>
 
 
+<button
 
-  const inputStyle = {
+className="btn-add-appointment"
 
-    width:'100%',
+onClick={()=>{
 
-    padding:'0.4rem 0.6rem',
+setShowForm(!showForm);
 
-    borderRadius:'4px',
+resetForm();
 
-    border:'1px solid #cbd5e1',
+}}
 
-    marginTop:'0.2rem'
+>
 
-  };
-    return (
+{
 
-    <div className="data-card">
+showForm
+?
+"❌ Close"
+:
+"➕ Add Appointment"
 
+}
 
-      <div
-        style={{
-          display:'flex',
-          justifyContent:'space-between',
-          alignItems:'center',
-          marginBottom:'1rem'
-        }}
-      >
+</button>
 
-        <h2>
-          অ্যাপয়েন্টমেন্ট
-        </h2>
 
+</div>
 
-        <button
 
-          onClick={()=>{
 
-            setShowForm(!showForm);
 
-            if(showForm)
-              resetForm();
 
-          }}
 
-          style={{
-            padding:'0.5rem 1rem',
-            background:'#2563eb',
-            color:'#fff',
-            border:'none',
-            borderRadius:'6px',
-            cursor:'pointer'
-          }}
 
-        >
+{
 
-          {
-            showForm
-            ?
-            '✕ বাতিল'
-            :
-            '+ নতুন অ্যাপয়েন্টমেন্ট'
-          }
+error &&
 
-        </button>
+<p className="error">
 
+{error}
 
-      </div>
+</p>
 
+}
 
 
 
 
-      {
-        showForm && (
 
 
-          <form
 
-            onSubmit={handleSubmit}
+{
 
-            style={{
+showForm &&
 
-              background:'#f8fafc',
 
-              padding:'1rem',
+<form
 
-              borderRadius:'8px',
+className="appointment-form"
 
-              marginBottom:'1.5rem',
+onSubmit={saveAppointment}
 
-              display:'grid',
+>
 
-              gridTemplateColumns:'1fr 1fr',
 
-              gap:'0.75rem'
 
-            }}
+<select
 
-          >
+name="patientId"
 
+value={form.patientId}
 
+onChange={handleChange}
 
-            <div>
+required
 
-              <label>
-                রোগী *
-              </label>
+>
 
+<option value="">
 
-              <select
+Select Patient
 
-                name="patientId"
+</option>
 
-                value={form.patientId}
 
-                onChange={handleChange}
+{
 
-                required
+patients.map(p=>(
 
-                style={inputStyle}
+<option
 
-              >
+key={p.patientId}
 
-                <option value="">
-                  -- রোগী নির্বাচন করুন --
-                </option>
+value={p.patientId}
 
+>
 
-                {
-                  patients.map(p=>(
+{p.fullName}
 
-                    <option
+</option>
 
-                      key={p.patientId}
+))
 
-                      value={p.patientId}
+}
 
-                    >
 
-                      {p.fullName}
+</select>
 
-                    </option>
 
-                  ))
-                }
 
 
-              </select>
 
+<select
 
-            </div>
+name="doctorId"
 
+value={form.doctorId}
 
+onChange={handleChange}
 
+required
 
+>
 
+<option value="">
 
+Select Doctor
 
-            <div>
+</option>
 
-              <label>
-                ডাক্তার *
-              </label>
 
+{
 
-              <select
+doctors.map(d=>(
 
-                name="doctorId"
+<option
 
-                value={form.doctorId}
+key={d.doctorId}
 
-                onChange={handleChange}
+value={d.doctorId}
 
-                required
+>
 
-                style={inputStyle}
+{d.fullName}
 
-              >
+</option>
 
-                <option value="">
-                  -- ডাক্তার নির্বাচন করুন --
-                </option>
+))
 
+}
 
-                {
-                  doctors.map(d=>(
 
-                    <option
+</select>
 
-                      key={d.doctorId}
 
-                      value={d.doctorId}
 
-                    >
 
-                      {d.fullName} ({d.specialization})
 
-                    </option>
+<input
 
-                  ))
-                }
+type="date"
 
+name="appointmentDate"
 
-              </select>
+value={form.appointmentDate}
 
+onChange={handleChange}
 
-            </div>
+/>
 
 
 
 
 
+<input
 
-            <div>
+type="time"
 
-              <label>
-                তারিখ *
-              </label>
+name="appointmentTime"
 
+value={form.appointmentTime}
 
-              <input
+onChange={handleChange}
 
-                type="date"
+/>
 
-                name="appointmentDate"
 
-                value={form.appointmentDate}
 
-                onChange={handleChange}
 
-                required
 
-                style={inputStyle}
 
-              />
+<input
 
+name="reason"
 
-            </div>
+placeholder="Reason"
 
+value={form.reason}
 
+onChange={handleChange}
 
+/>
 
 
 
 
-            <div>
 
-              <label>
-                সময় *
-              </label>
 
+<select
 
-              <input
+name="status"
 
-                type="time"
+value={form.status}
 
-                name="appointmentTime"
+onChange={handleChange}
 
-                value={form.appointmentTime}
+>
 
-                onChange={handleChange}
+<option value="Scheduled">
+Scheduled
+</option>
 
-                required
+<option value="Completed">
+Completed
+</option>
 
-                style={inputStyle}
+<option value="Cancelled">
+Cancelled
+</option>
 
-              />
 
+</select>
 
-            </div>
 
 
 
 
 
+<button
 
-            <div style={{gridColumn:'1/-1'}}>
+className="btn-save"
 
-              <label>
-                কারণ *
-              </label>
+disabled={submitting}
 
+>
 
-              <input
+{
 
-                name="reason"
+submitting
+?
+"Saving..."
+:
+editingId
+?
+"Update"
+:
+"Save"
 
-                value={form.reason}
+}
 
-                onChange={handleChange}
 
-                required
+</button>
 
-                style={inputStyle}
 
-              />
 
+</form>
 
-            </div>
 
+}
 
 
 
 
 
-            <div>
 
-              <label>
-                স্ট্যাটাস
-              </label>
 
+<div className="appointment-table-box">
 
-              <select
 
-                name="status"
+<table className="appointment-table">
 
-                value={form.status}
 
-                onChange={handleChange}
+<thead>
 
-                style={inputStyle}
+<tr>
 
-              >
+<th>ID</th>
 
-                <option value="Scheduled">
-                  নির্ধারিত
-                </option>
+<th>Patient</th>
 
+<th>Doctor</th>
 
-                <option value="Completed">
-                  সম্পন্ন
-                </option>
+<th>Date</th>
 
+<th>Time</th>
 
-                <option value="Cancelled">
-                  বাতিল
-                </option>
+<th>Status</th>
 
+<th>Action</th>
 
-              </select>
+</tr>
 
+</thead>
 
-            </div>
 
 
 
+<tbody>
 
 
+{
 
+appointments.map(a=>(
 
-            <div
 
-              style={{
+<tr key={a.appointmentId}>
 
-                gridColumn:'1/-1',
 
-                textAlign:'right'
+<td>
+#{a.appointmentId}
+</td>
 
-              }}
 
-            >
+<td>
 
-              <button
+{a.patient?.fullName || "-"}
 
-                type="submit"
+</td>
 
-                disabled={submitting}
 
-                style={{
+<td>
 
-                  padding:'0.5rem 1.5rem',
+{a.doctor?.fullName || "-"}
 
-                  background:'#16a34a',
+</td>
 
-                  color:'#fff',
 
-                  border:'none',
+<td>
 
-                  borderRadius:'6px',
+{a.appointmentDate?.substring(0,10)}
 
-                  cursor:'pointer'
+</td>
 
-                }}
 
-              >
+<td>
 
-                {
-                  submitting
-                  ?
-                  'সংরক্ষণ হচ্ছে...'
-                  :
-                  editingId
-                  ?
-                  'আপডেট করুন'
-                  :
-                  'সংরক্ষণ করুন'
-                }
+{a.appointmentTime}
 
+</td>
 
-              </button>
 
+<td>
 
-            </div>
+{a.status}
 
+</td>
 
 
 
-          </form>
+<td>
 
 
-        )
-      }
+<button
 
+className="btn-edit"
 
+onClick={()=>editAppointment(a)}
 
+>
 
+✏ Edit
 
+</button>
 
 
-      <table>
 
-        <thead>
 
-          <tr>
+<button
 
-            <th>ID</th>
+className="btn-delete"
 
-            <th>রোগী</th>
+onClick={()=>deleteAppointment(a.appointmentId)}
 
-            <th>ডাক্তার</th>
+>
 
-            <th>তারিখ</th>
+🗑 Delete
 
-            <th>সময়</th>
+</button>
 
-            <th>স্ট্যাটাস</th>
 
-            <th>Action</th>
 
+</td>
 
-          </tr>
 
 
-        </thead>
+</tr>
 
 
+))
 
 
-        <tbody>
+}
 
 
-          {
-            appointments.map((a)=>(
+</tbody>
 
 
-              <tr key={a.appointmentId}>
 
+</table>
 
-                <td>
-                  #{a.appointmentId}
-                </td>
 
+</div>
 
-                <td>
-                  {a.patient?.fullName || 'N/A'}
-                </td>
 
 
-                <td>
-                  {a.doctor?.fullName || 'N/A'}
-                </td>
 
+</div>
 
-                <td>
-                  {
-                    new Date(
-                      a.appointmentDate
-                    )
-                    .toLocaleDateString('bn-BD')
-                  }
-                </td>
 
+);
 
-                <td>
-                  {a.appointmentTime}
-                </td>
-
-
-                <td>
-                  {a.status}
-                </td>
-
-
-
-                <td>
-
-
-                  <button
-
-                    onClick={()=>handleEdit(a)}
-
-                    style={{
-
-                      background:'#2563eb',
-
-                      color:'#fff',
-
-                      border:'none',
-
-                      padding:'5px 10px',
-
-                      borderRadius:'4px',
-
-                      marginRight:'5px',
-
-                      cursor:'pointer'
-
-                    }}
-
-                  >
-
-                    Edit
-
-                  </button>
-
-
-
-
-
-                  <button
-
-                    onClick={()=>handleDelete(a.appointmentId)}
-
-                    style={{
-
-                      background:'#dc2626',
-
-                      color:'#fff',
-
-                      border:'none',
-
-                      padding:'5px 10px',
-
-                      borderRadius:'4px',
-
-                      cursor:'pointer'
-
-                    }}
-
-                  >
-
-                    Delete
-
-                  </button>
-
-
-
-                </td>
-
-
-
-              </tr>
-
-
-            ))
-          }
-
-
-        </tbody>
-
-
-      </table>
-
-
-
-    </div>
-
-
-  );
 
 }
 

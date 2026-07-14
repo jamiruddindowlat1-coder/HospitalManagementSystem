@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from "react";
 import api from "../services/api";
+import "./PatientList.css";
 
 
 function PatientList() {
@@ -387,21 +388,23 @@ return <h3>Loading...</h3>;
 
 return (
 
-<div className="data-card">
+<div className="patient-page">
 
-
+<div className="patient-header-box">
 <h2>🏥 Patient Management</h2>
+</div>
 
-
-<h3>
+<div className="patient-count-box">
 Total Patient : {patients.length}
-</h3>
+</div>
 
 
 
+
+<div style={{textAlign:"center"}}>
 
 <button
-
+className="btn-add-patient"
 onClick={()=>{
 
 setShowForm(!showForm);
@@ -431,18 +434,13 @@ showForm
 
 </button>
 
-
-
-
-
-<br/><br/>
-
+</div>
 
 
 
 
 <input
-
+className="patient-search-box"
 placeholder="Search Patient"
 
 value={search}
@@ -479,7 +477,7 @@ showForm &&
 
 (
 
-<form onSubmit={savePatient}>
+<form onSubmit={savePatient} className="patient-table-box" style={{padding:"25px", marginBottom:"20px"}}>
 
 
 <br/>
@@ -612,7 +610,7 @@ onChange={handleChange}
 <br/>
 
 
-<button disabled={submitting}>
+<button className="btn-add-patient" disabled={submitting}>
 
 
 {
@@ -656,7 +654,9 @@ editId
 
 
 
-<table border="1" width="100%">
+<div className="patient-table-box">
+
+<table className="patient-table" width="100%">
 
 
 <thead>
@@ -721,7 +721,9 @@ filteredPatients.map(patient=>(
 
 <td>
 
+<span className={patient.gender === "Male" ? "badge-male" : "badge-female"}>
 {patient.gender}
+</span>
 
 </td>
 
@@ -740,7 +742,7 @@ filteredPatients.map(patient=>(
 
 
 <button
-
+className="btn-edit"
 onClick={()=>editPatient(patient)}
 
 >
@@ -754,7 +756,7 @@ onClick={()=>editPatient(patient)}
 
 
 <button
-
+className="btn-delete"
 onClick={()=>deletePatient(patient.patientId)}
 
 >
@@ -781,6 +783,8 @@ onClick={()=>deletePatient(patient.patientId)}
 
 
 </table>
+
+</div>
 
 
 

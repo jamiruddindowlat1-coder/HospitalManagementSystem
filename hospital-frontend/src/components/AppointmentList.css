@@ -1,175 +1,383 @@
+/* =====================================
+   Appointment Management Grid Style
+   ===================================== */
+
+
 .appointment-page{
 
-    padding:25px;
+padding:30px;
+
+min-height:100vh;
+
+background:linear-gradient(
+135deg,
+#f5f7fa,
+#e8ecf1
+);
+
+font-family:'Segoe UI',sans-serif;
 
 }
 
 
 
-.appointment-title{
+/* Header */
 
-    font-size:28px;
+.appointment-header-box{
 
-    font-weight:800;
+background:linear-gradient(
+135deg,
+#667eea,
+#764ba2
+);
 
-    color:#1e3a8a;
+padding:20px 30px;
 
-    margin-bottom:20px;
+border-radius:16px;
+
+color:white;
+
+text-align:center;
+
+box-shadow:0 8px 20px rgba(102,126,234,.35);
+
+margin-bottom:20px;
 
 }
+
+
+
+.appointment-header-box h2{
+
+margin:0;
+
+font-weight:700;
+
+}
+
+
+
+
+/* Count */
+
+.appointment-count-box{
+
+background:linear-gradient(
+135deg,
+#43cea2,
+#185a9d
+);
+
+color:white;
+
+display:inline-block;
+
+padding:14px 25px;
+
+border-radius:14px;
+
+font-size:20px;
+
+font-weight:bold;
+
+margin-bottom:20px;
+
+}
+
+
+
+
+
+
+/* Add Button */
+
+
+.btn-add-appointment{
+
+background:linear-gradient(
+135deg,
+#f7971e,
+#ffd200
+);
+
+color:#7a4a00;
+
+border:none;
+
+padding:10px 26px;
+
+border-radius:30px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+
+
+
+
+
+
+/* Form */
+
+.appointment-form{
+
+
+background:white;
+
+padding:25px;
+
+border-radius:16px;
+
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+margin-bottom:20px;
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:15px;
+
+
+}
+
+
+
+.appointment-form input,
+.appointment-form select{
+
+
+padding:10px;
+
+border-radius:8px;
+
+border:1px solid #ccc;
+
+}
+
+
+
+
 
 
 
 /* Table Box */
 
+
 .appointment-table-box{
 
-    background:white;
 
-    padding:20px;
+background:white;
 
-    border-radius:20px;
+border-radius:16px;
 
-    box-shadow:
+padding:20px;
 
-    0 10px 30px rgba(0,0,0,.10);
+box-shadow:0 10px 25px rgba(0,0,0,.08);
 
-    overflow:hidden;
 
 }
+
+
+
 
 
 
 /* Table */
 
+
 .appointment-table{
 
-    width:100%;
 
-    border-collapse:collapse;
+width:100%;
+
+border-collapse:separate;
+
+border-spacing:8px;
+
 
 }
+
 
 
 
 .appointment-table th{
 
 
-    background:
-
-    linear-gradient(
-        135deg,
-        #2563eb,
-        #7c3aed
-    );
+background:linear-gradient(
+135deg,
+#4568dc,
+#b06ab3
+);
 
 
-    color:white;
+color:white;
 
+padding:14px;
 
-    padding:15px;
+text-align:center;
 
+border-radius:10px;
 
-    text-align:left;
 
 }
+
+
 
 
 
 .appointment-table td{
 
 
-    padding:14px;
+padding:14px;
 
+text-align:center;
 
-    border-bottom:
+border-radius:12px;
 
-    1px solid #e5e7eb;
+border:1px solid #ddd;
 
-
-}
-
-
-
-.appointment-table tr:hover{
-
-
-    background:#eff6ff;
+box-shadow:0 4px 10px rgba(0,0,0,.08);
 
 
 }
 
 
 
-/* Status */
 
 
-.status-scheduled{
 
 
-    background:#dbeafe;
+/* Colorful Grid Rows */
 
-    color:#1d4ed8;
 
-    padding:6px 12px;
+.appointment-table tbody tr:nth-child(6n+1) td{
 
-    border-radius:20px;
+background:#fff5f5;
 
-    font-weight:600;
+}
+
+
+.appointment-table tbody tr:nth-child(6n+2) td{
+
+background:#f5faff;
+
+}
+
+
+.appointment-table tbody tr:nth-child(6n+3) td{
+
+background:#f5fff7;
+
+}
+
+
+.appointment-table tbody tr:nth-child(6n+4) td{
+
+background:#fffbf0;
+
+}
+
+
+.appointment-table tbody tr:nth-child(6n+5) td{
+
+background:#f9f5ff;
+
+}
+
+
+.appointment-table tbody tr:nth-child(6n+6) td{
+
+background:#f0fbff;
 
 }
 
 
 
-.status-completed{
 
 
-    background:#dcfce7;
+.appointment-table tbody tr:hover td{
 
-    color:#15803d;
+background:#ffe9a8 !important;
 
-    padding:6px 12px;
+transform:scale(1.02);
 
-    border-radius:20px;
-
-    font-weight:600;
-
+transition:.2s;
 
 }
 
 
 
-/* Action button */
 
 
-.action-btn{
+
+/* Buttons */
 
 
-    padding:8px 14px;
+.btn-edit{
 
+background:linear-gradient(
+135deg,
+#36d1dc,
+#5b86e5
+);
 
-    border:none;
+color:white;
 
+border:none;
 
-    border-radius:12px;
+padding:7px 15px;
 
+border-radius:20px;
 
-    background:#2563eb;
+cursor:pointer;
 
-
-    color:white;
-
-
-    cursor:pointer;
-
+margin-right:5px;
 
 }
 
 
-.action-btn:hover{
 
 
-    background:#7c3aed;
+.btn-delete{
 
+background:linear-gradient(
+135deg,
+#ff5f6d,
+#ffc371
+);
+
+color:white;
+
+border:none;
+
+padding:7px 15px;
+
+border-radius:20px;
+
+cursor:pointer;
+
+}
+
+
+
+
+
+.btn-save{
+
+background:#16a34a;
+
+color:white;
+
+border:none;
+
+padding:10px 25px;
+
+border-radius:20px;
+
+cursor:pointer;
 
 }

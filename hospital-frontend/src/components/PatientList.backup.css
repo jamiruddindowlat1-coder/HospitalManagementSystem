@@ -1,0 +1,178 @@
+/* ===================================================
+   Patient Management - Colorful Box Style CSS
+   =================================================== */
+
+.patient-page {
+  padding: 30px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ---------- Header Box ---------- */
+.patient-header-box {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 20px 30px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
+  text-align: center;
+}
+
+.patient-header-box h2 {
+  color: #fff;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+/* ---------- Total Count Box ---------- */
+.patient-count-box {
+  background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+  color: #fff;
+  border-radius: 14px;
+  padding: 14px 25px;
+  display: inline-block;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 16px rgba(24, 90, 157, 0.35);
+}
+
+/* ---------- Add Patient Button ---------- */
+.btn-add-patient {
+  background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+  color: #7a4a00;
+  border: none;
+  padding: 10px 26px;
+  border-radius: 30px;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(247, 151, 30, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-add-patient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 18px rgba(247, 151, 30, 0.5);
+}
+
+/* ---------- Search Box ---------- */
+.patient-search-box {
+  border: 2px solid #764ba2;
+  border-radius: 25px;
+  padding: 8px 18px;
+  width: 100%;
+  max-width: 400px;
+  margin: 15px auto;
+  display: block;
+  outline: none;
+  transition: box-shadow 0.2s ease;
+}
+
+.patient-search-box:focus {
+  box-shadow: 0 0 0 4px rgba(118, 75, 162, 0.2);
+}
+
+/* ---------- Table Container Box ---------- */
+.patient-table-box {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* ---------- Table ---------- */
+.patient-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 8px;
+  background: #f7f9ff;
+}
+
+.patient-table thead th {
+  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%);
+  color: #fff;
+  padding: 14px 10px;
+  font-weight: 700;
+  text-align: center;
+  border: none;
+}
+
+.patient-table tbody td {
+  padding: 15px;
+  text-align: center;
+  color: #333;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e0e6ff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  font-weight: 500;
+}
+
+/* Alternating colorful row backgrounds */
+.patient-table tbody tr:nth-child(6n+1) { background: #fff5f5; }
+.patient-table tbody tr:nth-child(6n+2) { background: #f5faff; }
+.patient-table tbody tr:nth-child(6n+3) { background: #f5fff7; }
+.patient-table tbody tr:nth-child(6n+4) { background: #fffbf0; }
+.patient-table tbody tr:nth-child(6n+5) { background: #f9f5ff; }
+.patient-table tbody tr:nth-child(6n+6) { background: #f0fbff; }
+
+.patient-table thead th:first-child {
+  border-radius:12px 0 0 12px;
+}
+
+.patient-table thead th:last-child {
+  border-radius:0 12px 12px 0;
+}
+
+/* ---------- Action Buttons ---------- */
+.btn-edit {
+  background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%);
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  margin-right: 6px;
+  box-shadow: 0 4px 10px rgba(91, 134, 229, 0.35);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.btn-edit:hover {
+  transform: translateY(-2px);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%);
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(255, 95, 109, 0.35);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.btn-delete:hover {
+  transform: translateY(-2px);
+}
+
+/* ---------- Gender Badge (optional nice touch) ---------- */
+.badge-male {
+  background: #4568dc;
+  color: #fff;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+
+.badge-female {
+  background: #e05292;
+  color: #fff;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}

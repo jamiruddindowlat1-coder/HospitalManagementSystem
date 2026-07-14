@@ -1,0 +1,318 @@
+/* ===================================================
+   Doctor Management - Clean Hospital Table Style
+   =================================================== */
+
+
+/* Full Page */
+
+.doctor-page{
+
+    min-height:100vh;
+
+    padding:30px;
+
+    background:linear-gradient(
+        135deg,
+        #e3f2fd,
+        #fff3e0,
+        #f3e5f5
+    );
+
+    font-family:Arial, Helvetica, sans-serif;
+
+}
+
+
+
+/* Header */
+
+.doctor-header-box{
+
+    background:linear-gradient(
+        135deg,
+        #1565c0,
+        #6a1b9a
+    );
+
+    color:white;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.2);
+
+}
+
+
+.doctor-header-box h2{
+
+    margin:0;
+
+    font-size:28px;
+
+}
+
+
+
+
+/* Count Box */
+
+.doctor-count-box{
+
+    display:inline-block;
+
+    background:#00897b;
+
+    color:white;
+
+    padding:12px 25px;
+
+    border-radius:8px;
+
+    font-weight:bold;
+
+    font-size:18px;
+
+    margin-bottom:20px;
+
+}
+
+
+
+
+/* Add Button */
+
+.btn-add-doctor{
+
+    background:#ff9800;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 25px;
+
+    border-radius:5px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+}
+
+
+.btn-add-doctor:hover{
+
+    background:#f57c00;
+
+}
+
+
+
+
+/* Search */
+
+.doctor-search-box{
+
+    width:300px;
+
+    padding:8px;
+
+    margin:20px auto;
+
+    display:block;
+
+    border:1px solid #777;
+
+    border-radius:4px;
+
+    font-size:16px;
+
+}
+
+
+
+
+/* Table Box */
+
+.doctor-table-box{
+
+    background:white;
+
+    padding:10px;
+
+    border-radius:10px;
+
+    box-shadow:
+    0 8px 25px rgba(0,0,0,.18);
+
+    overflow:auto;
+
+}
+
+
+
+
+/* Table */
+
+.doctor-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+
+
+
+/* Header */
+
+.doctor-table th{
+
+    background:#dbeafe;
+
+    color:#111;
+
+    border:1px solid #444;
+
+    padding:12px;
+
+    text-align:center;
+
+    font-size:17px;
+
+}
+
+
+
+
+/* Data */
+
+.doctor-table td{
+
+    border:1px solid #555;
+
+    padding:10px;
+
+    text-align:center;
+
+    font-size:16px;
+
+}
+
+
+
+
+/* Row */
+
+.doctor-table tbody tr:nth-child(even){
+
+    background:#fafafa;
+
+}
+
+
+.doctor-table tbody tr:nth-child(odd){
+
+    background:white;
+
+}
+
+
+.doctor-table tbody tr:hover{
+
+    background:#fff3cd;
+
+}
+
+
+
+
+/* Buttons */
+
+
+.btn-edit{
+
+    background:#607d8b;
+
+    color:white;
+
+    border:1px solid #333;
+
+    padding:5px 12px;
+
+    border-radius:4px;
+
+    cursor:pointer;
+
+}
+
+
+
+.btn-edit:hover{
+
+    background:#455a64;
+
+}
+
+
+
+.btn-delete{
+
+    background:#dc3545;
+
+    color:white;
+
+    border:1px solid #333;
+
+    padding:5px 12px;
+
+    border-radius:4px;
+
+    cursor:pointer;
+
+}
+
+
+.btn-delete:hover{
+
+    background:#b71c1c;
+
+}
+
+
+
+
+/* Form */
+
+.doctor-table-box input,
+.doctor-table-box select,
+.doctor-table-box textarea{
+
+
+    width:90%;
+
+    padding:8px;
+
+    margin:8px;
+
+    border:1px solid #999;
+
+    border-radius:4px;
+
+
+}
+
+
+
+.doctor-table-box textarea{
+
+    height:80px;
+
+}
