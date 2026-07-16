@@ -47,7 +47,7 @@ namespace HospitalManagement.API.Controllers
                     .ThenInclude(a => a!.Doctor)
 
                 .FirstOrDefaultAsync(
-                    m => m.RecordId == id
+                    m => m.MedicalRecordId == id
                 );
 
 
@@ -73,7 +73,7 @@ namespace HospitalManagement.API.Controllers
 
             return CreatedAtAction(
                 nameof(GetMedicalRecord),
-                new { id = record.RecordId },
+                new { id = record.MedicalRecordId },
                 record
             );
         }
@@ -87,7 +87,7 @@ namespace HospitalManagement.API.Controllers
             MedicalRecord record)
         {
 
-            if(id != record.RecordId)
+            if(id != record.MedicalRecordId)
                 return BadRequest();
 
 

@@ -142,7 +142,7 @@ namespace HospitalManagement.API.Controllers
                 .OrderByDescending(x => x.CreatedAt)
                 .Select(x => new
                 {
-                    recordId = x.RecordId,
+                    MedicalRecordId = x.MedicalRecordId,
                     appointmentId = x.AppointmentId,
                     patientName = x.Appointment != null && x.Appointment.Patient != null ? x.Appointment.Patient.FullName : "-",
                     doctorName = x.Appointment != null && x.Appointment.Doctor != null ? x.Appointment.Doctor.FullName : "-",

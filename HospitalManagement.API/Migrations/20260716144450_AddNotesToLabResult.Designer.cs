@@ -4,6 +4,7 @@ using HospitalManagement.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalManagement.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260716144450_AddNotesToLabResult")]
+    partial class AddNotesToLabResult
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,10 +182,7 @@ namespace HospitalManagement.API.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalAmount")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)")
-                        .HasComputedColumnSql("[ConsultationFee] + [RoomCharge] + [MedicineCharge] + [OtherCharges]");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("BillId");
 
@@ -192,7 +192,7 @@ namespace HospitalManagement.API.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Billing", (string)null);
+                    b.ToTable("Billings");
                 });
 
             modelBuilder.Entity("HospitalManagement.API.Models.Department", b =>
@@ -363,13 +363,16 @@ namespace HospitalManagement.API.Migrations
 
             modelBuilder.Entity("HospitalManagement.API.Models.MedicalRecord", b =>
                 {
-                    b.Property<int>("MedicalRecordId")
+                    b.Property<int>("RecordId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicalRecordId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecordId"));
 
                     b.Property<int>("AppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AppointmentId1")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -396,10 +399,13 @@ namespace HospitalManagement.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("MedicalRecordId");
+                    b.HasKey("RecordId");
 
-                    b.HasIndex("AppointmentId")
-                        .IsUnique();
+                    b.HasIndex("AppointmentId");
+
+                    b.HasIndex("AppointmentId1")
+                        .IsUnique()
+                        .HasFilter("[AppointmentId1] IS NOT NULL");
 
                     b.HasIndex("DoctorId");
 
@@ -728,13 +734,13 @@ namespace HospitalManagement.API.Migrations
                     b.HasOne("HospitalManagement.API.Models.LabTest", "LabTest")
                         .WithMany()
                         .HasForeignKey("LabTestId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HospitalManagement.API.Models.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("LabTest");
@@ -764,21 +770,25 @@ namespace HospitalManagement.API.Migrations
             modelBuilder.Entity("HospitalManagement.API.Models.MedicalRecord", b =>
                 {
                     b.HasOne("HospitalManagement.API.Models.Appointment", "Appointment")
-                        .WithOne("MedicalRecord")
-                        .HasForeignKey("HospitalManagement.API.Models.MedicalRecord", "AppointmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany()
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("HospitalManagement.API.Models.Appointment", null)
+                        .WithOne("MedicalRecord")
+                        .HasForeignKey("HospitalManagement.API.Models.MedicalRecord", "AppointmentId1");
 
                     b.HasOne("HospitalManagement.API.Models.Doctor", "Doctor")
                         .WithMany()
                         .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HospitalManagement.API.Models.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Appointment");

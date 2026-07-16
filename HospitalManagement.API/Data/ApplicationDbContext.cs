@@ -26,6 +26,7 @@ namespace HospitalManagement.API.Data
         public DbSet<Billing> Billings { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
+        public DbSet<LabResult> LabResults { get; set; }
 
 
 
@@ -44,7 +45,7 @@ modelBuilder.Entity<Nurse>()
 
 
             modelBuilder.Entity<MedicalRecord>()
-                .HasKey(x => x.RecordId);
+                .HasKey(x => x.MedicalRecordId);
 
 
 
