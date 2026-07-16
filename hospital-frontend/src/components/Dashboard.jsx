@@ -208,11 +208,9 @@ return(
 
 
 return(
-<div className="dashboard">
-
-<h2>🏥 Dashboard Overview</h2>
-
-<div className="card-grid">
+<div className="dashboard-dense">
+  <div className="dashboard-top-section">
+    <div className="card-grid">
 
 <StatCard title="Doctors" value={dashboard.doctors} icon={<FaUserDoctor/>} color="#2563eb" />
 <StatCard title="Patients" value={dashboard.patients} icon={<FaUsers/>} color="#16a34a" />
@@ -224,37 +222,23 @@ return(
 <StatCard title="Low Stock" value={dashboard.lowStock} icon={<FaTriangleExclamation/>} color="#ca8a04" />
 <StatCard title="Out Stock" value={dashboard.outStock} icon={<FaCircleXmark/>} color="#dc2626" />
 <StatCard title="Expiring Soon" value={dashboard.expiry} icon={<FaClock/>} color="#7c3aed" />
+    </div>
+  </div>
 
-</div>
+  <div className="charts-grid">
 
-{/* 💰 Billing Summary */}
-<h2>💰 Billing Summary</h2>
-<div className="card-grid">
-<StatCard title="Total Bills" value={dashboard.totalBills} icon={<FaFileInvoiceDollar/>} color="#2563eb" />
-<StatCard title="Paid Bills" value={dashboard.paidBills} icon={<FaCircleCheck/>} color="#15803d" />
-<StatCard title="Pending Bills" value={dashboard.pendingBills} icon={<FaHourglassHalf/>} color="#ca8a04" />
-<StatCard title="Total Revenue" value={`৳${dashboard.totalRevenue.toLocaleString()}`} icon={<FaMoneyBillWave/>} color="#16a34a" />
-</div>
+    <DashboardChart data={chartData} />
+    <AppointmentChart data={dashboard.appointmentStatus} />
+    <MonthlyRevenueChart data={chartsData.monthlyRevenue} />
+    <PatientGrowthChart data={chartsData.patientGrowth} />
+    <DepartmentDoctorsChart data={chartsData.doctorsByDepartment} />
+    <MedicineStockChart data={chartsData.medicineStock} />
+    <RoomOccupancyChart data={chartsData.roomOccupancy} />
+  </div>
 
-{/* 🛏 Room Summary */}
-<h2>🛏 Room Summary</h2>
-<div className="card-grid">
-<StatCard title="Total Rooms" value={dashboard.totalRooms} icon={<FaBed/>} color="#2563eb" />
-<StatCard title="Occupied Rooms" value={dashboard.occupiedRooms} icon={<FaDoorClosed/>} color="#dc2626" />
-<StatCard title="Available Rooms" value={dashboard.availableRooms} icon={<FaDoorOpen/>} color="#15803d" />
-</div>
-
-<DashboardChart data={chartData} />
-<AppointmentChart data={dashboard.appointmentStatus} />
-
-<MonthlyRevenueChart data={chartsData.monthlyRevenue} />
-<PatientGrowthChart data={chartsData.patientGrowth} />
-<DepartmentDoctorsChart data={chartsData.doctorsByDepartment} />
-<MedicineStockChart data={chartsData.medicineStock} />
-<RoomOccupancyChart data={chartsData.roomOccupancy} />
-
-{/* 📅 Today's Appointments */}
-<h2>📅 Today's Appointments</h2>
+  <div className="lists-grid">
+    <div className="list-wrapper">
+      <h4>📅 Today's Appointments</h4>
 <div className="list-panel">
 {dashboard.todaysAppointments.length === 0 ? (
 <p className="empty-text">No appointments scheduled for today.</p>
@@ -280,11 +264,11 @@ return(
 </tbody>
 </table>
 )}
-</div>
-
-{/* 🚨 Emergency Patients */}
-<h2>🚨 Emergency Patients</h2>
-<div className="list-panel">
+    </div>
+    </div>
+    <div className="list-wrapper">
+      <h4>🚨 Emergency Patients</h4>
+      <div className="list-panel">
 {dashboard.emergencyPatients.length === 0 ? (
 <p className="empty-text">No emergency patients currently admitted.</p>
 ) : (
@@ -307,11 +291,11 @@ return(
 </tbody>
 </table>
 )}
-</div>
-
-{/* 📢 Recent Admissions */}
-<h2>📢 Recent Admissions</h2>
-<div className="list-panel">
+    </div>
+    </div>
+    <div className="list-wrapper">
+      <h4>📢 Recent Admissions</h4>
+      <div className="list-panel">
 {dashboard.recentAdmissions.length === 0 ? (
 <p className="empty-text">No recent admissions.</p>
 ) : (
@@ -336,11 +320,11 @@ return(
 </tbody>
 </table>
 )}
-</div>
-
-{/* 🕒 Recent Activities */}
-<h2><FaClock style={{marginRight:8}}/>Recent Activities</h2>
-<div className="list-panel">
+    </div>
+    </div>
+    <div className="list-wrapper">
+      <h4><FaClock style={{marginRight:8}}/>Recent Activities</h4>
+      <div className="list-panel">
 {recentActivities.length === 0 ? (
 <p className="empty-text">No recent activity recorded.</p>
 ) : (
@@ -367,8 +351,9 @@ return(
 </tbody>
 </table>
 )}
-</div>
-
+      </div>
+    </div>
+  </div>
 </div>
 );
 }

@@ -12,7 +12,10 @@ import BillingList from "./components/BillingList";
 import MedicalRecordList from "./components/MedicalRecordList";
 import Medicine from "./components/Medicine";
 import ActivityLogPage from "./components/ActivityLogPage";
-
+import DepartmentList from "./components/DepartmentList";
+import NurseList from "./components/NurseList";
+import Reports from "./components/Reports";
+import UserManagement from "./components/UserManagement";
 import { isAuthenticated, removeToken } from "./services/auth";
 import api from "./services/api";
 
@@ -125,9 +128,13 @@ function App() {
       <Route path="/appointments" element={wrap(AppointmentList)} />
       <Route path="/admissions" element={wrap(AdmissionList)} />
       <Route path="/billing" element={wrap(BillingList)} />
-      <Route path="/records" element={wrap(MedicalRecordList)} />
+     <Route path="/medical-records" element={wrap(MedicalRecordList)} />
       <Route path="/medicines" element={wrap(Medicine)} />
-      <Route path="/activity-log" element={wrap(ActivityLogPage)} />
+      <Route path="/departments" element={wrap(DepartmentList)} />
+      <Route path="/nurses" element={wrap(NurseList)} />
+      <Route path="/reports" element={wrap(Reports)} />
+      <Route path="/users" element={wrap(UserManagement)} />
+      <Route path="/activity-logs" element={wrap(ActivityLogPage)} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

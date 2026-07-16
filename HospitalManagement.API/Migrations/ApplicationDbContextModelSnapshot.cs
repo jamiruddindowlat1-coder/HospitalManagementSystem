@@ -153,12 +153,15 @@ namespace HospitalManagement.API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("ConsultationFee")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("MedicineCharge")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("OtherCharges")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("PatientId")
@@ -169,10 +172,12 @@ namespace HospitalManagement.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("RoomCharge")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalAmount")
                         .ValueGeneratedOnAddOrUpdate()
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)")
                         .HasComputedColumnSql("[ConsultationFee] + [RoomCharge] + [MedicineCharge] + [OtherCharges]");
 
@@ -219,6 +224,7 @@ namespace HospitalManagement.API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DoctorId"));
 
                     b.Property<decimal>("ConsultationFee")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -263,6 +269,56 @@ namespace HospitalManagement.API.Migrations
                         .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Doctors");
+                });
+
+            modelBuilder.Entity("HospitalManagement.API.Models.LabTest", b =>
+                {
+                    b.Property<int>("LabTestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LabTestId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OrderedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Result")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ResultDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TestName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TestType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LabTestId");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("LabTests");
                 });
 
             modelBuilder.Entity("HospitalManagement.API.Models.MedicalRecord", b =>
@@ -329,11 +385,51 @@ namespace HospitalManagement.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("MedicineId");
 
                     b.ToTable("Medicines");
+                });
+
+            modelBuilder.Entity("HospitalManagement.API.Models.Nurse", b =>
+                {
+                    b.Property<int>("NurseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NurseId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Shift")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("NurseId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("Nurses");
                 });
 
             modelBuilder.Entity("HospitalManagement.API.Models.Patient", b =>
@@ -424,6 +520,7 @@ namespace HospitalManagement.API.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("PricePerDay")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("RoomNumber")
@@ -558,7 +655,7 @@ namespace HospitalManagement.API.Migrations
                     b.HasOne("HospitalManagement.API.Models.Department", "Department")
                         .WithMany("Doctors")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HospitalManagement.API.Models.User", "User")
@@ -570,6 +667,25 @@ namespace HospitalManagement.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HospitalManagement.API.Models.LabTest", b =>
+                {
+                    b.HasOne("HospitalManagement.API.Models.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HospitalManagement.API.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("HospitalManagement.API.Models.MedicalRecord", b =>
                 {
                     b.HasOne("HospitalManagement.API.Models.Appointment", "Appointment")
@@ -579,6 +695,17 @@ namespace HospitalManagement.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Appointment");
+                });
+
+            modelBuilder.Entity("HospitalManagement.API.Models.Nurse", b =>
+                {
+                    b.HasOne("HospitalManagement.API.Models.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("HospitalManagement.API.Models.Patient", b =>

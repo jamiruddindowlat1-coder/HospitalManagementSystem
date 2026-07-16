@@ -1,235 +1,314 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import "./SharedList.css";
 
 
 function AdmissionList() {
 
-  const [admissions, setAdmissions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
-  const [form, setForm] = useState({
-    patientId: "",
-    roomId: "",
-    doctorId: "",
-    admissionDate: "",
-    dischargeDate: "",
-    status: "Active",
-  });
+const [admissions,setAdmissions]=useState([]);
+const [loading,setLoading]=useState(true);
+const [error,setError]=useState("");
 
-  const [editingId, setEditingId] = useState(null);
 
 
+const [form,setForm]=useState({
 
-  const fetchAdmissions = async () => {
+ patientId:"",
+ roomId:"",
+ doctorId:"",
+ admissionDate:"",
+ dischargeDate:"",
+ status:"Active"
 
-    try {
+});
 
-      setLoading(true);
 
-      const res = await api.get("/admissions");
 
-      console.log("Admissions Response:", res.data);
+const [editingId,setEditingId]=useState(null);
 
-      setAdmissions(res.data);
 
-    }
-    catch(err){
 
-      console.error(err);
 
-      setError("Admission লোড করতে সমস্যা হয়েছে।");
 
-    }
-    finally{
+const fetchAdmissions=async()=>{
 
-      setLoading(false);
+try{
 
-    }
+setLoading(true);
 
-  };
+const res=await api.get("/admissions");
 
+console.log(res.data);
 
+setAdmissions(res.data || []);
 
-  useEffect(()=>{
+}
 
-    fetchAdmissions();
+catch(err){
 
-  },[]);
+console.log(err);
 
+setError("Admission load করতে সমস্যা হয়েছে");
 
+}
 
-  const handleChange = (e)=>{
+finally{
 
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
+setLoading(false);
 
-  };
+}
 
+};
 
 
-  const resetForm = ()=>{
 
-    setForm({
-      patientId:"",
-      roomId:"",
-      doctorId:"",
-      admissionDate:"",
-      dischargeDate:"",
-      status:"Active"
-    });
 
-    setEditingId(null);
+useEffect(()=>{
 
-  };
+fetchAdmissions();
 
+},[]);
 
 
-  const handleSubmit = async(e)=>{
 
-    e.preventDefault();
 
 
-    const payload={
+const handleChange=(e)=>{
 
-      patientId:Number(form.patientId),
-      roomId:Number(form.roomId),
-      doctorId:Number(form.doctorId),
-      admissionDate:
-        form.admissionDate ||
-        new Date().toISOString(),
+setForm({
 
-      dischargeDate:
-        form.dischargeDate || null,
+...form,
 
-      status:form.status
+[e.target.name]:e.target.value
 
-    };
+});
 
+};
 
-    try{
 
 
-      if(editingId){
 
-        await api.put(
-          `/admissions/${editingId}`,
-          {
-            ...payload,
-            admissionId:editingId
-          }
-        );
 
-        alert("Admission আপডেট হয়েছে");
+const resetForm=()=>{
 
-      }
-      else{
+setForm({
 
-        await api.post(
-          "/admissions",
-          payload
-        );
+patientId:"",
+roomId:"",
+doctorId:"",
+admissionDate:"",
+dischargeDate:"",
+status:"Active"
 
-        alert("Admission যোগ হয়েছে");
+});
 
-      }
+setEditingId(null);
 
+};
 
-      resetForm();
 
-      fetchAdmissions();
 
 
-    }
-    catch(err){
 
-      alert(
-        "সমস্যা হয়েছে: "+
-        err.message
-      );
 
-    }
+const handleSubmit=async(e)=>{
 
+e.preventDefault();
 
-  };
 
+const data={
 
+patientId:Number(form.patientId),
 
-  const editAdmission=(a)=>{
+roomId:Number(form.roomId),
 
+doctorId:Number(form.doctorId),
 
-    setEditingId(a.admissionId);
+admissionDate:
+form.admissionDate || new Date().toISOString(),
 
+dischargeDate:
+form.dischargeDate || null,
 
-    setForm({
+status:form.status
 
-      patientId:a.patientId,
-      roomId:a.roomId,
-      doctorId:a.doctorId,
+};
 
-      admissionDate:
-        a.admissionDate
-        ?
-        a.admissionDate.substring(0,16)
-        :
-        "",
 
-      dischargeDate:
-        a.dischargeDate
-        ?
-        a.dischargeDate.substring(0,16)
-        :
-        "",
 
-      status:a.status || "Active"
+try{
 
-    });
 
+if(editingId){
 
-  };
+await api.put(
 
+`/admissions/${editingId}`,
 
+{
+...data,
+admissionId:editingId
+}
 
-  const deleteAdmission=async(id)=>{
+);
 
+alert("Admission Updated");
 
-    if(!window.confirm("Admission Delete করবেন?"))
-      return;
 
+}
 
-    try{
+else{
 
-      await api.delete(`/admissions/${id}`);
 
-      fetchAdmissions();
+await api.post(
 
-    }
-    catch(err){
+"/admissions",
 
-      alert(err.message);
+data
 
-    }
+);
 
-  };
 
+alert("Admission Added");
 
 
-  return (
+}
 
-<div style={{padding:"20px"}}>
 
+
+resetForm();
+
+fetchAdmissions();
+
+
+}
+
+catch(err){
+
+console.log(err);
+
+alert(
+"Error: "+err.message
+);
+
+}
+
+
+};
+
+
+
+
+
+
+
+const editAdmission=(a)=>{
+
+
+setEditingId(a.admissionId);
+
+
+setForm({
+
+patientId:a.patientId || "",
+
+roomId:a.roomId || "",
+
+doctorId:a.doctorId || "",
+
+
+admissionDate:
+a.admissionDate
+?
+a.admissionDate.substring(0,16)
+:
+"",
+
+
+dischargeDate:
+a.dischargeDate
+?
+a.dischargeDate.substring(0,16)
+:
+"",
+
+
+status:a.status || "Active"
+
+
+});
+
+
+};
+
+
+
+
+
+
+const deleteAdmission=async(id)=>{
+
+
+if(!window.confirm("Delete Admission?"))
+return;
+
+
+
+try{
+
+
+await api.delete(`/admissions/${id}`);
+
+
+fetchAdmissions();
+
+
+}
+
+catch(err){
+
+alert(err.message);
+
+}
+
+
+};
+
+
+
+
+
+
+
+return (
+
+<div className="page-container">
+
+
+<div className="header-box">
 
 <h2>
 🏥 Admission Management
 </h2>
 
+</div>
+
+
+
+<div className="count-box">
+
+Total Admissions: {admissions.length}
+
+</div>
+
+
+
 
 
 <form
 onSubmit={handleSubmit}
-style={formStyle}
+className="table-container"
 >
 
 
@@ -238,8 +317,8 @@ name="patientId"
 placeholder="Patient ID"
 value={form.patientId}
 onChange={handleChange}
-style={inputStyle}
 />
+
 
 
 <input
@@ -247,8 +326,9 @@ name="roomId"
 placeholder="Room ID"
 value={form.roomId}
 onChange={handleChange}
-style={inputStyle}
 />
+
+
 
 
 <input
@@ -256,8 +336,8 @@ name="doctorId"
 placeholder="Doctor ID"
 value={form.doctorId}
 onChange={handleChange}
-style={inputStyle}
 />
+
 
 
 
@@ -266,7 +346,6 @@ type="datetime-local"
 name="admissionDate"
 value={form.admissionDate}
 onChange={handleChange}
-style={inputStyle}
 />
 
 
@@ -276,8 +355,9 @@ type="datetime-local"
 name="dischargeDate"
 value={form.dischargeDate}
 onChange={handleChange}
-style={inputStyle}
 />
+
+
 
 
 
@@ -285,18 +365,17 @@ style={inputStyle}
 name="status"
 value={form.status}
 onChange={handleChange}
-style={inputStyle}
 >
 
-<option value="Active">
+<option>
 Active
 </option>
 
-<option value="Discharged">
+<option>
 Discharged
 </option>
 
-<option value="Pending">
+<option>
 Pending
 </option>
 
@@ -304,30 +383,57 @@ Pending
 </select>
 
 
-<button style={btnStyle}>
+
+
+
+<button className="btn-add">
+
 {
 editingId
 ?
-"Update"
+"Update Admission"
 :
-"Add Admission"
+"Save Admission"
 }
+
+
 </button>
+
+
+
+
+{
+editingId &&
+<button
+type="button"
+className="btn-delete"
+onClick={resetForm}
+>
+
+Cancel
+
+</button>
+}
+
 
 
 </form>
 
 
 
-<h2>
-📋 Admission List
-</h2>
 
+
+
+
+
+<div className="table-container">
 
 
 {
 loading &&
-<p>Loading...</p>
+<p>
+Loading...
+</p>
 }
 
 
@@ -341,7 +447,9 @@ error &&
 
 
 
-<table style={tableStyle}>
+
+
+<table className="data-table">
 
 
 <thead>
@@ -349,16 +457,24 @@ error &&
 <tr>
 
 <th>ID</th>
+
 <th>Patient</th>
+
 <th>Room</th>
+
 <th>Doctor</th>
+
 <th>Date</th>
+
 <th>Status</th>
+
 <th>Action</th>
+
 
 </tr>
 
 </thead>
+
 
 
 
@@ -368,6 +484,7 @@ error &&
 {
 admissions.map(a=>(
 
+
 <tr key={a.admissionId}>
 
 
@@ -376,58 +493,117 @@ admissions.map(a=>(
 </td>
 
 
-<td>
-{a.patientName || "-"}
-</td>
-
 
 <td>
-{a.roomNumber || "-"}
-</td>
 
-
-<td>
-{a.doctorName || "-"}
-</td>
-
-
-<td>
 {
-new Date(
-a.admissionDate
-)
-.toLocaleDateString()
+a.patient?.fullName
+||
+"-"
+
 }
+
 </td>
 
 
+
+
 <td>
+
+{
+a.room?.roomNumber
+||
+"-"
+
+}
+
+</td>
+
+
+
+
+<td>
+
+{
+a.doctor?.fullName
+||
+"-"
+
+}
+
+</td>
+
+
+
+
+
+<td>
+
+{
+a.admissionDate
+?
+new Date(a.admissionDate)
+.toLocaleDateString()
+:
+"-"
+
+}
+
+</td>
+
+
+
+
+
+<td>
+
 {a.status}
+
 </td>
+
+
 
 
 <td>
 
+
 <button
+
+className="btn-edit"
+
 onClick={()=>editAdmission(a)}
+
 >
-✏️
+
+✏️ Edit
+
 </button>
 
 
+
+
 <button
+
+className="btn-delete"
+
 onClick={()=>deleteAdmission(a.admissionId)}
+
 >
-🗑️
+
+🗑 Delete
+
 </button>
 
 
 </td>
+
 
 
 </tr>
 
+
 ))
+
 }
 
 
@@ -437,50 +613,17 @@ onClick={()=>deleteAdmission(a.admissionId)}
 </table>
 
 
+
 </div>
+
+
+</div>
+
 
 );
 
+
 }
-
-
-
-const formStyle={
-
-display:"grid",
-gap:"10px",
-maxWidth:"500px"
-
-};
-
-
-const inputStyle={
-
-padding:"10px",
-border:"1px solid #ccc",
-borderRadius:"5px"
-
-};
-
-
-const btnStyle={
-
-padding:"10px",
-background:"#007bff",
-color:"white",
-border:"none",
-cursor:"pointer"
-
-};
-
-
-const tableStyle={
-
-width:"100%",
-borderCollapse:"collapse",
-marginTop:"20px"
-
-};
 
 
 

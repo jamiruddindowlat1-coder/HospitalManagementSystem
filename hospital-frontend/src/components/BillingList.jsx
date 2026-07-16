@@ -1,5 +1,6 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from '../services/api';
+import "./SharedList.css";
 
 function BillingList() {
 
@@ -346,100 +347,47 @@ function BillingList() {
 
   };
   return (
-  <div className="data-card">
-
-    <div
-      style={{
-        display:'flex',
-        justifyContent:'space-between',
-        alignItems:'center',
-        marginBottom:'1rem'
-      }}
-    >
-
+  <div className="page-container">
+    <div className="header-box">
       <h2>বিলিং রিপোর্ট</h2>
-
-
-      <div style={{display:'flex',gap:'0.5rem'}}>
-
-        <button
-
-          onClick={()=>{
-
-            setShowForm(!showForm);
-
-            if(showForm)
-              resetForm();
-
-          }}
-
-          style={{
-            padding:'0.5rem 1rem',
-            background:'#2563eb',
-            color:'#fff',
-            border:'none',
-            borderRadius:'6px',
-            cursor:'pointer'
-          }}
-
-        >
-
-          {
-            showForm
-            ?
-            '✕ বাতিল'
-            :
-            '+ নতুন বিল'
-          }
-
-        </button>
-
-
-
-        <button
-
-          onClick={handlePrint}
-
-          style={{
-            padding:'0.5rem 1rem',
-            background:'#64748b',
-            color:'#fff',
-            border:'none',
-            borderRadius:'6px',
-            cursor:'pointer'
-          }}
-
-        >
-          Print
-        </button>
-
-
-      </div>
-
-
     </div>
 
+    <div className="count-box">
+      Total Bills: {bills.length}
+    </div>
 
-
-
+    <div style={{textAlign: "center"}}>
+      <button
+        className="btn-add"
+        onClick={() => {
+          setShowForm(!showForm);
+          if (showForm) resetForm();
+        }}
+      >
+        {showForm ? '✕ বাতিল' : '➕ নতুন বিল'}
+      </button>
+      &nbsp;
+      <button
+        className="btn-add"
+        onClick={handlePrint}
+        style={{background: '#64748b', boxShadow: 'none'}}
+      >
+        Print
+      </button>
+    </div>
 
     {
       showForm && (
 
       <form
-
         onSubmit={handleSubmit}
-
+        className="table-container"
         style={{
-          background:'#f8fafc',
-          padding:'1rem',
-          borderRadius:'8px',
-          marginBottom:'1.5rem',
-          display:'grid',
-          gridTemplateColumns:'1fr 1fr',
-          gap:'0.75rem'
+          padding: '25px',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '15px'
         }}
-
       >
 
 
@@ -744,24 +692,11 @@ function BillingList() {
           style={{
             gridColumn:'1/-1',
             textAlign:'right'
-          }}
-        >
-
+          }}>
           <button
-
             type="submit"
-
+            className="btn-add"
             disabled={submitting}
-
-            style={{
-              padding:'0.5rem 1.5rem',
-              background:'#16a34a',
-              color:'#fff',
-              border:'none',
-              borderRadius:'6px',
-              cursor:'pointer'
-            }}
-
           >
 
             {
@@ -794,7 +729,8 @@ function BillingList() {
 
 
 
-    <table>
+    <div className="table-container">
+    <table className="data-table">
 
       <thead>
 
@@ -857,63 +793,30 @@ function BillingList() {
 
 
             <td>
-
-
               <button
-
+                className="btn-edit"
                 onClick={()=>handleEdit(bill)}
-
-                style={{
-                  background:'#2563eb',
-                  color:'#fff',
-                  border:'none',
-                  padding:'5px 10px',
-                  borderRadius:'4px',
-                  marginRight:'5px',
-                  cursor:'pointer'
-                }}
-
               >
                 Edit
               </button>
 
-
-
-
               <button
-
+                className="btn-delete"
                 onClick={()=>handleDelete(bill.billId)}
-
-                style={{
-                  background:'#dc2626',
-                  color:'#fff',
-                  border:'none',
-                  padding:'5px 10px',
-                  borderRadius:'4px',
-                  cursor:'pointer'
-                }}
-
               >
                 Delete
               </button>
-
-
-
             </td>
 
-
           </tr>
-
 
         ))
       }
 
-
       </tbody>
 
-
     </table>
-
+    </div>
 
   </div>
 );

@@ -1,6 +1,6 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../services/api";
-import "./AppointmentList.css";
+import "./SharedList.css";
 
 
 function AppointmentList(){
@@ -290,11 +290,11 @@ return <h3>Loading...</h3>;
 return(
 
 
-<div className="appointment-page">
+<div className="page-container">
 
 
 
-<div className="appointment-header-box">
+<div className="header-box">
 
 <h2>
 📅 Appointment Management
@@ -306,7 +306,7 @@ return(
 
 
 
-<div className="appointment-count-box">
+<div className="count-box">
 
 Total Appointment : {appointments.length}
 
@@ -321,7 +321,7 @@ Total Appointment : {appointments.length}
 
 <button
 
-className="btn-add-appointment"
+className="btn-add"
 
 onClick={()=>{
 
@@ -379,7 +379,7 @@ showForm &&
 
 <form
 
-className="appointment-form"
+className="table-container"
 
 onSubmit={saveAppointment}
 
@@ -561,7 +561,7 @@ Cancelled
 
 <button
 
-className="btn-save"
+className="btn-add"
 
 disabled={submitting}
 
@@ -597,10 +597,10 @@ editingId
 
 
 
-<div className="appointment-table-box">
+<div className="table-container">
 
 
-<table className="appointment-table">
+<table className="data-table">
 
 
 <thead>

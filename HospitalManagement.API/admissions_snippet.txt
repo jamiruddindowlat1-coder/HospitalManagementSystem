@@ -1,0 +1,45 @@
+﻿
+            var result = admissions.Select(a => new AdmissionResponseDto
+            {
+                AdmissionId = a.AdmissionId,
+                PatientId = a.PatientId,
+                PatientName = a.Patient.FullName,
+                RoomId = a.RoomId,
+                RoomNumber = a.Room.RoomNumber,
+                DoctorId = a.DoctorId,
+                DoctorName = a.Doctor.FullName,
+                AdmissionDate = a.AdmissionDate,
+                DischargeDate = a.DischargeDate,
+                Status = a.Status
+            });
+
+            return Ok(result);
+        }
+
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AdmissionResponseDto>> GetAdmission(int id)
+        {
+            var a = await _context.Admissions
+                .Include(x => x.Patient)
+                .Include(x => x.Room)
+                .Include(x => x.Doctor)
+                .FirstOrDefaultAsync(x => x.AdmissionId == id);
+
+            if (a == null)
+                return NotFound();
+
+            var result = new AdmissionResponseDto
+            {
+                AdmissionId = a.AdmissionId,
+                PatientId = a.PatientId,
+                PatientName = a.Patient.FullName,
+                RoomId = a.RoomId,
+                RoomNumber = a.Room.RoomNumber,
+                DoctorId = a.DoctorId,
+                DoctorName = a.Doctor.FullName,
+                AdmissionDate = a.AdmissionDate,
+                DischargeDate = a.DischargeDate,
+                Status = a.Status
+            };
+

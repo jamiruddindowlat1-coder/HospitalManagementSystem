@@ -37,11 +37,11 @@ namespace HospitalManagement.API.Controllers
             {
                 AdmissionId = a.AdmissionId,
                 PatientId = a.PatientId,
-                PatientName = a.Patient.FullName,
+                PatientName = a.Patient!.FullName,
                 RoomId = a.RoomId,
-                RoomNumber = a.Room.RoomNumber,
+               RoomNumber = a.Room!.RoomNumber,
                 DoctorId = a.DoctorId,
-                DoctorName = a.Doctor.FullName,
+                DoctorName = a.Doctor!.FullName,
                 AdmissionDate = a.AdmissionDate,
                 DischargeDate = a.DischargeDate,
                 Status = a.Status
@@ -67,11 +67,11 @@ namespace HospitalManagement.API.Controllers
             {
                 AdmissionId = a.AdmissionId,
                 PatientId = a.PatientId,
-                PatientName = a.Patient.FullName,
+                PatientName = a.Patient!.FullName,
                 RoomId = a.RoomId,
-                RoomNumber = a.Room.RoomNumber,
+               RoomNumber = a.Room!.RoomNumber,
                 DoctorId = a.DoctorId,
-                DoctorName = a.Doctor.FullName,
+                DoctorName = a.Doctor!.FullName,
                 AdmissionDate = a.AdmissionDate,
                 DischargeDate = a.DischargeDate,
                 Status = a.Status

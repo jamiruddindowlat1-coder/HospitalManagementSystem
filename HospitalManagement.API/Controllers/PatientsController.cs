@@ -85,23 +85,32 @@ namespace HospitalManagement.API.Controllers
 
             return NoContent();
         }
-
-        // DELETE: api/patients/5
+// DELETE: api/patients/5
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePatient(int id)
         {
             var patient = await _context.Patients.FindAsync(id);
             if (patient == null)
-            {
                 return NotFound();
+
+            bool hasAppointments = await _context.Appointments.AnyAsync(a => a.PatientId == id);
+            if (hasAppointments)
+            {
+                return BadRequest(new { message = "এই Patient-এর সাথে Appointment record যুক্ত আছে, তাই delete করা যাবে না। আগে সংশ্লিষ্ট Appointment(গুলো) মুছুন বা reassign করুন।" });
             }
-            _context.Patients.Remove(patient);
-            await _context.SaveChangesAsync();
 
-            await _activityLog.LogAsync("Deleted", "Patient", $"Patient {patient.FullName} deleted", User.GetUserId());
-
-            return NoContent();
+            try
+            {
+                _context.Patients.Remove(patient);
+                await _context.SaveChangesAsync();
+                await _activityLog.LogAsync("Deleted", "Patient", $"Patient {patient.FullName} deleted", User.GetUserId());
+                return NoContent();
+            }
+            catch (DbUpdateException)
+            {
+                return BadRequest(new { message = "এই Patient-এর সাথে অন্য কোনো record যুক্ত থাকায় delete করা সম্ভব হয়নি।" });
+            }
         }
     }
 }

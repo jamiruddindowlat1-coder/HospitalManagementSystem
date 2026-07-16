@@ -1,0 +1,45 @@
+﻿            var todaysAppointments = await _context.Appointments
+                .Include(a => a.Patient)
+                .Include(a => a.Doctor)
+                .Where(a => a.AppointmentDate.Date == today)
+                .Select(a => new
+                {
+                    a.AppointmentId,
+                    PatientName = a.Patient.FullName,
+                    DoctorName = a.Doctor.FullName,
+                    a.AppointmentDate,
+                    a.AppointmentTime,
+                    a.Status
+                })
+                .ToListAsync();
+
+            var recentAdmissions = await _context.Admissions
+                .Include(a => a.Patient)
+                .Include(a => a.Room)
+                .OrderByDescending(a => a.AdmissionDate)
+                .Take(5)
+                .Select(a => new
+                {
+                    a.AdmissionId,
+                    PatientName = a.Patient.FullName,
+                    RoomNumber = a.Room.RoomNumber,
+                    a.AdmissionDate,
+                    a.Status
+                })
+                .ToListAsync();
+
+            var emergencyPatients = await _context.Admissions
+                .Include(a => a.Patient)
+                .Include(a => a.Room)
+                .Where(a => a.IsEmergency && a.Status == "Admitted")
+                .Select(a => new
+                {
+                    a.AdmissionId,
+                    PatientName = a.Patient.FullName,
+                    RoomNumber = a.Room.RoomNumber,
+                    a.AdmissionDate
+                })
+                .ToListAsync();
+
+            var result = new
+            {

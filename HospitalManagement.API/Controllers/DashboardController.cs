@@ -34,8 +34,8 @@ namespace HospitalManagement.API.Controllers
                 .Select(a => new
                 {
                     a.AppointmentId,
-                    PatientName = a.Patient.FullName,
-                    DoctorName = a.Doctor.FullName,
+                    PatientName =  a.Patient!.FullName,
+                    DoctorName = a.Doctor!.FullName,
                     a.AppointmentDate,
                     a.AppointmentTime,
                     a.Status
@@ -50,8 +50,8 @@ namespace HospitalManagement.API.Controllers
                 .Select(a => new
                 {
                     a.AdmissionId,
-                    PatientName = a.Patient.FullName,
-                    RoomNumber = a.Room.RoomNumber,
+                    PatientName =  a.Patient!.FullName,
+                    RoomNumber = a.Room!.RoomNumber,
                     a.AdmissionDate,
                     a.Status
                 })
@@ -64,8 +64,8 @@ namespace HospitalManagement.API.Controllers
                 .Select(a => new
                 {
                     a.AdmissionId,
-                    PatientName = a.Patient.FullName,
-                    RoomNumber = a.Room.RoomNumber,
+                    PatientName =  a.Patient!.FullName,
+                    RoomNumber = a.Room!.RoomNumber,
                     a.AdmissionDate
                 })
                 .ToListAsync();

@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using HospitalManagement.API.Data;
+﻿using HospitalManagement.API.Data;
 using HospitalManagement.API.Models;
 using Microsoft.AspNetCore.Authorization;
-
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 namespace HospitalManagement.API.Controllers
 {
     [Route("api/[controller]")]
@@ -11,55 +10,213 @@ namespace HospitalManagement.API.Controllers
     [Authorize]
     public class DepartmentsController : ControllerBase
     {
+
         private readonly ApplicationDbContext _context;
+
 
         public DepartmentsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
+
+
+        // GET ALL
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
+        public async Task<IActionResult> GetDepartments()
         {
-            return await _context.Departments.ToListAsync();
+
+            var departments = await _context.Departments
+                .Include(d => d.Doctors)
+                .Select(d => new
+                {
+                    departmentId = d.DepartmentId,
+
+                    departmentName = d.DepartmentName,
+
+                    description = d.Description,
+
+                    createdAt = d.CreatedAt,
+
+
+                    doctors = d.Doctors.Select(doc => new
+                    {
+                        doctorId = doc.DoctorId,
+
+                        fullName = doc.FullName,
+
+                        specialization = doc.Specialization
+
+                    }).ToList()
+
+                })
+                .ToListAsync();
+
+
+            return Ok(departments);
+
         }
+
+
+
+
+
+        // GET BY ID
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Department>> GetDepartment(int id)
+        public async Task<IActionResult> GetDepartment(int id)
         {
-            var department = await _context.Departments.FindAsync(id);
-            if (department == null) return NotFound();
-            return department;
+
+            var department = await _context.Departments
+                .Include(d => d.Doctors)
+                .Where(d => d.DepartmentId == id)
+                .Select(d => new
+                {
+                    departmentId = d.DepartmentId,
+
+                    departmentName = d.DepartmentName,
+
+                    description = d.Description,
+
+                    createdAt = d.CreatedAt,
+
+
+                    doctors = d.Doctors.Select(doc => new
+                    {
+                        doctorId = doc.DoctorId,
+
+                        fullName = doc.FullName,
+
+                        specialization = doc.Specialization
+
+                    }).ToList()
+
+                })
+                .FirstOrDefaultAsync();
+
+
+
+            if (department == null)
+            {
+                return NotFound();
+            }
+
+
+            return Ok(department);
+
         }
 
-        [Authorize(Roles = "Admin")]
+
+
+
+
+        // CREATE
+
         [HttpPost]
-        public async Task<ActionResult<Department>> CreateDepartment(Department department)
+        public async Task<IActionResult> CreateDepartment(
+            Department department)
         {
+
+            department.DepartmentId = 0;
+
+            department.CreatedAt = DateTime.Now;
+
+
             _context.Departments.Add(department);
+
+
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetDepartment), new { id = department.DepartmentId }, department);
+
+
+            return Ok(new
+            {
+                message = "Department created successfully",
+
+                id = department.DepartmentId
+            });
+
         }
 
-        [Authorize(Roles = "Admin")]
+
+
+
+
+        // UPDATE
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDepartment(int id, Department department)
+        public async Task<IActionResult> UpdateDepartment(
+            int id,
+            Department department)
         {
-            if (id != department.DepartmentId) return BadRequest();
-            _context.Entry(department).State = EntityState.Modified;
+
+            var existing = await _context.Departments
+                .FindAsync(id);
+
+
+
+            if (existing == null)
+            {
+                return NotFound();
+            }
+
+
+
+            existing.DepartmentName =
+                department.DepartmentName;
+
+
+            existing.Description =
+                department.Description;
+
+
+
             await _context.SaveChangesAsync();
-            return NoContent();
+
+
+
+            return Ok(new
+            {
+                message = "Department updated successfully"
+            });
+
         }
 
-        [Authorize(Roles = "Admin")]
+
+
+
+
+        // DELETE
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
-            var department = await _context.Departments.FindAsync(id);
-            if (department == null) return NotFound();
+
+            var department = await _context.Departments
+                .FindAsync(id);
+
+
+
+            if (department == null)
+            {
+                return NotFound();
+            }
+
+
+
             _context.Departments.Remove(department);
+
+
             await _context.SaveChangesAsync();
-            return NoContent();
+
+
+
+            return Ok(new
+            {
+                message = "Department deleted successfully"
+            });
+
         }
+
     }
 }

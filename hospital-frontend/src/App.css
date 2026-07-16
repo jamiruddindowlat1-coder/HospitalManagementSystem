@@ -330,13 +330,76 @@ tbody tr:last-child td {
 
 
 .card-grid{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
 
-    display:grid;
-    grid-template-columns:
-    repeat(auto-fit,minmax(230px,1fr));
+.dashboard-dense {
+    height: calc(100vh - 100px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 5px;
+    gap: 10px;
+}
 
-    gap:20px;
+.dashboard-top-section {
+    flex: 0 0 auto;
+}
 
+.charts-grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    height: 200px;
+    flex: 0 0 auto;
+}
+
+.charts-grid > div {
+    min-width: 250px;
+    flex: 1;
+}
+
+.lists-grid {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+    overflow: hidden;
+}
+
+.list-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.list-wrapper h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #1e293b;
+}
+
+.list-panel {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 12px;
+}
+
+.dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dashboard-table th, .dashboard-table td {
+    padding: 4px 6px;
+    border-bottom: 1px solid #e0e6ed;
+    text-align: left;
 }
 
 

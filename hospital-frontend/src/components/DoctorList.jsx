@@ -1,6 +1,6 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../services/api";
-import "./Doctor.css";
+import "./SharedList.css";
 
 
 function DoctorList(){
@@ -313,11 +313,11 @@ return <h3>Loading...</h3>;
 
 return (
 
-<div className="doctor-page">
+<div className="page-container">
 
 
 
-<div className="doctor-header-box">
+<div className="header-box">
 
 <h2>
 👨‍⚕️ Doctor Management
@@ -328,7 +328,7 @@ return (
 
 
 
-<div className="doctor-count-box">
+<div className="count-box">
 
 Total Doctor : {doctors.length}
 
@@ -344,7 +344,7 @@ Total Doctor : {doctors.length}
 
 <button
 
-className="btn-add-doctor"
+className="btn-add"
 
 onClick={()=>{
 
@@ -404,7 +404,7 @@ showForm &&
 
 <form
 
-className="doctor-form"
+className="table-container"
 
 onSubmit={saveDoctor}
 
@@ -570,7 +570,7 @@ onChange={handleChange}
 
 
 
-<button className="btn-save">
+<button className="btn-add">
 
 {
 
@@ -606,11 +606,11 @@ editingId
 
 
 
-<div className="doctor-table-box">
+<div className="table-container">
 
 
 
-<table className="doctor-table">
+<table className="data-table">
 
 
 <thead>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
+import "./SharedList.css";
 
 function MedicalRecordList() {
   const [records, setRecords] = useState([]);
@@ -88,20 +89,27 @@ function MedicalRecordList() {
   }
 
   return (
-    <div className="data-card">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div className="page-container">
+      <div className="header-box">
         <h2>মেডিকেল রেকর্ড</h2>
-        <button onClick={() => setShowForm(!showForm)}>
-          {showForm ? 'বাতিল করুন' : '+ নতুন রেকর্ড'}
+      </div>
+
+      <div className="count-box">
+        Total Records: {records.length}
+      </div>
+
+      <div style={{ textAlign: 'center' }}>
+        <button className="btn-add" onClick={() => setShowForm(!showForm)}>
+          {showForm ? '✕ বাতিল করুন' : '➕ নতুন রেকর্ড'}
         </button>
       </div>
 
-      {error && <div className="data-card error">{error}</div>}
+      {error && <div className="error">{error}</div>}
 
       {showForm && (
-        <form onSubmit={handleSubmit} style={{ margin: '16px 0', padding: '16px', border: '1px solid #ddd', borderRadius: '8px' }}>
+        <form onSubmit={handleSubmit} className="table-container" style={{ padding: '25px', display: 'grid', gap: '15px', maxWidth: '600px', margin: '0 auto', marginBottom: '20px' }}>
           <h3>নতুন মেডিকেল রেকর্ড</h3>
-          {formError && <div className="error">{formError}</div>}
+          {formError && <div className="error" style={{color: 'red'}}>{formError}</div>}
 
           <div style={{ marginBottom: '10px' }}>
             <label>অ্যাপয়েন্টমেন্ট: </label>
@@ -151,13 +159,15 @@ function MedicalRecordList() {
             />
           </div>
 
-          <button type="submit" disabled={submitting}>
+          <div style={{textAlign: 'right'}}>
+          <button className="btn-add" type="submit" disabled={submitting}>
             {submitting ? 'জমা হচ্ছে...' : 'রেকর্ড সংরক্ষণ করুন'}
           </button>
+          </div>
         </form>
       )}
-
-      <table>
+      <div className="table-container">
+      <table className="data-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -183,6 +193,7 @@ function MedicalRecordList() {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

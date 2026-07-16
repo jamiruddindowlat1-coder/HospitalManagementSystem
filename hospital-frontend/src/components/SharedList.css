@@ -1,0 +1,234 @@
+/* ===================================================
+   Shared Management - Colorful Box Style CSS
+   =================================================== */
+
+.page-container {
+  padding: 10px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ---------- Header Box ---------- */
+.header-box {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 10px rgba(102, 126, 234, 0.35);
+  text-align: center;
+}
+
+.header-box h2 {
+  color: #fff;
+  font-weight: 700;
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+}
+
+/* ---------- Total Count Box ---------- */
+.count-box {
+  background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px 15px;
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 10px rgba(24, 90, 157, 0.35);
+}
+
+/* ---------- Add Button ---------- */
+.btn-add {
+  background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+  color: #7a4a00;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(247, 151, 30, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-add:hover {
+  box-shadow: 0 6px 14px rgba(247, 151, 30, 0.5);
+}
+
+.btn-add:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ---------- Search Box ---------- */
+.search-box {
+  border: 2px solid #764ba2;
+  border-radius: 20px;
+  padding: 5px 12px;
+  width: 100%;
+  max-width: 300px;
+  margin: 8px auto;
+  display: block;
+  outline: none;
+  transition: box-shadow 0.2s ease;
+}
+
+.search-box:focus {
+  box-shadow: 0 0 0 4px rgba(118, 75, 162, 0.2);
+}
+
+/* ---------- Table Container Box ---------- */
+.table-container {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* ---------- Table ---------- */
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 2px;
+  background: #f7f9ff;
+}
+
+.data-table thead th {
+  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%);
+  color: #fff;
+  padding: 8px 6px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  border: none;
+}
+
+.data-table tbody td {
+  padding: 6px 8px;
+  font-size: 13px;
+  text-align: center;
+  color: #333;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #e0e6ff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  font-weight: 500;
+}
+
+/* Alternating colorful row backgrounds */
+.data-table tbody tr:nth-child(6n+1) { background: #fff5f5; }
+.data-table tbody tr:nth-child(6n+2) { background: #f5faff; }
+.data-table tbody tr:nth-child(6n+3) { background: #f5fff7; }
+.data-table tbody tr:nth-child(6n+4) { background: #fffbf0; }
+.data-table tbody tr:nth-child(6n+5) { background: #f9f5ff; }
+.data-table tbody tr:nth-child(6n+6) { background: #f0fbff; }
+
+.data-table thead th:first-child {
+  border-radius:12px 0 0 12px;
+}
+
+.data-table thead th:last-child {
+  border-radius:0 12px 12px 0;
+}
+
+/* ---------- Action Buttons ---------- */
+.btn-edit {
+  background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%);
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 6px;
+  box-shadow: 0 4px 10px rgba(91, 134, 229, 0.35);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.btn-edit:hover {
+  opacity: 0.9;
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%);
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(255, 95, 109, 0.35);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.btn-delete:hover {
+  opacity: 0.9;
+}
+
+/* ---------- Status / Gender Badges (optional nice touch) ---------- */
+.badge-male {
+  background: #4568dc;
+  color: #fff;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+
+.badge-female {
+  background: #e05292;
+  color: #fff;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+
+.badge-active {
+  background: #43cea2;
+  color: #fff;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+
+.badge-inactive {
+  background: #ff5f6d;
+  color: #fff;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+
+/* Forms */
+form.table-container {
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+form input, form select, form textarea {
+  border: 2px solid #e0e6ff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+  width: calc(100% - 20px);
+  max-width: 400px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+form input:focus, form select:focus, form textarea:focus {
+  border-color: #667eea;
+}
+
+form textarea {
+  min-height: 80px;
+  font-family: inherit;
+}

@@ -1,0 +1,35 @@
+﻿
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<MedicalRecord>>> GetMedicalRecords()
+        {
+            return await _context.MedicalRecords
+
+                .Include(m => m.Appointment)
+                    .ThenInclude(a => a.Patient)
+
+                .Include(m => m.Appointment)
+                    .ThenInclude(a => a.Doctor)
+
+                .ToListAsync();
+        }
+
+
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<MedicalRecord>> GetMedicalRecord(int id)
+        {
+            var record = await _context.MedicalRecords
+
+                .Include(m => m.Appointment)
+                    .ThenInclude(a => a.Patient)
+
+                .Include(m => m.Appointment)
+                    .ThenInclude(a => a.Doctor)
+
+                .FirstOrDefaultAsync(
+                    m => m.RecordId == id
+                );
+
+
+            if(record == null)

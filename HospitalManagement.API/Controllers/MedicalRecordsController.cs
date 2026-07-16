@@ -25,10 +25,10 @@ namespace HospitalManagement.API.Controllers
             return await _context.MedicalRecords
 
                 .Include(m => m.Appointment)
-                    .ThenInclude(a => a.Patient)
+                    .ThenInclude(a => a!.Patient)
 
                 .Include(m => m.Appointment)
-                    .ThenInclude(a => a.Doctor)
+                    .ThenInclude(a => a!.Doctor)
 
                 .ToListAsync();
         }
@@ -41,10 +41,10 @@ namespace HospitalManagement.API.Controllers
             var record = await _context.MedicalRecords
 
                 .Include(m => m.Appointment)
-                    .ThenInclude(a => a.Patient)
+                    .ThenInclude(a => a!.Patient)
 
                 .Include(m => m.Appointment)
-                    .ThenInclude(a => a.Doctor)
+                    .ThenInclude(a => a!.Doctor)
 
                 .FirstOrDefaultAsync(
                     m => m.RecordId == id
