@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import nurseService from "../services/nurseService";
 import departmentService from "../services/departmentService";
+import "./SharedList.css";
 
 function NurseList() {
   const [nurses, setNurses] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -51,9 +53,7 @@ function NurseList() {
 
   const resetForm = () => {
     setEditingId(null);
-
     setShowForm(false);
-
     setFormData({
       fullName: "",
       phone: "",
@@ -89,9 +89,7 @@ function NurseList() {
 
   const handleEdit = (nurse) => {
     setEditingId(nurse.nurseId);
-
     setShowForm(true);
-
     setFormData({
       fullName: nurse.fullName,
       phone: nurse.phone,
@@ -112,20 +110,60 @@ function NurseList() {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  const filteredNurses = nurses.filter((n) =>
+    (n.fullName || "").toLowerCase().includes(search.toLowerCase())
+  );
+
+  if (loading) return <h3>Loading...</h3>;
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>👩‍⚕️ Nurse Management</h2>
+    <div className="page-container">
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="header-box">
+        <h2>👩‍⚕️ Nurse Management</h2>
+      </div>
 
-      <button onClick={() => setShowForm(!showForm)}>
-        {showForm ? "Cancel" : "+ Add Nurse"}
-      </button>
+      <div className="count-box">
+        Total Nurse : {nurses.length}
+      </div>
+
+      {error && (
+        <p style={{ color: "#dc2626", textAlign: "center", fontWeight: 600 }}>
+          {error}
+        </p>
+      )}
+
+      <div style={{ textAlign: "center" }}>
+        <button
+          className="btn-add"
+          onClick={() => {
+            if (showForm) {
+              resetForm();
+            } else {
+              setEditingId(null);
+              setShowForm(true);
+            }
+          }}
+        >
+          {showForm ? "✖️ Close Form" : "➕ Add Nurse"}
+        </button>
+      </div>
+
+      <input
+        type="text"
+        placeholder="Search by name..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="search-box"
+      />
 
       {showForm && (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="table-container" style={{ maxWidth: "500px", margin: "15px auto" }}>
+          <h3 style={{ textAlign: "center" }}>
+            {editingId ? "✏️ Edit Nurse" : "➕ New Nurse"}
+          </h3>
+
+          <label>Full Name</label>
           <input
             name="fullName"
             placeholder="Full Name"
@@ -134,6 +172,7 @@ function NurseList() {
             required
           />
 
+          <label>Phone</label>
           <input
             name="phone"
             placeholder="Phone"
@@ -142,6 +181,7 @@ function NurseList() {
             required
           />
 
+          <label>Shift</label>
           <select
             name="shift"
             value={formData.shift}
@@ -152,6 +192,7 @@ function NurseList() {
             <option value="Night">Night</option>
           </select>
 
+          <label>Department</label>
           <select
             name="departmentId"
             value={formData.departmentId}
@@ -159,61 +200,60 @@ function NurseList() {
             required
           >
             <option value="">Select Department</option>
-
             {departments.map((d) => (
-              <option
-                key={d.departmentId}
-                value={d.departmentId}
-              >
+              <option key={d.departmentId} value={d.departmentId}>
                 {d.departmentName}
               </option>
             ))}
           </select>
 
-          <button type="submit">
-            {editingId ? "Update" : "Save"}
-          </button>
+          <div style={{ textAlign: "center", marginTop: "10px" }}>
+            <button type="submit" className="btn-add">
+              {editingId ? "💾 Update" : "💾 Save"}
+            </button>
+            &nbsp;
+            <button type="button" className="btn-delete" onClick={resetForm}>
+              ❌ Cancel
+            </button>
+          </div>
         </form>
       )}
 
-      <table
-        border="1"
-        cellPadding="8"
-        style={{ width: "100%", borderCollapse: "collapse", marginTop: 20 }}
-      >
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Shift</th>
-            <th>Department</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {nurses.length === 0 ? (
+      <div className="table-container">
+        <table className="data-table">
+          <thead>
             <tr>
-              <td colSpan="5">No nurses found.</td>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Shift</th>
+              <th>Department</th>
+              <th>Action</th>
             </tr>
-          ) : (
-            nurses.map((nurse) => (
-              <tr key={nurse.nurseId}>
-                <td>{nurse.fullName}</td>
-                <td>{nurse.phone}</td>
-                <td>{nurse.shift}</td>
-                <td>{nurse.departmentName ?? "N/A"}</td>
-                <td>
-                  <button onClick={() => handleEdit(nurse)}>Edit</button>{" "}
-                  <button onClick={() => handleDelete(nurse.nurseId)}>
-                    Delete
-                  </button>
-                </td>
+          </thead>
+
+          <tbody>
+            {filteredNurses.length === 0 ? (
+              <tr>
+                <td colSpan="5" style={{ textAlign: "center" }}>No nurses found.</td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              filteredNurses.map((nurse) => (
+                <tr key={nurse.nurseId}>
+                  <td>{nurse.fullName}</td>
+                  <td>{nurse.phone}</td>
+                  <td>{nurse.shift}</td>
+                  <td>{nurse.departmentName ?? "N/A"}</td>
+                  <td>
+                    <button className="btn-edit" onClick={() => handleEdit(nurse)}>✏️ Edit</button>
+                    <button className="btn-delete" onClick={() => handleDelete(nurse.nurseId)}>🗑 Delete</button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
     </div>
   );
 }

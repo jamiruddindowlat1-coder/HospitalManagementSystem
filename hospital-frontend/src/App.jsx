@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-
+import AddTestCategory from "./components/AddTestCategory";
+import EditTestCategory from "./components/EditTestCategory";
+import TestCategoryList from "./components/TestCategoryList";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
-import Admission from "./components/Admission";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PatientList from "./components/PatientList";
 import DoctorList from "./components/DoctorList";
 import AppointmentList from "./components/AppointmentList";
+import AdmissionList from "./components/AdmissionList";
 import BillingList from "./components/BillingList";
 import MedicalRecordList from "./components/MedicalRecordList";
 import Medicine from "./components/Medicine";
@@ -15,84 +17,14 @@ import ActivityLogPage from "./components/ActivityLogPage";
 import DepartmentList from "./components/DepartmentList";
 import NurseList from "./components/NurseList";
 import Reports from "./components/Reports";
+import LabResultList from "./components/LabResultList";
+import LabTestList from "./components/LabTestList";
+import AddLabResult from "./components/AddLabResult";
 import UserManagement from "./components/UserManagement";
 import { isAuthenticated, removeToken } from "./services/auth";
-import api from "./services/api";
 
 import AppLayout from "./components/Layout/AppLayout";
 
-function AdmissionList() {
-  const [admissions, setAdmissions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const loadAdmissions = async () => {
-    try {
-      setLoading(true);
-
-      const response = await api.get("/admissions");
-
-      setAdmissions(response.data || response);
-    } catch (error) {
-      console.log(error);
-      setMessage("একটা ভুল হয়েছে");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadAdmissions();
-  }, []);
-
-  return (
-    <div style={containerStyle}>
-      <Admission onSuccess={loadAdmissions} />
-
-      <hr style={{ margin: "30px 0" }} />
-
-      <h3>📋 Current Admissions</h3>
-
-      {message && <p>{message}</p>}
-
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <table style={tableStyle}>
-          <thead>
-            <tr>
-              <th>Patient</th>
-              <th>Room</th>
-              <th>Doctor</th>
-              <th>Status</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {admissions.map((a) => (
-              <tr key={a.admissionId || a.id}>
-                <td>{a.patient?.fullName || a.patientName || "-"}</td>
-
-                <td>{a.room?.roomNumber || a.roomNumber || "-"}</td>
-
-                <td>{a.doctor?.fullName || a.doctorName || "-"}</td>
-
-                <td>{a.status}</td>
-
-                <td>
-                  {a.admissionDate
-                    ? new Date(a.admissionDate).toLocaleDateString()
-                    : "-"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
-  );
-}
 function App() {
   const [loggedIn, setLoggedIn] = useState(isAuthenticated());
 
@@ -128,28 +60,22 @@ function App() {
       <Route path="/appointments" element={wrap(AppointmentList)} />
       <Route path="/admissions" element={wrap(AdmissionList)} />
       <Route path="/billing" element={wrap(BillingList)} />
-     <Route path="/medical-records" element={wrap(MedicalRecordList)} />
+      <Route path="/medical-records" element={wrap(MedicalRecordList)} />
       <Route path="/medicines" element={wrap(Medicine)} />
       <Route path="/departments" element={wrap(DepartmentList)} />
       <Route path="/nurses" element={wrap(NurseList)} />
       <Route path="/reports" element={wrap(Reports)} />
+      <Route path="/lab-results" element={wrap(LabResultList)} />
+      <Route path="/lab-tests" element={wrap(LabTestList)} />
+      <Route path="/lab-results/add" element={wrap(AddLabResult)} />
       <Route path="/users" element={wrap(UserManagement)} />
       <Route path="/activity-logs" element={wrap(ActivityLogPage)} />
-
+     <Route path="/test-categories" element={wrap(TestCategoryList)} />
+     <Route path="/test-categories/edit/:id" element={wrap(EditTestCategory)} />
+     <Route path="/test-categories/add" element={wrap(AddTestCategory)} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
-
-const containerStyle = {
-  padding: "24px",
-  maxWidth: "1000px",
-};
-
-const tableStyle = {
-  width: "100%",
-  borderCollapse: "collapse",
-  background: "#fff",
-};
 
 export default App;

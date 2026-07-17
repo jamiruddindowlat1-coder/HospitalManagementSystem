@@ -125,138 +125,166 @@ function UserManagement() {
         );
     });
 
-    if (loading) return <div className="list-container">লোড হচ্ছে...</div>;
+    if (loading) return <h3>Loading...</h3>;
 
     return (
-        <div className="list-container">
-            <div className="list-header">
-                <h2>ইউজার ম্যানেজমেন্ট</h2>
-                <button className="btn-primary" onClick={() => { resetForm(); setShowForm(true); }}>
-                    + নতুন ইউজার
-                </button>
+        <div className="page-container">
+
+            <div className="header-box">
+                <h2>👤 User Management</h2>
             </div>
 
-            {error && <div className="error-banner">{error}</div>}
+            <div className="count-box">
+                Total Users : {users.length}
+            </div>
+
+            {error && (
+                <p style={{ color: "#dc2626", textAlign: "center", fontWeight: 600 }}>
+                    {error}
+                </p>
+            )}
+
+            <div style={{ textAlign: "center" }}>
+                <button
+                    className="btn-add"
+                    onClick={() => {
+                        if (showForm) {
+                            resetForm();
+                        } else {
+                            setForm(emptyForm);
+                            setEditId(null);
+                            setShowForm(true);
+                        }
+                    }}
+                >
+                    {showForm ? "✖️ Close Form" : "➕ Add User"}
+                </button>
+            </div>
 
             <input
                 type="text"
                 placeholder="নাম বা ইমেইল দিয়ে খুঁজুন..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="search-input"
+                className="search-box"
             />
 
             {showForm && (
-                <div className="modal-overlay">
-                    <div className="modal-box">
-                        <h3>{editId ? "ইউজার এডিট করুন" : "নতুন ইউজার যোগ করুন"}</h3>
-                        <form onSubmit={handleSubmit}>
-                            <label>পূর্ণ নাম</label>
+                <form onSubmit={handleSubmit} className="table-container" style={{ maxWidth: "500px", margin: "15px auto", padding: "15px" }}>
+                    <h3 style={{ textAlign: "center" }}>
+                        {editId ? "✏️ Edit User" : "➕ New User"}
+                    </h3>
+
+                    <label>পূর্ণ নাম</label>
+                    <input
+                        type="text"
+                        name="fullName"
+                        value={form.fullName}
+                        onChange={handleChange}
+                        required
+                    />
+
+                    <label>ইমেইল</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        required
+                    />
+
+                    <label>পাসওয়ার্ড {editId && "(খালি রাখলে অপরিবর্তিত থাকবে)"}</label>
+                    <input
+                        type="password"
+                        name="password"
+                        value={form.password}
+                        onChange={handleChange}
+                        {...(!editId ? { required: true } : {})}
+                    />
+
+                    <label>রোল</label>
+                    <select
+                        name="roleId"
+                        value={form.roleId}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">-- রোল নির্বাচন করুন --</option>
+                        {roles.map((role) => (
+                            <option key={role.roleId} value={role.roleId}>
+                                {role.roleName}
+                            </option>
+                        ))}
+                    </select>
+
+                    <div style={{ marginBottom: "15px", marginTop: "10px" }}>
+                        <label>
                             <input
-                                type="text"
-                                name="fullName"
-                                value={form.fullName}
+                                type="checkbox"
+                                name="isActive"
+                                checked={form.isActive}
                                 onChange={handleChange}
-                                required
                             />
-
-                            <label>ইমেইল</label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={form.email}
-                                onChange={handleChange}
-                                required
-                            />
-
-                            <label>পাসওয়ার্ড {editId && "(খালি রাখলে অপরিবর্তিত থাকবে)"}</label>
-                            <input
-                                type="password"
-                                name="password"
-                                value={form.password}
-                                onChange={handleChange}
-                                {...(!editId ? { required: true } : {})}
-                            />
-
-                            <label>রোল</label>
-                            <select
-                                name="roleId"
-                                value={form.roleId}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="">-- রোল নির্বাচন করুন --</option>
-                                {roles.map((role) => (
-                                    <option key={role.roleId} value={role.roleId}>
-                                        {role.roleName}
-                                    </option>
-                                ))}
-                            </select>
-
-                            <label className="checkbox-label">
-                                <input
-                                    type="checkbox"
-                                    name="isActive"
-                                    checked={form.isActive}
-                                    onChange={handleChange}
-                                />
-                                সক্রিয়
-                            </label>
-
-                            <div className="modal-actions">
-                                <button type="submit" className="btn-primary" disabled={submitting}>
-                                    {submitting ? "সেভ হচ্ছে..." : "সেভ করুন"}
-                                </button>
-                                <button type="button" className="btn-secondary" onClick={resetForm}>
-                                    বাতিল
-                                </button>
-                            </div>
-                        </form>
+                            {" "}সক্রিয়
+                        </label>
                     </div>
-                </div>
+
+                    <div style={{ textAlign: "center" }}>
+                        <button type="submit" className="btn-add" disabled={submitting}>
+                            {submitting ? "সেভ হচ্ছে..." : "💾 সেভ করুন"}
+                        </button>
+                        &nbsp;
+                        <button type="button" className="btn-delete" onClick={resetForm}>
+                            ❌ বাতিল
+                        </button>
+                    </div>
+                </form>
             )}
 
-            <table className="data-table">
-                <thead>
-                    <tr>
-                        <th>নাম</th>
-                        <th>ইমেইল</th>
-                        <th>রোল</th>
-                        <th>স্ট্যাটাস</th>
-                        <th>একশন</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredUsers.length === 0 ? (
+            <div className="table-container">
+                <table className="data-table">
+                    <thead>
                         <tr>
-                            <td colSpan="5" style={{ textAlign: "center" }}>
-                                কোনো ইউজার পাওয়া যায়নি
-                            </td>
+                            <th>নাম</th>
+                            <th>ইমেইল</th>
+                            <th>রোল</th>
+                            <th>স্ট্যাটাস</th>
+                            <th>একশন</th>
                         </tr>
-                    ) : (
-                        filteredUsers.map((user, idx) => (
-                            <tr key={user.userId ?? idx}>
-                                <td>{user.fullName}</td>
-                                <td>{user.email}</td>
-                                <td>{user.roleName || "-"}</td>
-                                <td>
-                                    <span className={user.isActive ? "badge-active" : "badge-inactive"}>
-                                        {user.isActive ? "সক্রিয়" : "নিষ্ক্রিয়"}
-                                    </span>
-                                </td>
-                                <td>
-                                    <button className="btn-edit" onClick={() => handleEdit(user)}>
-                                        এডিট
-                                    </button>
-                                    <button className="btn-delete" onClick={() => handleDelete(user.userId)}>
-                                        ডিলিট
-                                    </button>
+                    </thead>
+                    <tbody>
+                        {filteredUsers.length === 0 ? (
+                            <tr>
+                                <td colSpan="5" style={{ textAlign: "center" }}>
+                                    কোনো ইউজার পাওয়া যায়নি
                                 </td>
                             </tr>
-                        ))
-                    )}
-                </tbody>
-            </table>
+                        ) : (
+                            filteredUsers.map((user, idx) => (
+                                <tr key={user.userId ?? idx}>
+                                    <td>{user.fullName}</td>
+                                    <td>{user.email}</td>
+                                    <td>{user.roleName || "-"}</td>
+                                    <td>
+                                        <span className={user.isActive ? "badge-active" : "badge-inactive"}>
+                                            {user.isActive ? "সক্রিয়" : "নিষ্ক্রিয়"}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button className="btn-edit" onClick={() => handleEdit(user)}>
+                                            ✏️ এডিট
+                                        </button>
+                                        <button className="btn-delete" onClick={() => handleDelete(user.userId)}>
+                                            🗑 ডিলিট
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     );
 }

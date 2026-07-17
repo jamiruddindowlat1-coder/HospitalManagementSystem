@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using FluentValidation;
+using System.Text;
 using HospitalManagement.API.Data;
 using HospitalManagement.API.Models;
 using HospitalManagement.API.Services;
@@ -30,7 +31,7 @@ builder.Services.AddScoped<ReportExportService>();
 builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
 builder.Services.AddScoped<NurseService>();
 builder.Services.AddScoped<LabTestService>();
-
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // CONTROLLERS
 

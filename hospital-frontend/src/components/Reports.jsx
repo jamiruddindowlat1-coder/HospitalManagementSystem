@@ -90,34 +90,26 @@ function Reports() {
 
     return (
 
-        <div className="list-container">
+        <div className="page-container">
 
-
-            <div className="list-header">
-
-                <h2>
-                    📊 Reports Management
-                </h2>
-
-
+            <div className="header-box">
+                <h2>📊 Reports Management</h2>
             </div>
-
-
 
             <div style={{
                 display:"flex",
                 gap:"10px",
                 flexWrap:"wrap",
-                marginBottom:"20px"
+                justifyContent:"center",
+                marginBottom:"15px"
             }}>
-
 
             {
                 reports.map(r=>(
 
                     <button
                     key={r.key}
-                    className="btn-primary"
+                    className={type === r.key ? "btn-add" : "btn-edit"}
                     onClick={()=>setType(r.key)}
                     >
 
@@ -128,26 +120,23 @@ function Reports() {
                 ))
             }
 
-
             </div>
 
+            <div style={{textAlign:"center", marginBottom:"15px"}}>
+                <button
+                className="btn-add"
+                onClick={exportCSV}
+                >
 
+                📊 Export Excel (CSV)
 
-            <button
-            className="btn-add"
-            onClick={exportCSV}
-            >
-
-            📊 Export Excel (CSV)
-
-            </button>
-
-
+                </button>
+            </div>
 
             {
                 loading ?
 
-                <p>Loading Report...</p>
+                <h3 style={{textAlign:"center"}}>Loading Report...</h3>
 
                 :
 
@@ -182,6 +171,12 @@ function Reports() {
                 <tbody>
 
                 {
+                    data.length === 0 ? (
+                        <tr>
+                            <td style={{textAlign:"center"}}>No data found.</td>
+                        </tr>
+                    ) :
+
                     data.map((row,index)=>(
 
                         <tr key={index}>

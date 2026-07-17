@@ -9,6 +9,7 @@ function AdmissionList() {
 const [admissions,setAdmissions]=useState([]);
 const [loading,setLoading]=useState(true);
 const [error,setError]=useState("");
+const [search,setSearch]=useState("");
 
 
 
@@ -49,7 +50,7 @@ catch(err){
 
 console.log(err);
 
-setError("Admission load করতে সমস্যা হয়েছে");
+setError("Admission load করতে সমস্যা হয়েছে");
 
 }
 
@@ -277,6 +278,13 @@ alert(err.message);
 
 
 
+const filteredAdmissions = admissions.filter(a =>
+    (a.patient?.fullName || "").toLowerCase().includes(search.toLowerCase())
+);
+
+
+
+if (loading) return <h3>Loading...</h3>;
 
 
 
@@ -303,15 +311,35 @@ Total Admissions: {admissions.length}
 </div>
 
 
+{
+error &&
+<p style={{color:"#dc2626", textAlign:"center", fontWeight:600}}>
+{error}
+</p>
+}
+
+
+<input
+type="text"
+placeholder="Search by patient name..."
+value={search}
+onChange={(e)=>setSearch(e.target.value)}
+className="search-box"
+/>
 
 
 
 <form
 onSubmit={handleSubmit}
 className="table-container"
+style={{maxWidth:"500px", margin:"15px auto", padding:"15px"}}
 >
 
+<h3 style={{textAlign:"center"}}>
+{editingId ? "✏️ Edit Admission" : "➕ New Admission"}
+</h3>
 
+<label>Patient ID</label>
 <input
 name="patientId"
 placeholder="Patient ID"
@@ -320,7 +348,7 @@ onChange={handleChange}
 />
 
 
-
+<label>Room ID</label>
 <input
 name="roomId"
 placeholder="Room ID"
@@ -330,7 +358,7 @@ onChange={handleChange}
 
 
 
-
+<label>Doctor ID</label>
 <input
 name="doctorId"
 placeholder="Doctor ID"
@@ -340,7 +368,7 @@ onChange={handleChange}
 
 
 
-
+<label>Admission Date</label>
 <input
 type="datetime-local"
 name="admissionDate"
@@ -349,7 +377,7 @@ onChange={handleChange}
 />
 
 
-
+<label>Discharge Date</label>
 <input
 type="datetime-local"
 name="dischargeDate"
@@ -360,7 +388,7 @@ onChange={handleChange}
 
 
 
-
+<label>Status</label>
 <select
 name="status"
 value={form.status}
@@ -383,17 +411,16 @@ Pending
 </select>
 
 
+<div style={{textAlign:"center", marginTop:"10px"}}>
 
-
-
-<button className="btn-add">
+<button className="btn-add" type="submit">
 
 {
 editingId
 ?
-"Update Admission"
+"💾 Update Admission"
 :
-"Save Admission"
+"💾 Save Admission"
 }
 
 
@@ -404,49 +431,28 @@ editingId
 
 {
 editingId &&
+<>
+&nbsp;
 <button
 type="button"
 className="btn-delete"
 onClick={resetForm}
 >
 
-Cancel
+❌ Cancel
 
 </button>
+</>
 }
 
+</div>
 
 
 </form>
 
 
 
-
-
-
-
-
 <div className="table-container">
-
-
-{
-loading &&
-<p>
-Loading...
-</p>
-}
-
-
-
-{
-error &&
-<p style={{color:"red"}}>
-{error}
-</p>
-}
-
-
-
 
 
 <table className="data-table">
@@ -455,8 +461,7 @@ error &&
 <thead>
 
 <tr>
-
-<th>ID</th>
+    <th>ID</th>
 
 <th>Patient</th>
 
@@ -480,9 +485,14 @@ error &&
 
 <tbody>
 
-
 {
-admissions.map(a=>(
+filteredAdmissions.length === 0 ? (
+<tr>
+<td colSpan="7" style={{textAlign:"center"}}>No admissions found.</td>
+</tr>
+) :
+
+filteredAdmissions.map(a=>(
 
 
 <tr key={a.admissionId}>
@@ -557,7 +567,9 @@ new Date(a.admissionDate)
 
 <td>
 
+<span className={a.status === "Active" ? "badge-active" : "badge-inactive"}>
 {a.status}
+</span>
 
 </td>
 
