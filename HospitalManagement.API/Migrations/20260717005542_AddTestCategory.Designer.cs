@@ -4,6 +4,7 @@ using HospitalManagement.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalManagement.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260717005542_AddTestCategory")]
+    partial class AddTestCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,74 +277,6 @@ namespace HospitalManagement.API.Migrations
                     b.ToTable("Doctors");
                 });
 
-            modelBuilder.Entity("HospitalManagement.API.Models.Expense", b =>
-                {
-                    b.Property<int>("ExpenseId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExpenseId"));
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ExpenseDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ReferenceNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ExpenseId");
-
-                    b.ToTable("Expenses");
-                });
-
-            modelBuilder.Entity("HospitalManagement.API.Models.Income", b =>
-                {
-                    b.Property<int>("IncomeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IncomeId"));
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("IncomeDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ReferenceNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Source")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("IncomeId");
-
-                    b.ToTable("Incomes");
-                });
-
             modelBuilder.Entity("HospitalManagement.API.Models.LabResult", b =>
                 {
                     b.Property<int>("LabResultId")
@@ -427,51 +362,6 @@ namespace HospitalManagement.API.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("LabTests");
-                });
-
-            modelBuilder.Entity("HospitalManagement.API.Models.LedgerEntry", b =>
-                {
-                    b.Property<int>("LedgerEntryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LedgerEntryId"));
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EntryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EntryType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ExpenseId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IncomeId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("RunningBalance")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("LedgerEntryId");
-
-                    b.HasIndex("ExpenseId");
-
-                    b.HasIndex("IncomeId");
-
-                    b.ToTable("LedgerEntries");
                 });
 
             modelBuilder.Entity("HospitalManagement.API.Models.MedicalRecord", b =>
@@ -705,51 +595,6 @@ namespace HospitalManagement.API.Migrations
                     b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("HospitalManagement.API.Models.SalaryPayment", b =>
-                {
-                    b.Property<int>("SalaryPaymentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SalaryPaymentId"));
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PaymentMonth")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StaffId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("StaffName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StaffType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SalaryPaymentId");
-
-                    b.ToTable("SalaryPayments");
-                });
-
             modelBuilder.Entity("HospitalManagement.API.Models.TestCategory", b =>
                 {
                     b.Property<int>("TestCategoryId")
@@ -945,23 +790,6 @@ namespace HospitalManagement.API.Migrations
                     b.Navigation("Doctor");
 
                     b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("HospitalManagement.API.Models.LedgerEntry", b =>
-                {
-                    b.HasOne("HospitalManagement.API.Models.Expense", "Expense")
-                        .WithMany()
-                        .HasForeignKey("ExpenseId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("HospitalManagement.API.Models.Income", "Income")
-                        .WithMany()
-                        .HasForeignKey("IncomeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Expense");
-
-                    b.Navigation("Income");
                 });
 
             modelBuilder.Entity("HospitalManagement.API.Models.MedicalRecord", b =>

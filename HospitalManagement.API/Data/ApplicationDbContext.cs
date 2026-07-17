@@ -27,8 +27,11 @@ namespace HospitalManagement.API.Data
         public DbSet<Medicine> Medicines { get; set; }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
         public DbSet<LabResult> LabResults { get; set; }
-
-
+        public DbSet<TestCategory> TestCategories { get; set; }
+        public DbSet<Income> Incomes { get; set; }
+        public DbSet<Expense> Expenses { get; set; }
+        public DbSet<LedgerEntry> LedgerEntries { get; set; }
+        public DbSet<SalaryPayment> SalaryPayments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -68,7 +71,45 @@ modelBuilder.Entity<Nurse>()
         "[ConsultationFee] + [RoomCharge] + [MedicineCharge] + [OtherCharges]"
     );
 
+modelBuilder.Entity<TestCategory>()
+    .HasKey(tc => tc.TestCategoryId);
+// Income Decimal
+            modelBuilder.Entity<Income>()
+                .Property(x => x.Amount)
+                .HasPrecision(18, 2);
 
+            // Expense Decimal
+            modelBuilder.Entity<Expense>()
+                .Property(x => x.Amount)
+                .HasPrecision(18, 2);
+
+            // LedgerEntry Decimal
+            modelBuilder.Entity<LedgerEntry>()
+                .Property(x => x.Amount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<LedgerEntry>()
+                .Property(x => x.RunningBalance)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<LedgerEntry>()
+                .HasOne(x => x.Income)
+                .WithMany()
+                .HasForeignKey(x => x.IncomeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<LedgerEntry>()
+                .HasOne(x => x.Expense)
+                .WithMany()
+                .HasForeignKey(x => x.ExpenseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // SalaryPayment Decimal
+            modelBuilder.Entity<SalaryPayment>()
+                .Property(x => x.Amount)
+                .HasPrecision(18, 2);
+modelBuilder.Entity<TestCategory>()
+    .ToTable("TestCategories");
 
             // Billing Decimal
 
