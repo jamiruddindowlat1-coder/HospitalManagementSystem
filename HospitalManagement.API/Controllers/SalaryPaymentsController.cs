@@ -120,7 +120,25 @@ namespace HospitalManagement.API.Controllers
                 Notes = dto.Notes,
                 CreatedAt = DateTime.Now
             };
+var currentBalance = await _context.LedgerEntries
+    .OrderByDescending(x => x.LedgerEntryId)
+    .Select(x => (decimal?)x.RunningBalance)
+    .FirstOrDefaultAsync() ?? 0;
 
+
+var ledger = new LedgerEntry
+{
+    EntryType = "Expense",
+    Description = $"Salary payment - {payment.StaffName}",
+    Amount = payment.Amount,
+    EntryDate = payment.PaymentDate,
+    RunningBalance = currentBalance - payment.Amount,
+    CreatedAt = DateTime.Now
+};
+
+_context.LedgerEntries.Add(ledger);
+
+await _context.SaveChangesAsync();
 
             _context.SalaryPayments.Add(payment);
 
