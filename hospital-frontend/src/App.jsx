@@ -22,8 +22,12 @@ import LabTestList from "./components/LabTestList";
 import AddLabResult from "./components/AddLabResult";
 import UserManagement from "./components/UserManagement";
 import { isAuthenticated, removeToken } from "./services/auth";
-
 import AppLayout from "./components/Layout/AppLayout";
+import AccountsDashboard from "./components/AccountsDashboard";
+import Income from "./components/Income";
+import Expense from "./components/Expense";
+import SalaryPayments from "./components/Salarypayments";
+import Ledger from "./components/Ledger";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(isAuthenticated());
@@ -70,10 +74,15 @@ function App() {
       <Route path="/lab-results/add" element={wrap(AddLabResult)} />
       <Route path="/users" element={wrap(UserManagement)} />
       <Route path="/activity-logs" element={wrap(ActivityLogPage)} />
-     <Route path="/test-categories" element={wrap(TestCategoryList)} />
-     <Route path="/test-categories/edit/:id" element={wrap(EditTestCategory)} />
-     <Route path="/test-categories/add" element={wrap(AddTestCategory)} />
+      <Route path="/test-categories" element={wrap(TestCategoryList)} />
+      <Route path="/test-categories/edit/:id" element={wrap(EditTestCategory)} />
+      <Route path="/test-categories/add" element={wrap(AddTestCategory)} />
       <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/accounts/dashboard" element={wrap(AccountsDashboard)} />
+      <Route path="/accounts/income" element={wrap(Income)} />
+      <Route path="/accounts/expense" element={wrap(Expense)} />
+      <Route path="/accounts/salary" element={wrap(SalaryPayments)} />
+      <Route path="/accounts/ledger" element={wrap(Ledger)} />
     </Routes>
   );
 }
