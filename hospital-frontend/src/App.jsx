@@ -28,6 +28,7 @@ import Income from "./components/Income";
 import Expense from "./components/Expense";
 import SalaryPayments from "./components/Salarypayments";
 import Ledger from "./components/Ledger";
+import FinancialReportsPage from "./components/FinancialReports/FinancialReportsPage";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(isAuthenticated());
@@ -57,7 +58,6 @@ function App() {
           )
         }
       />
-
       <Route path="/" element={wrap(Dashboard)} />
       <Route path="/patients" element={wrap(PatientList)} />
       <Route path="/doctors" element={wrap(DoctorList)} />
@@ -69,6 +69,7 @@ function App() {
       <Route path="/departments" element={wrap(DepartmentList)} />
       <Route path="/nurses" element={wrap(NurseList)} />
       <Route path="/reports" element={wrap(Reports)} />
+      <Route path="/financial-reports" element={wrap(FinancialReportsPage)} />
       <Route path="/lab-results" element={wrap(LabResultList)} />
       <Route path="/lab-tests" element={wrap(LabTestList)} />
       <Route path="/lab-results/add" element={wrap(AddLabResult)} />
@@ -77,12 +78,12 @@ function App() {
       <Route path="/test-categories" element={wrap(TestCategoryList)} />
       <Route path="/test-categories/edit/:id" element={wrap(EditTestCategory)} />
       <Route path="/test-categories/add" element={wrap(AddTestCategory)} />
-      <Route path="*" element={<Navigate to="/" replace />} />
       <Route path="/accounts/dashboard" element={wrap(AccountsDashboard)} />
       <Route path="/accounts/income" element={wrap(Income)} />
       <Route path="/accounts/expense" element={wrap(Expense)} />
       <Route path="/accounts/salary" element={wrap(SalaryPayments)} />
       <Route path="/accounts/ledger" element={wrap(Ledger)} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

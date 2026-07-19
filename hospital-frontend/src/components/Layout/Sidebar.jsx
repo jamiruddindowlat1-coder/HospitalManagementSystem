@@ -18,7 +18,8 @@ import {
   FaFlask,
   FaVials,
   FaFileMedicalAlt,
-  FaMoneyBillWave
+  FaMoneyBillWave,
+  FaFileInvoiceDollar
 } from "react-icons/fa";
 
 
@@ -170,6 +171,12 @@ export default function Sidebar() {
           <NavLink to="/reports" className={menuClass}>
             <FaChartBar />
             <span>Reports</span>
+          </NavLink>
+
+
+          <NavLink to="/financial-reports" className={menuClass}>
+            <FaFileInvoiceDollar />
+            <span>Financial Reports</span>
           </NavLink>
 
 
