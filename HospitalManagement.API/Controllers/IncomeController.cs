@@ -17,6 +17,7 @@ namespace HospitalManagement.API.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IActivityLogService _activityLog;
 
+
         public IncomeController(
             ApplicationDbContext context,
             IActivityLogService activityLog)
@@ -25,9 +26,9 @@ namespace HospitalManagement.API.Controllers
             _activityLog = activityLog;
         }
 
-        // ==========================================
+
+
         // GET: api/Income
-        // ==========================================
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<IncomeDto>>> GetIncomes()
@@ -35,6 +36,7 @@ namespace HospitalManagement.API.Controllers
             var incomes = await _context.Incomes
                 .OrderByDescending(x => x.IncomeDate)
                 .ToListAsync();
+
 
             var result = incomes.Select(x => new IncomeDto
             {
@@ -45,14 +47,18 @@ namespace HospitalManagement.API.Controllers
                 IncomeDate = x.IncomeDate,
                 ReferenceNumber = x.ReferenceNumber,
                 CreatedAt = x.CreatedAt
+
             });
+
 
             return Ok(result);
         }
 
-        // ==========================================
+
+
+
+
         // GET: api/Income/{id}
-        // ==========================================
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<IncomeDto>> GetIncome(int id)
@@ -60,10 +66,13 @@ namespace HospitalManagement.API.Controllers
             var income = await _context.Incomes
                 .FirstOrDefaultAsync(x => x.IncomeId == id);
 
-            if (income == null)
+
+            if(income == null)
                 return NotFound();
 
-            var dto = new IncomeDto
+
+
+            return Ok(new IncomeDto
             {
                 IncomeId = income.IncomeId,
                 Source = income.Source,
@@ -72,19 +81,20 @@ namespace HospitalManagement.API.Controllers
                 IncomeDate = income.IncomeDate,
                 ReferenceNumber = income.ReferenceNumber,
                 CreatedAt = income.CreatedAt
-            };
-
-            return Ok(dto);
+            });
         }
 
-        // ==========================================
+
+
+
+
         // POST: api/Income
-        // ==========================================
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult> CreateIncome(CreateIncomeDto dto)
         {
+
             var income = new Income
             {
                 Source = dto.Source,
@@ -95,59 +105,144 @@ namespace HospitalManagement.API.Controllers
                 CreatedAt = DateTime.Now
             };
 
+
             _context.Incomes.Add(income);
+
             await _context.SaveChangesAsync();
 
-            decimal currentBalance = await _context.LedgerEntries
-                .OrderByDescending(x => x.LedgerEntryId)
-                .Select(x => (decimal?)x.RunningBalance)
-                .FirstOrDefaultAsync() ?? 0;
 
-            var ledgerEntry = new LedgerEntry
-            {
-                EntryType = "Income",
-                IncomeId = income.IncomeId,
-                Description = $"{income.Source} - {income.Description}",
-                Amount = income.Amount,
-                EntryDate = income.IncomeDate,
-                RunningBalance = currentBalance + income.Amount,
-                CreatedAt = DateTime.Now
-            };
-
-            _context.LedgerEntries.Add(ledgerEntry);
-            await _context.SaveChangesAsync();
 
             await _activityLog.LogAsync(
                 "Created",
                 "Income",
-                $"Income '{income.Source}' added. Amount: {income.Amount}",
-                User.GetUserId());
+                $"Income {income.Source} created Amount {income.Amount}",
+                User.GetUserId()
+            );
+
+
 
             return CreatedAtAction(
                 nameof(GetIncome),
-                new { id = income.IncomeId },
-                new IncomeDto
-                {
-                    IncomeId = income.IncomeId,
-                    Source = income.Source,
-                    Description = income.Description,
-                    Amount = income.Amount,
-                    IncomeDate = income.IncomeDate,
-                    ReferenceNumber = income.ReferenceNumber,
-                    CreatedAt = income.CreatedAt
-                });
+                new {id = income.IncomeId},
+                income
+            );
         }
 
-        // ==========================================
-        // PUT (Next Part)
-        // ==========================================
 
-        // ==========================================
-        // DELETE (Next Part)
-        // ==========================================
 
-        // ==========================================
-        // Private Helper Methods (Next Part)
-        // ==========================================
+
+
+
+
+        // PUT: api/Income/{id}
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateIncome(
+            int id,
+            CreateIncomeDto dto)
+        {
+
+
+            var income = await _context.Incomes
+                .FirstOrDefaultAsync(x => x.IncomeId == id);
+
+
+
+            if(income == null)
+                return NotFound();
+
+
+
+
+            income.Source = dto.Source;
+
+            income.Description = dto.Description;
+
+            income.Amount = dto.Amount;
+
+            income.IncomeDate = dto.IncomeDate;
+
+            income.ReferenceNumber = dto.ReferenceNumber;
+
+
+
+
+            await _context.SaveChangesAsync();
+
+
+
+
+
+            await _activityLog.LogAsync(
+                "Updated",
+                "Income",
+                $"Income {income.Source} updated Amount {income.Amount}",
+                User.GetUserId()
+            );
+
+
+
+            return NoContent();
+
+        }
+
+
+
+
+
+
+
+        // DELETE: api/Income/{id}
+
+// DELETE: api/Income/{id}
+
+// DELETE: api/Income/{id}
+
+[Authorize(Roles = "Admin")]
+[HttpDelete("{id:int}")]
+public async Task<IActionResult> DeleteIncome(int id)
+{
+    var income = await _context.Incomes
+        .FirstOrDefaultAsync(x => x.IncomeId == id);
+
+
+    if (income == null)
+        return NotFound();
+
+
+
+    // Delete related Ledger Entries first
+    var ledgerEntries = await _context.LedgerEntries
+        .Where(x => x.IncomeId == id)
+        .ToListAsync();
+
+
+    if (ledgerEntries.Any())
+    {
+        _context.LedgerEntries.RemoveRange(ledgerEntries);
+    }
+
+
+
+    // Delete Income
+    _context.Incomes.Remove(income);
+
+
+    await _context.SaveChangesAsync();
+
+
+
+    await _activityLog.LogAsync(
+        "Deleted",
+        "Income",
+        $"Income {income.Source} deleted",
+        User.GetUserId()
+    );
+
+
+    return NoContent();
+}
+
     }
 }

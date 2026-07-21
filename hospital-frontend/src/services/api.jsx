@@ -1,4 +1,4 @@
-﻿import axios from "axios";
+import axios from "axios";
 import { getToken } from "./auth";
 
 const api = axios.create({
@@ -59,7 +59,7 @@ error.response?.status
 
 console.error(
 "Response:",
-error.response?.data
+JSON.stringify(error.response?.data, null, 2)
 );
 
 

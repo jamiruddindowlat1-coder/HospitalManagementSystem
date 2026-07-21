@@ -19,7 +19,10 @@ import {
   FaVials,
   FaFileMedicalAlt,
   FaMoneyBillWave,
-  FaFileInvoiceDollar
+  FaFileInvoiceDollar,
+  FaBed,
+  FaXRay,
+  FaBoxes
 } from "react-icons/fa";
 
 
@@ -117,6 +120,22 @@ export default function Sidebar() {
           </NavLink>
 
 
+          {/* Radiology */}
+
+          <NavLink to="/radiology" className={menuClass}>
+            <FaXRay />
+            <span>Radiology Tests</span>
+          </NavLink>
+
+
+          {/* Inventory */}
+
+          <NavLink to="/inventory" className={menuClass}>
+            <FaBoxes />
+            <span>Inventory</span>
+          </NavLink>
+
+
 
           {/* Medical */}
 
@@ -129,6 +148,26 @@ export default function Sidebar() {
           <NavLink to="/nurses" className={menuClass}>
             <FaUserNurse />
             <span>Nurses</span>
+          </NavLink>
+
+          <NavLink to="/rooms" className={menuClass}>
+            <FaHospital />
+            <span>Rooms</span>
+          </NavLink>
+
+          <NavLink to="/beds" className={menuClass}>
+            <FaBed />
+            <span>Beds</span>
+          </NavLink>
+
+          <NavLink to="/nurse-assignments" className={menuClass}>
+            <FaUserNurse />
+            <span>Nurse Assignments</span>
+          </NavLink>
+
+          <NavLink to="/nursing-notes" className={menuClass}>
+            <FaNotesMedical />
+            <span>Nursing Notes</span>
           </NavLink>
 
 

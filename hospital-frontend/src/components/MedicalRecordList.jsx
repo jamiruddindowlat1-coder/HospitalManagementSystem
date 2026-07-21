@@ -13,6 +13,7 @@ function MedicalRecordList() {
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
   const emptyForm = {
     appointmentId: '',
@@ -55,6 +56,32 @@ function MedicalRecordList() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const openAddForm = () => {
+    setEditingId(null);
+    setForm(emptyForm);
+    setFormError('');
+    setShowForm(true);
+  };
+
+  const startEdit = (r) => {
+    setEditingId(r.medicalRecordId);
+    setForm({
+      appointmentId: r.appointmentId ?? '',
+      diagnosis: r.diagnosis || '',
+      prescription: r.prescription || '',
+      notes: r.notes || '',
+    });
+    setFormError('');
+    setShowForm(true);
+  };
+
+  const cancelForm = () => {
+    setEditingId(null);
+    setForm(emptyForm);
+    setShowForm(false);
+    setFormError('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError('');
@@ -66,21 +93,53 @@ function MedicalRecordList() {
 
     setSubmitting(true);
     try {
-      await api.post('/medicalrecords', {
-        appointmentId: Number(form.appointmentId),
-        diagnosis: form.diagnosis,
-        prescription: form.prescription,
-        notes: form.notes,
-      });
-      setForm(emptyForm);
-      setShowForm(false);
+      if (editingId) {
+        // ব্যাকএন্ড পুরো entity আশা করে (Entry state Modified), তাই
+        // মূল রেকর্ড থেকে বাকি ফিল্ড (createdAt ইত্যাদি) সংরক্ষণ করে পাঠানো হচ্ছে
+        const original = records.find((r) => r.medicalRecordId === editingId) || {};
+        await api.put(`/medicalrecords/${editingId}`, {
+          ...original,
+          medicalRecordId: editingId,
+          appointmentId: Number(form.appointmentId),
+          diagnosis: form.diagnosis,
+          prescription: form.prescription,
+          notes: form.notes,
+        });
+      } else {
+        await api.post('/medicalrecords', {
+          appointmentId: Number(form.appointmentId),
+          diagnosis: form.diagnosis,
+          prescription: form.prescription,
+          notes: form.notes,
+        });
+      }
+      cancelForm();
       await loadAll();
     } catch (err) {
       console.error(err);
-      const apiMessage = err.response?.data?.title || err.response?.data?.message;
-      setFormError(apiMessage || 'রেকর্ড যোগ করতে ব্যর্থ হয়েছে।');
+      if (err.response?.status === 403) {
+        setFormError('অনুমতি নেই — মেডিকেল রেকর্ড আপডেট শুধুমাত্র Doctor role করতে পারবে।');
+      } else {
+        const apiMessage = err.response?.data?.title || err.response?.data?.message;
+        setFormError(apiMessage || 'রেকর্ড সংরক্ষণ করতে ব্যর্থ হয়েছে।');
+      }
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('আপনি কি নিশ্চিত এই রেকর্ডটি ডিলিট করতে চান?')) return;
+    try {
+      await api.delete(`/medicalrecords/${id}`);
+      await loadAll();
+    } catch (err) {
+      console.error(err);
+      if (err.response?.status === 403) {
+        alert('অনুমতি নেই — মেডিকেল রেকর্ড ডিলিট শুধুমাত্র Admin role করতে পারবে।');
+      } else {
+        alert('রেকর্ড ডিলিট করতে ব্যর্থ হয়েছে।');
+      }
     }
   };
 
@@ -99,7 +158,7 @@ function MedicalRecordList() {
       </div>
 
       <div style={{ textAlign: 'center' }}>
-        <button className="btn-add" onClick={() => setShowForm(!showForm)}>
+        <button className="btn-add" onClick={() => (showForm ? cancelForm() : openAddForm())}>
           {showForm ? '✕ বাতিল করুন' : '➕ নতুন রেকর্ড'}
         </button>
       </div>
@@ -108,7 +167,7 @@ function MedicalRecordList() {
 
       {showForm && (
         <form onSubmit={handleSubmit} className="table-container" style={{ padding: '25px', display: 'grid', gap: '15px', maxWidth: '600px', margin: '0 auto', marginBottom: '20px' }}>
-          <h3>নতুন মেডিকেল রেকর্ড</h3>
+          <h3>{editingId ? 'মেডিকেল রেকর্ড এডিট করুন' : 'নতুন মেডিকেল রেকর্ড'}</h3>
           {formError && <div className="error" style={{color: 'red'}}>{formError}</div>}
 
           <div style={{ marginBottom: '10px' }}>
@@ -161,7 +220,7 @@ function MedicalRecordList() {
 
           <div style={{textAlign: 'right'}}>
           <button className="btn-add" type="submit" disabled={submitting}>
-            {submitting ? 'জমা হচ্ছে...' : 'রেকর্ড সংরক্ষণ করুন'}
+            {submitting ? 'জমা হচ্ছে...' : editingId ? 'আপডেট করুন' : 'রেকর্ড সংরক্ষণ করুন'}
           </button>
           </div>
         </form>
@@ -177,18 +236,23 @@ function MedicalRecordList() {
             <th>প্রেসক্রিপশন</th>
             <th>নোটস</th>
             <th>তারিখ</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {records.map((r) => (
-            <tr key={r.recordId}>
-              <td>#{r.recordId}</td>
-              <td>{patientName(r.appointment?.patientId)}</td>
-              <td>{doctorName(r.appointment?.doctorId)}</td>
+          <tr key={r.medicalRecordId}>
+              <td>#{r.medicalRecordId}</td>
+              <td>{r.patientName || '—'}</td>
+              <td>{r.doctorName || '—'}</td>
               <td>{r.diagnosis || '—'}</td>
               <td>{r.prescription || '—'}</td>
               <td>{r.notes || '—'}</td>
               <td>{new Date(r.createdAt).toLocaleDateString()}</td>
+              <td>
+                <button className="btn-edit" onClick={() => startEdit(r)} title="Edit">✏️</button>
+                <button className="btn-delete" onClick={() => handleDelete(r.medicalRecordId)} title="Delete">🗑️</button>
+              </td>
             </tr>
           ))}
         </tbody>

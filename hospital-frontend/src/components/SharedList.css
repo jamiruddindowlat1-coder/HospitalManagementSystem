@@ -232,3 +232,282 @@ form textarea {
   min-height: 80px;
   font-family: inherit;
 }
+
+/* ===================================================
+   Additional classes used by RadiologyList.jsx and
+   other newer components (shared-list-page family)
+   =================================================== */
+
+.shared-list-page {
+  padding: 15px;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 12px 18px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 10px rgba(102, 126, 234, 0.35);
+}
+
+.list-header-left h2 {
+  color: #fff;
+  margin: 0 0 4px 0;
+  font-size: 20px;
+}
+
+.list-header-left p {
+  color: #eee;
+  margin: 0;
+  font-size: 12px;
+}
+
+.list-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.search-input {
+  border: 2px solid #764ba2;
+  border-radius: 20px;
+  padding: 6px 14px;
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+  outline: none;
+}
+
+.search-input:focus {
+  box-shadow: 0 0 0 4px rgba(118, 75, 162, 0.2);
+}
+
+.record-count {
+  background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+  color: #fff;
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.alert-message {
+  background: #e6fffa;
+  border: 1px solid #38b2ac;
+  color: #234e52;
+  padding: 8px 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+/* Form card */
+.form-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.form-card h3 {
+  margin-top: 0;
+}
+
+.shared-form .form-row {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+}
+
+.shared-form .form-group {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.shared-form .form-group.full-width {
+  flex: 1 1 100%;
+}
+
+.shared-form label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #444;
+}
+
+.shared-form input,
+.shared-form select,
+.shared-form textarea {
+  border: 2px solid #e0e6ff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.shared-form input:focus,
+.shared-form select:focus,
+.shared-form textarea:focus {
+  border-color: #667eea;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+  color: #fff;
+  border: none;
+  padding: 7px 18px;
+  border-radius: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(24, 90, 157, 0.35);
+}
+
+.btn-cancel {
+  background: #eee;
+  color: #444;
+  border: 1px solid #ccc;
+  padding: 7px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Table wrapper + shared-table */
+.table-wrapper {
+  background: #fff;
+  border-radius: 16px;
+  overflow-x: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.shared-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 2px;
+  background: #f7f9ff;
+}
+
+.shared-table thead th {
+  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%);
+  color: #fff;
+  padding: 8px 6px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  border: none;
+  white-space: nowrap;
+}
+
+.shared-table tbody td {
+  padding: 6px 8px;
+  font-size: 13px;
+  text-align: center;
+  color: #333;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #e0e6ff;
+}
+
+.shared-table tbody tr:nth-child(6n+1) td { background: #fff5f5; }
+.shared-table tbody tr:nth-child(6n+2) td { background: #f5faff; }
+.shared-table tbody tr:nth-child(6n+3) td { background: #f5fff7; }
+.shared-table tbody tr:nth-child(6n+4) td { background: #fffbf0; }
+.shared-table tbody tr:nth-child(6n+5) td { background: #f9f5ff; }
+.shared-table tbody tr:nth-child(6n+6) td { background: #f0fbff; }
+
+.no-data {
+  text-align: center;
+  padding: 20px !important;
+  color: #888;
+}
+
+.text-muted {
+  color: #aaa;
+}
+
+.findings-cell {
+  max-width: 220px;
+  white-space: normal;
+  word-break: break-word;
+  text-align: left !important;
+}
+
+/* Action buttons wrapper - the actual fix: without this class
+   defined, the edit/delete buttons had no flex layout and were
+   being squeezed / hidden inside the narrow Actions column */
+.action-buttons {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.action-buttons .btn-edit,
+.action-buttons .btn-delete {
+  margin-right: 0;
+  min-width: 32px;
+  font-size: 14px;
+  padding: 4px 8px;
+}
+
+/* Badge (status) */
+.badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.badge-warning {
+  background: #f7971e;
+}
+
+.badge-success {
+  background: #43cea2;
+}
+
+.badge-danger {
+  background: #ff5f6d;
+}
+
+.badge-secondary {
+  background: #999;
+}
+
+.badge-type {
+  display: inline-block;
+  background: #eef1ff;
+  color: #4568dc;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}

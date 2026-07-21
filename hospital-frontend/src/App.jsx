@@ -16,6 +16,10 @@ import Medicine from "./components/Medicine";
 import ActivityLogPage from "./components/ActivityLogPage";
 import DepartmentList from "./components/DepartmentList";
 import NurseList from "./components/NurseList";
+import RoomList from "./components/RoomList";
+import BedList from "./components/BedList";
+import NurseAssignmentList from "./components/NurseAssignmentList";
+import NursingNoteList from "./components/NursingNoteList";
 import Reports from "./components/Reports";
 import LabResultList from "./components/LabResultList";
 import LabTestList from "./components/LabTestList";
@@ -29,6 +33,8 @@ import Expense from "./components/Expense";
 import SalaryPayments from "./components/Salarypayments";
 import Ledger from "./components/Ledger";
 import FinancialReportsPage from "./components/FinancialReports/FinancialReportsPage";
+import RadiologyList from "./components/RadiologyList";
+import InventoryList from "./components/InventoryList";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(isAuthenticated());
@@ -68,6 +74,10 @@ function App() {
       <Route path="/medicines" element={wrap(Medicine)} />
       <Route path="/departments" element={wrap(DepartmentList)} />
       <Route path="/nurses" element={wrap(NurseList)} />
+      <Route path="/rooms" element={wrap(RoomList)} />
+      <Route path="/beds" element={wrap(BedList)} />
+      <Route path="/nurse-assignments" element={wrap(NurseAssignmentList)} />
+      <Route path="/nursing-notes" element={wrap(NursingNoteList)} />
       <Route path="/reports" element={wrap(Reports)} />
       <Route path="/financial-reports" element={wrap(FinancialReportsPage)} />
       <Route path="/lab-results" element={wrap(LabResultList)} />
@@ -83,6 +93,8 @@ function App() {
       <Route path="/accounts/expense" element={wrap(Expense)} />
       <Route path="/accounts/salary" element={wrap(SalaryPayments)} />
       <Route path="/accounts/ledger" element={wrap(Ledger)} />
+      <Route path="/radiology" element={wrap(RadiologyList)} />
+      <Route path="/inventory" element={wrap(InventoryList)} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

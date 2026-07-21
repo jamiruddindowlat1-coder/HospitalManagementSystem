@@ -1,4 +1,4 @@
-﻿using HospitalManagement.API.Data;
+using HospitalManagement.API.Data;
 using HospitalManagement.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,27 +32,21 @@ namespace HospitalManagement.API.Controllers
                 .Select(d => new
                 {
                     departmentId = d.DepartmentId,
-
                     departmentName = d.DepartmentName,
-
                     description = d.Description,
-
+                    location = d.Location,
+                    phone = d.Phone,
+                    status = d.Status,
+                    departmentHead = d.DepartmentHead,
                     createdAt = d.CreatedAt,
-
-
                     doctors = d.Doctors.Select(doc => new
                     {
                         doctorId = doc.DoctorId,
-
                         fullName = doc.FullName,
-
                         specialization = doc.Specialization
-
                     }).ToList()
-
                 })
                 .ToListAsync();
-
 
             return Ok(departments);
 
@@ -74,34 +68,26 @@ namespace HospitalManagement.API.Controllers
                 .Select(d => new
                 {
                     departmentId = d.DepartmentId,
-
                     departmentName = d.DepartmentName,
-
                     description = d.Description,
-
+                    location = d.Location,
+                    phone = d.Phone,
+                    status = d.Status,
+                    departmentHead = d.DepartmentHead,
                     createdAt = d.CreatedAt,
-
-
                     doctors = d.Doctors.Select(doc => new
                     {
                         doctorId = doc.DoctorId,
-
                         fullName = doc.FullName,
-
                         specialization = doc.Specialization
-
                     }).ToList()
-
                 })
                 .FirstOrDefaultAsync();
-
-
 
             if (department == null)
             {
                 return NotFound();
             }
-
 
             return Ok(department);
 
@@ -162,18 +148,14 @@ namespace HospitalManagement.API.Controllers
 
 
 
-            existing.DepartmentName =
-                department.DepartmentName;
-
-
-            existing.Description =
-                department.Description;
-
-
+            existing.DepartmentName = department.DepartmentName;
+            existing.Description = department.Description;
+            existing.Location = department.Location;
+            existing.Phone = department.Phone;
+            existing.Status = department.Status;
+            existing.DepartmentHead = department.DepartmentHead;
 
             await _context.SaveChangesAsync();
-
-
 
             return Ok(new
             {

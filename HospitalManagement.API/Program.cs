@@ -32,7 +32,7 @@ builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
 builder.Services.AddScoped<NurseService>();
 builder.Services.AddScoped<LabTestService>();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-
+builder.Services.AddScoped<IFinancialReportService, FinancialReportService>();
 // CONTROLLERS
 
 builder.Services

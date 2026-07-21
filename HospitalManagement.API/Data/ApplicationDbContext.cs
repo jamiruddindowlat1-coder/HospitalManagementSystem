@@ -32,6 +32,11 @@ namespace HospitalManagement.API.Data
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<LedgerEntry> LedgerEntries { get; set; }
         public DbSet<SalaryPayment> SalaryPayments { get; set; }
+        public DbSet<Bed> Beds { get; set; }
+        public DbSet<NurseAssignment> NurseAssignments { get; set; }
+        public DbSet<NursingNote> NursingNotes { get; set; }
+        public DbSet<RadiologyTest> RadiologyTests { get; set; }
+        public DbSet<InventoryItem> InventoryItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,6 +47,54 @@ modelBuilder.Entity<Nurse>()
     .HasOne(n => n.Department)
     .WithMany()
     .HasForeignKey(n => n.DepartmentId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+modelBuilder.Entity<Room>()
+    .HasOne(r => r.Department)
+    .WithMany()
+    .HasForeignKey(r => r.DepartmentId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+modelBuilder.Entity<Bed>()
+    .HasOne(b => b.Room)
+    .WithMany(r => r.Beds)
+    .HasForeignKey(b => b.RoomId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+modelBuilder.Entity<NurseAssignment>()
+    .HasOne(na => na.Nurse)
+    .WithMany()
+    .HasForeignKey(na => na.NurseId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+modelBuilder.Entity<NurseAssignment>()
+    .HasOne(na => na.Patient)
+    .WithMany()
+    .HasForeignKey(na => na.PatientId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+modelBuilder.Entity<NursingNote>()
+    .HasOne(nn => nn.Nurse)
+    .WithMany()
+    .HasForeignKey(nn => nn.NurseId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+modelBuilder.Entity<NursingNote>()
+    .HasOne(nn => nn.Patient)
+    .WithMany()
+    .HasForeignKey(nn => nn.PatientId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+modelBuilder.Entity<RadiologyTest>()
+    .HasOne(rt => rt.Patient)
+    .WithMany()
+    .HasForeignKey(rt => rt.PatientId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+modelBuilder.Entity<RadiologyTest>()
+    .HasOne(rt => rt.Doctor)
+    .WithMany()
+    .HasForeignKey(rt => rt.DoctorId)
     .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Billing>()
                 .HasKey(x => x.BillId);
@@ -145,6 +198,12 @@ modelBuilder.Entity<TestCategory>()
             // Medicine Decimal
 
             modelBuilder.Entity<Medicine>()
+                .Property(x => x.UnitPrice)
+                .HasPrecision(18, 2);
+
+            // InventoryItem Decimal
+
+            modelBuilder.Entity<InventoryItem>()
                 .Property(x => x.UnitPrice)
                 .HasPrecision(18, 2);
 

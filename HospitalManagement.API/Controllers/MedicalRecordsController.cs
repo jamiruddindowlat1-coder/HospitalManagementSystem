@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using HospitalManagement.API.Data;
 using HospitalManagement.API.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace HospitalManagement.API.Controllers
 {
@@ -19,80 +20,196 @@ namespace HospitalManagement.API.Controllers
         }
 
 
+        // GET ALL
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MedicalRecord>>> GetMedicalRecords()
+        public async Task<IActionResult> GetMedicalRecords()
         {
-            return await _context.MedicalRecords
+            var records = await _context.MedicalRecords
+                .Select(m => new
+                {
+                    medicalRecordId = m.MedicalRecordId,
+                    appointmentId = m.AppointmentId,
+                    diagnosis = m.Diagnosis,
+                    prescription = m.Prescription,
+                    notes = m.Notes,
+                    createdAt = m.CreatedAt,
 
-                .Include(m => m.Appointment)
-                    .ThenInclude(a => a!.Patient)
+                    patientId = m.PatientId,
+                    doctorId = m.DoctorId,
 
-                .Include(m => m.Appointment)
-                    .ThenInclude(a => a!.Doctor)
+                    patientName = m.Patient != null
+                        ? m.Patient.FullName
+                        : null,
 
+                    doctorName = m.Doctor != null
+                        ? m.Doctor.FullName
+                        : null
+                })
                 .ToListAsync();
+
+
+            return Ok(records);
         }
 
 
 
+        // GET BY ID
         [HttpGet("{id}")]
-        public async Task<ActionResult<MedicalRecord>> GetMedicalRecord(int id)
+        public async Task<IActionResult> GetMedicalRecord(int id)
         {
             var record = await _context.MedicalRecords
+                .Where(m => m.MedicalRecordId == id)
+                .Select(m => new
+                {
+                    medicalRecordId = m.MedicalRecordId,
+                    appointmentId = m.AppointmentId,
+                    diagnosis = m.Diagnosis,
+                    prescription = m.Prescription,
+                    notes = m.Notes,
+                    createdAt = m.CreatedAt,
 
-                .Include(m => m.Appointment)
-                    .ThenInclude(a => a!.Patient)
+                    patientId = m.PatientId,
+                    doctorId = m.DoctorId,
 
-                .Include(m => m.Appointment)
-                    .ThenInclude(a => a!.Doctor)
+                    patientName = m.Patient != null
+                        ? m.Patient.FullName
+                        : null,
 
-                .FirstOrDefaultAsync(
-                    m => m.MedicalRecordId == id
-                );
+                    doctorName = m.Doctor != null
+                        ? m.Doctor.FullName
+                        : null
+                })
+                .FirstOrDefaultAsync();
 
 
-            if(record == null)
+            if (record == null)
                 return NotFound();
 
 
-            return record;
+            return Ok(record);
         }
 
 
 
+
+        // CREATE MEDICAL RECORD
         [Authorize(Roles = "Doctor")]
         [HttpPost]
         public async Task<ActionResult<MedicalRecord>> CreateMedicalRecord(
             MedicalRecord record)
         {
 
+            // Logged in User Id
+            var userIdClaim = User.FindFirst(
+                ClaimTypes.NameIdentifier
+            );
+
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+
+
+            int userId = int.Parse(userIdClaim.Value);
+
+
+
+            // Find Doctor Profile
+            var doctor = await _context.Doctors
+                .FirstOrDefaultAsync(d => d.UserId == userId);
+
+
+
+            if (doctor == null)
+            {
+                return BadRequest(
+                    "Doctor profile not found."
+                );
+            }
+
+
+
+            // Find Appointment
+            var appointment = await _context.Appointments
+                .FirstOrDefaultAsync(a =>
+                    a.AppointmentId == record.AppointmentId
+                );
+
+
+
+            if (appointment == null)
+            {
+                return BadRequest(
+                    "Appointment not found."
+                );
+            }
+
+
+
+            // Auto assign Doctor & Patient
+            record.DoctorId = doctor.DoctorId;
+
+            record.PatientId = appointment.PatientId;
+
+
+
+            record.MedicalRecordId = 0;
+
+            record.CreatedAt = DateTime.Now;
+
+
+
             _context.MedicalRecords.Add(record);
 
             await _context.SaveChangesAsync();
 
 
+
             return CreatedAtAction(
                 nameof(GetMedicalRecord),
-                new { id = record.MedicalRecordId },
+                new
+                {
+                    id = record.MedicalRecordId
+                },
                 record
             );
         }
 
 
 
-        [Authorize(Roles = "Doctor")]
+
+
+        // UPDATE
+        [Authorize(Roles = "Doctor,Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMedicalRecord(
             int id,
             MedicalRecord record)
         {
 
-            if(id != record.MedicalRecordId)
-                return BadRequest();
+            var existing =
+                await _context.MedicalRecords.FindAsync(id);
 
 
-            _context.Entry(record).State =
-                EntityState.Modified;
+
+            if (existing == null)
+                return NotFound();
+
+
+
+            existing.AppointmentId =
+                record.AppointmentId;
+
+            existing.Diagnosis =
+                record.Diagnosis;
+
+            existing.Prescription =
+                record.Prescription;
+
+            existing.Notes =
+                record.Notes;
+
 
 
             await _context.SaveChangesAsync();
@@ -103,17 +220,23 @@ namespace HospitalManagement.API.Controllers
 
 
 
+
+
+        // DELETE
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMedicalRecord(int id)
+        public async Task<IActionResult> DeleteMedicalRecord(
+            int id)
         {
 
             var record =
                 await _context.MedicalRecords.FindAsync(id);
 
 
+
             if(record == null)
                 return NotFound();
+
 
 
             _context.MedicalRecords.Remove(record);

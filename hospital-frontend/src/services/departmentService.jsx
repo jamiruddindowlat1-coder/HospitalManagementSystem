@@ -22,7 +22,11 @@ export const updateDepartment = async (id, department) => {
         {
             departmentId: id,
             departmentName: department.departmentName,
-            description: department.description
+            description: department.description,
+            location: department.location,
+            phone: department.phone,
+            status: department.status,
+            departmentHead: department.departmentHead
         }
     );
     return response.data;
