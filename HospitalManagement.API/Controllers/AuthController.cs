@@ -104,27 +104,60 @@ namespace HospitalManagement.API.Controllers
             });
         }
 
-        [HttpPost("logout")]
+        [HttpPost("forgot-password")]
         [AllowAnonymous]
-        public async Task<IActionResult> Logout([FromBody] RefreshRequest request)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
-            if (string.IsNullOrEmpty(request.RefreshToken))
+            if (string.IsNullOrEmpty(request.Email))
             {
-                return BadRequest(new { message = "Refresh token is required." });
+                return BadRequest(new { message = "Email is required." });
             }
 
-            var storedToken = await _context.RefreshTokens
-                .FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email && u.IsActive);
 
-            if (storedToken != null)
+            // Same response whether user exists or not (prevents email enumeration)
+            if (user == null)
             {
-                storedToken.IsRevoked = true;
-                await _context.SaveChangesAsync();
+                return Ok(new { message = "If this email exists, a reset link has been generated." });
             }
 
-            return Ok(new { message = "Logged out successfully." });
+            user.PasswordResetToken = GenerateSecureRandomToken();
+            user.PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1);
+            await _context.SaveChangesAsync();
+
+            // TODO: Replace with real email sending once SMTP is configured.
+            // For now, the token is returned directly so it can be tested.
+            return Ok(new
+            {
+                message = "If this email exists, a reset link has been generated.",
+                resetToken = user.PasswordResetToken,
+                expiresAt = user.PasswordResetTokenExpiry
+            });
         }
 
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Token) || string.IsNullOrEmpty(request.NewPassword))
+            {
+                return BadRequest(new { message = "Token and new password are required." });
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.PasswordResetToken == request.Token);
+
+            if (user == null || user.PasswordResetTokenExpiry == null || user.PasswordResetTokenExpiry < DateTime.UtcNow)
+            {
+                return BadRequest(new { message = "Invalid or expired reset token." });
+            }
+
+            user.PasswordHash = PasswordHasher.HashPassword(request.NewPassword);
+            user.PasswordResetToken = null;
+            user.PasswordResetTokenExpiry = null;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Password has been reset successfully." });
+        }
         private async Task<RefreshToken> GenerateAndStoreRefreshToken(int userId)
         {
             var refreshToken = new RefreshToken

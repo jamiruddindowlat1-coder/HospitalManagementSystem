@@ -7,8 +7,10 @@ namespace HospitalManagement.API.Models
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public int RoleId { get; set; }
-        public bool IsActive { get; set; } = true;
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+       public bool IsActive { get; set; } = true;
+       public DateTime CreatedAt { get; set; } = DateTime.Now;
+       public string? PasswordResetToken { get; set; }
+       public DateTime? PasswordResetTokenExpiry { get; set; }
 
         // Navigation properties
         public Role? Role { get; set; }
