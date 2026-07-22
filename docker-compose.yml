@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: hms-sql-db
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=YourStrong@Pass123
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  backend:
+    build:
+      context: ./HospitalManagement.API
+      dockerfile: Dockerfile
+    container_name: hms-api-backend
+    ports:
+      - "5151:5151"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=database;Database=HospitalManagementDB;User Id=sa;Password=YourStrong@Pass123;TrustServerCertificate=True;
+      - ASPNETCORE_ENVIRONMENT=Production
+    depends_on:
+      - database
+
+  frontend:
+    build:
+      context: ./hospital-frontend
+      dockerfile: Dockerfile
+    container_name: hms-react-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  sql_data:

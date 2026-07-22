@@ -35,6 +35,9 @@ import Ledger from "./components/Ledger";
 import FinancialReportsPage from "./components/FinancialReports/FinancialReportsPage";
 import RadiologyList from "./components/RadiologyList";
 import InventoryList from "./components/InventoryList";
+import PharmacyDashboard from "./components/PharmacyDashboard";
+import WardDashboard from "./components/WardDashboard";
+import MobilePortal from "./components/MobilePortal";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(isAuthenticated());
@@ -95,6 +98,9 @@ function App() {
       <Route path="/accounts/ledger" element={wrap(Ledger)} />
       <Route path="/radiology" element={wrap(RadiologyList)} />
       <Route path="/inventory" element={wrap(InventoryList)} />
+      <Route path="/pharmacy" element={wrap(PharmacyDashboard)} />
+      <Route path="/ward-dashboard" element={wrap(WardDashboard)} />
+      <Route path="/mobile" element={wrap(MobilePortal)} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

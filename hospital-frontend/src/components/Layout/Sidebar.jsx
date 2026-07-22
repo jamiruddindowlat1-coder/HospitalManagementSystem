@@ -98,6 +98,21 @@ export default function Sidebar() {
             <span>Medicines</span>
           </NavLink>
 
+          <NavLink to="/pharmacy" className={menuClass}>
+            <FaPills />
+            <span>Pharmacy Workflow</span>
+          </NavLink>
+
+          <NavLink to="/ward-dashboard" className={menuClass}>
+            <FaBed />
+            <span>Ward Dashboard</span>
+          </NavLink>
+
+          <NavLink to="/mobile" className={menuClass}>
+            <FaUserNurse />
+            <span>Mobile App Portal</span>
+          </NavLink>
+
 
 
           {/* Laboratory */}

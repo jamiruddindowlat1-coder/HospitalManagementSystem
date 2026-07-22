@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 import "./SharedList.css";
+import InvoiceModal from './InvoiceModal';
 
 function BillingList() {
 
@@ -8,6 +9,7 @@ function BillingList() {
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [admissions, setAdmissions] = useState([]);
+  const [selectedInvoiceBill, setSelectedInvoiceBill] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -795,6 +797,14 @@ function BillingList() {
             <td>
               <button
                 className="btn-edit"
+                style={{ background: "#0f766e" }}
+                onClick={()=>setSelectedInvoiceBill(bill)}
+              >
+                🧾 Invoice
+              </button>
+              &nbsp;
+              <button
+                className="btn-edit"
                 onClick={()=>handleEdit(bill)}
               >
                 Edit
@@ -817,6 +827,13 @@ function BillingList() {
 
     </table>
     </div>
+
+    {selectedInvoiceBill && (
+      <InvoiceModal 
+        bill={selectedInvoiceBill} 
+        onClose={() => setSelectedInvoiceBill(null)} 
+      />
+    )}
 
   </div>
 );
