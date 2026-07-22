@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import { saveToken, saveRefreshToken } from '../services/auth';
 
@@ -74,6 +74,10 @@ navigate('/');
 
         {error && <p className="error">{error}</p>}
 
+        <p style={{ textAlign: "right" }}>
+          <Link to="/forgot-password">Forgot Password?</Link>
+        </p>
+
         <div className="login-hint">
           <p>ডেমো লগইন: <strong>admin@hospital.local</strong> / <strong>Admin123!</strong></p>
           <p>অথবা <strong>sarah.khan@hospital.local</strong> / <strong>Doctor123!</strong></p>
@@ -88,3 +92,5 @@ navigate('/');
 }
 
 export default Login;
+
+

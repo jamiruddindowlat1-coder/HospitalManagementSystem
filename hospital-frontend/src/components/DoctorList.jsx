@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import "./SharedList.css";
-
+import "./SharedList.css";
+import { useToast } from "./ToastContext.jsx";
 
 function DoctorList(){
+const toast = useToast();
 
 
 const [doctors,setDoctors]=useState([]);
@@ -201,7 +203,7 @@ data
 
 
 
-alert("Doctor Saved");
+toast.success("Doctor Saved");
 
 
 setShowForm(false);
@@ -216,8 +218,7 @@ catch(err){
 
 console.log(err);
 
-alert("Save failed");
-
+toast.error("Save failed");
 }
 finally{
 

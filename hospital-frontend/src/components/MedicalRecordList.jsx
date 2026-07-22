@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 import "./SharedList.css";
+import { useToast } from "./ToastContext.jsx";
 
 function MedicalRecordList() {
+  const toast = useToast();
   const [records, setRecords] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [patients, setPatients] = useState([]);
@@ -136,9 +138,9 @@ function MedicalRecordList() {
     } catch (err) {
       console.error(err);
       if (err.response?.status === 403) {
-        alert('অনুমতি নেই — মেডিকেল রেকর্ড ডিলিট শুধুমাত্র Admin role করতে পারবে।');
+        toast.error('অনুমতি নেই — মেডিকেল রেকর্ড ডিলিট শুধুমাত্র Admin role করতে পারবে।');
       } else {
-        alert('রেকর্ড ডিলিট করতে ব্যর্থ হয়েছে।');
+       toast.error('রেকর্ড ডিলিট করতে ব্যর্থ হয়েছে।');
       }
     }
   };

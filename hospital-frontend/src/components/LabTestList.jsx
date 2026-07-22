@@ -3,9 +3,9 @@ import { getLabTests, createLabTest, updateLabTest, deleteLabTest } from "../ser
 import { getPatients } from "../services/patientService";
 import { getDoctors } from "../services/doctorService";
 import "./SharedList.css";
-
+import { useToast } from "./ToastContext.jsx";
 function LabTestList() {
-
+const toast = useToast();
     const emptyForm = {
         patientId: "",
         doctorId: "",
@@ -97,7 +97,7 @@ function LabTestList() {
             loadData();
         } catch (error) {
             console.log("SAVE ERROR:", error.response || error);
-            alert("Save Failed");
+           toast.error("Save Failed");
         } finally {
             setSubmitting(false);
         }
@@ -129,7 +129,7 @@ function LabTestList() {
             loadData();
         } catch (error) {
             console.log("DELETE ERROR:", error.response || error);
-            alert("Delete Failed");
+           toast.error("Delete Failed");
         }
     };
 

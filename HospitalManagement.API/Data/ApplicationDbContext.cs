@@ -5,226 +5,85 @@ namespace HospitalManagement.API.Data
 {
     public class ApplicationDbContext : DbContext
     {
+
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options
         ) : base(options)
         {
+
         }
 
 
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Department> Departments { get; set; }
-        public DbSet<Nurse> Nurses { get; set; }
-        public DbSet<LabTest> LabTests { get; set; }
-        public DbSet<Doctor> Doctors { get; set; }
+        // Patients & Clinical
         public DbSet<Patient> Patients { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
+
+
+
+        // Hospital
+        public DbSet<Department> Departments { get; set; }
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<Bed> Beds { get; set; }
         public DbSet<Admission> Admissions { get; set; }
-        public DbSet<Billing> Billings { get; set; }
+
+
+
+        // Pharmacy
         public DbSet<Medicine> Medicines { get; set; }
-        public DbSet<ActivityLog> ActivityLogs { get; set; }
+
+
+
+        // Laboratory
+        public DbSet<LabTest> LabTests { get; set; }
         public DbSet<LabResult> LabResults { get; set; }
         public DbSet<TestCategory> TestCategories { get; set; }
-        public DbSet<Income> Incomes { get; set; }
-        public DbSet<Expense> Expenses { get; set; }
-        public DbSet<LedgerEntry> LedgerEntries { get; set; }
-        public DbSet<SalaryPayment> SalaryPayments { get; set; }
-        public DbSet<Bed> Beds { get; set; }
+        public DbSet<RadiologyTest> RadiologyTests { get; set; }
+
+
+
+        // Nursing
+        public DbSet<Nurse> Nurses { get; set; }
         public DbSet<NurseAssignment> NurseAssignments { get; set; }
         public DbSet<NursingNote> NursingNotes { get; set; }
-        public DbSet<RadiologyTest> RadiologyTests { get; set; }
+
+
+
+        // Accounts
+        public DbSet<Billing> Billings { get; set; }
+        public DbSet<Income> Incomes { get; set; }
+        public DbSet<Expense> Expenses { get; set; }
+        public DbSet<SalaryPayment> SalaryPayments { get; set; }
+        public DbSet<LedgerEntry> LedgerEntries { get; set; }
+
+
+
+        // HR
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<Payroll> Payrolls { get; set; }
+        public DbSet<Leave> Leaves { get; set; }
+        public DbSet<LeaveBalance> LeaveBalances { get; set; }
+
+
+
+        // Inventory
         public DbSet<InventoryItem> InventoryItems { get; set; }
+
+
+
+        // Security
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-
-            // Keys
-
-modelBuilder.Entity<Nurse>()
-    .HasOne(n => n.Department)
-    .WithMany()
-    .HasForeignKey(n => n.DepartmentId)
-    .OnDelete(DeleteBehavior.Restrict);
-
-modelBuilder.Entity<Room>()
-    .HasOne(r => r.Department)
-    .WithMany()
-    .HasForeignKey(r => r.DepartmentId)
-    .OnDelete(DeleteBehavior.Restrict);
-
-modelBuilder.Entity<Bed>()
-    .HasOne(b => b.Room)
-    .WithMany(r => r.Beds)
-    .HasForeignKey(b => b.RoomId)
-    .OnDelete(DeleteBehavior.Cascade);
-
-modelBuilder.Entity<NurseAssignment>()
-    .HasOne(na => na.Nurse)
-    .WithMany()
-    .HasForeignKey(na => na.NurseId)
-    .OnDelete(DeleteBehavior.Restrict);
-
-modelBuilder.Entity<NurseAssignment>()
-    .HasOne(na => na.Patient)
-    .WithMany()
-    .HasForeignKey(na => na.PatientId)
-    .OnDelete(DeleteBehavior.Cascade);
-
-modelBuilder.Entity<NursingNote>()
-    .HasOne(nn => nn.Nurse)
-    .WithMany()
-    .HasForeignKey(nn => nn.NurseId)
-    .OnDelete(DeleteBehavior.Restrict);
-
-modelBuilder.Entity<NursingNote>()
-    .HasOne(nn => nn.Patient)
-    .WithMany()
-    .HasForeignKey(nn => nn.PatientId)
-    .OnDelete(DeleteBehavior.Cascade);
-
-modelBuilder.Entity<RadiologyTest>()
-    .HasOne(rt => rt.Patient)
-    .WithMany()
-    .HasForeignKey(rt => rt.PatientId)
-    .OnDelete(DeleteBehavior.Cascade);
-
-modelBuilder.Entity<RadiologyTest>()
-    .HasOne(rt => rt.Doctor)
-    .WithMany()
-    .HasForeignKey(rt => rt.DoctorId)
-    .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Billing>()
-                .HasKey(x => x.BillId);
 
 
-            modelBuilder.Entity<MedicalRecord>()
-                .HasKey(x => x.MedicalRecordId);
+        // Logs
+        public DbSet<ActivityLog> ActivityLogs { get; set; }
 
 
-
-            // Department - Doctor Relation (ONLY ONE)
-
-            modelBuilder.Entity<Doctor>()
-                .HasOne(d => d.Department)
-                .WithMany(d => d.Doctors)
-                .HasForeignKey(d => d.DepartmentId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-
-
-            // Billing Computed Column
-
-            modelBuilder.Entity<Billing>()
-    .Property(x => x.TotalAmount)  
-    .HasPrecision(18, 2)
-    .HasComputedColumnSql(
-        "[ConsultationFee] + [RoomCharge] + [MedicineCharge] + [OtherCharges]"
-    );
-
-modelBuilder.Entity<TestCategory>()
-    .HasKey(tc => tc.TestCategoryId);
-// Income Decimal
-            modelBuilder.Entity<Income>()
-                .Property(x => x.Amount)
-                .HasPrecision(18, 2);
-
-            // Expense Decimal
-            modelBuilder.Entity<Expense>()
-                .Property(x => x.Amount)
-                .HasPrecision(18, 2);
-
-            // LedgerEntry Decimal
-            modelBuilder.Entity<LedgerEntry>()
-                .Property(x => x.Amount)
-                .HasPrecision(18, 2);
-
-            modelBuilder.Entity<LedgerEntry>()
-                .Property(x => x.RunningBalance)
-                .HasPrecision(18, 2);
-
-            modelBuilder.Entity<LedgerEntry>()
-                .HasOne(x => x.Income)
-                .WithMany()
-                .HasForeignKey(x => x.IncomeId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<LedgerEntry>()
-                .HasOne(x => x.Expense)
-                .WithMany()
-                .HasForeignKey(x => x.ExpenseId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // SalaryPayment Decimal
-            modelBuilder.Entity<SalaryPayment>()
-                .Property(x => x.Amount)
-                .HasPrecision(18, 2);
-modelBuilder.Entity<TestCategory>()
-    .ToTable("TestCategories");
-
-            // Billing Decimal
-
-            modelBuilder.Entity<Billing>()
-                .Property(x => x.ConsultationFee)
-                .HasPrecision(18, 2);
-
-
-            modelBuilder.Entity<Billing>()
-                .Property(x => x.RoomCharge)
-                .HasPrecision(18, 2);
-
-
-            modelBuilder.Entity<Billing>()
-                .Property(x => x.MedicineCharge)
-                .HasPrecision(18, 2);
-
-
-            modelBuilder.Entity<Billing>()
-                .Property(x => x.OtherCharges)
-                .HasPrecision(18, 2);
-
-
-
-            // Doctor Decimal
-
-            modelBuilder.Entity<Doctor>()
-                .Property(x => x.ConsultationFee)
-                .HasPrecision(18, 2);
-
-
-
-            // Medicine Decimal
-
-            modelBuilder.Entity<Medicine>()
-                .Property(x => x.UnitPrice)
-                .HasPrecision(18, 2);
-
-            // InventoryItem Decimal
-
-            modelBuilder.Entity<InventoryItem>()
-                .Property(x => x.UnitPrice)
-                .HasPrecision(18, 2);
-
-
-
-            // Room Decimal
-
-            modelBuilder.Entity<Room>()
-                .Property(x => x.PricePerDay)
-                .HasPrecision(18, 2);
-
-
-
-            modelBuilder.Entity<Billing>()
-                .ToTable("Billing");
-
-
-
-            base.OnModelCreating(modelBuilder);
-        }
     }
 }
-

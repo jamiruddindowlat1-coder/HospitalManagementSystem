@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import api from '../services/api';
 import "./SharedList.css";
 import InvoiceModal from './InvoiceModal';
+import { useToast } from "./ToastContext.jsx";
 
 function BillingList() {
+
+  const toast = useToast();
 
   const [bills, setBills] = useState([]);
   const [patients, setPatients] = useState([]);
@@ -189,9 +192,7 @@ function BillingList() {
 
       console.error(err);
 
-      alert(
-        "Bill delete করা যায়নি"
-      );
+      toast.error("Bill delete করা যায়নি");
 
 
     }
@@ -293,9 +294,7 @@ function BillingList() {
 
       console.error(err);
 
-      alert(
-        "Bill save করা যায়নি"
-      );
+     toast.error("Bill save করা যায়নি");
 
 
     }

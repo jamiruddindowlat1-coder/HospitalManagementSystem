@@ -4,6 +4,8 @@ import AddTestCategory from "./components/AddTestCategory";
 import EditTestCategory from "./components/EditTestCategory";
 import TestCategoryList from "./components/TestCategoryList";
 import Login from "./components/Login";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PatientList from "./components/PatientList";
@@ -35,9 +37,16 @@ import Ledger from "./components/Ledger";
 import FinancialReportsPage from "./components/FinancialReports/FinancialReportsPage";
 import RadiologyList from "./components/RadiologyList";
 import InventoryList from "./components/InventoryList";
+import EmployeeList from "./components/EmployeeList";
 import PharmacyDashboard from "./components/PharmacyDashboard";
 import WardDashboard from "./components/WardDashboard";
 import MobilePortal from "./components/MobilePortal";
+import AttendanceList from "./components/AttendanceList";
+import PayrollList from "./components/PayrollList";
+import LeaveList from "./components/LeaveList";
+import RolePermissionsPage from "./components/RolePermissionsPage.jsx";
+import { PermissionProvider } from "./components/PermissionContext.jsx";
+import PermissionRoute from "./components/PermissionRoute.jsx";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(isAuthenticated());
@@ -50,59 +59,70 @@ function App() {
   const wrap = (Component) => (
     <ProtectedRoute>
       <AppLayout>
-        <Component />
+        <PermissionRoute>
+          <Component />
+        </PermissionRoute>
       </AppLayout>
     </ProtectedRoute>
   );
 
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={
-          loggedIn ? (
-            <Navigate to="/" replace />
-          ) : (
-            <Login onLogin={() => setLoggedIn(true)} />
-          )
-        }
-      />
-      <Route path="/" element={wrap(Dashboard)} />
-      <Route path="/patients" element={wrap(PatientList)} />
-      <Route path="/doctors" element={wrap(DoctorList)} />
-      <Route path="/appointments" element={wrap(AppointmentList)} />
-      <Route path="/admissions" element={wrap(AdmissionList)} />
-      <Route path="/billing" element={wrap(BillingList)} />
-      <Route path="/medical-records" element={wrap(MedicalRecordList)} />
-      <Route path="/medicines" element={wrap(Medicine)} />
-      <Route path="/departments" element={wrap(DepartmentList)} />
-      <Route path="/nurses" element={wrap(NurseList)} />
-      <Route path="/rooms" element={wrap(RoomList)} />
-      <Route path="/beds" element={wrap(BedList)} />
-      <Route path="/nurse-assignments" element={wrap(NurseAssignmentList)} />
-      <Route path="/nursing-notes" element={wrap(NursingNoteList)} />
-      <Route path="/reports" element={wrap(Reports)} />
-      <Route path="/financial-reports" element={wrap(FinancialReportsPage)} />
-      <Route path="/lab-results" element={wrap(LabResultList)} />
-      <Route path="/lab-tests" element={wrap(LabTestList)} />
-      <Route path="/lab-results/add" element={wrap(AddLabResult)} />
-      <Route path="/users" element={wrap(UserManagement)} />
-      <Route path="/activity-logs" element={wrap(ActivityLogPage)} />
-      <Route path="/test-categories" element={wrap(TestCategoryList)} />
-      <Route path="/test-categories/edit/:id" element={wrap(EditTestCategory)} />
-      <Route path="/test-categories/add" element={wrap(AddTestCategory)} />
-      <Route path="/accounts/dashboard" element={wrap(AccountsDashboard)} />
-      <Route path="/accounts/income" element={wrap(Income)} />
-      <Route path="/accounts/expense" element={wrap(Expense)} />
-      <Route path="/accounts/salary" element={wrap(SalaryPayments)} />
-      <Route path="/accounts/ledger" element={wrap(Ledger)} />
-      <Route path="/radiology" element={wrap(RadiologyList)} />
-      <Route path="/inventory" element={wrap(InventoryList)} />
-      <Route path="/pharmacy" element={wrap(PharmacyDashboard)} />
-      <Route path="/ward-dashboard" element={wrap(WardDashboard)} />
-      <Route path="/mobile" element={wrap(MobilePortal)} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <PermissionProvider>
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            loggedIn ? (
+              <Navigate to="/" replace />
+            ) : (
+              <Login onLogin={() => setLoggedIn(true)} />
+            )
+          }
+        />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/" element={wrap(Dashboard)} />
+        <Route path="/patients" element={wrap(PatientList)} />
+        <Route path="/doctors" element={wrap(DoctorList)} />
+        <Route path="/appointments" element={wrap(AppointmentList)} />
+        <Route path="/admissions" element={wrap(AdmissionList)} />
+        <Route path="/billing" element={wrap(BillingList)} />
+        <Route path="/medical-records" element={wrap(MedicalRecordList)} />
+        <Route path="/medicines" element={wrap(Medicine)} />
+        <Route path="/departments" element={wrap(DepartmentList)} />
+        <Route path="/nurses" element={wrap(NurseList)} />
+        <Route path="/rooms" element={wrap(RoomList)} />
+        <Route path="/beds" element={wrap(BedList)} />
+        <Route path="/nurse-assignments" element={wrap(NurseAssignmentList)} />
+        <Route path="/nursing-notes" element={wrap(NursingNoteList)} />
+        <Route path="/reports" element={wrap(Reports)} />
+        <Route path="/financial-reports" element={wrap(FinancialReportsPage)} />
+        <Route path="/lab-results" element={wrap(LabResultList)} />
+        <Route path="/lab-tests" element={wrap(LabTestList)} />
+        <Route path="/lab-results/add" element={wrap(AddLabResult)} />
+        <Route path="/users" element={wrap(UserManagement)} />
+        <Route path="/activity-logs" element={wrap(ActivityLogPage)} />
+        <Route path="/test-categories" element={wrap(TestCategoryList)} />
+        <Route path="/test-categories/edit/:id" element={wrap(EditTestCategory)} />
+        <Route path="/test-categories/add" element={wrap(AddTestCategory)} />
+        <Route path="/accounts/dashboard" element={wrap(AccountsDashboard)} />
+        <Route path="/accounts/income" element={wrap(Income)} />
+        <Route path="/accounts/expense" element={wrap(Expense)} />
+        <Route path="/accounts/salary" element={wrap(SalaryPayments)} />
+        <Route path="/accounts/ledger" element={wrap(Ledger)} />
+        <Route path="/radiology" element={wrap(RadiologyList)} />
+        <Route path="/inventory" element={wrap(InventoryList)} />
+        <Route path="/employees" element={wrap(EmployeeList)} />
+        <Route path="/pharmacy" element={wrap(PharmacyDashboard)} />
+        <Route path="/ward-dashboard" element={wrap(WardDashboard)} />
+        <Route path="/mobile" element={wrap(MobilePortal)} />
+        <Route path="/attendance" element={wrap(AttendanceList)} />
+        <Route path="/payroll" element={wrap(PayrollList)} />
+        <Route path="/leaves" element={wrap(LeaveList)} />
+        <Route path="/role-permissions" element={wrap(RolePermissionsPage)} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </PermissionProvider>
   );
 }
 
