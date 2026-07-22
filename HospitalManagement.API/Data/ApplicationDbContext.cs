@@ -37,6 +37,7 @@ namespace HospitalManagement.API.Data
         public DbSet<NursingNote> NursingNotes { get; set; }
         public DbSet<RadiologyTest> RadiologyTests { get; set; }
         public DbSet<InventoryItem> InventoryItems { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

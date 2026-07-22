@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,14 +39,113 @@ namespace HospitalManagement.API.Controllers
                 return Unauthorized(new { message = "Invalid credentials." });
             }
 
-            var jwtSettings = _configuration.GetSection("Jwt").Get<JwtSettings>(); if (jwtSettings != null) { }
+            var jwtSettings = _configuration.GetSection("Jwt").Get<JwtSettings>();
             if (jwtSettings == null)
             {
                 return StatusCode(500, new { message = "JWT settings missing." });
             }
 
-            var token = GenerateJwtToken(user, jwtSettings);
-            return Ok(new { token });
+            var accessToken = GenerateJwtToken(user, jwtSettings);
+            var refreshToken = await GenerateAndStoreRefreshToken(user.UserId);
+
+            return Ok(new
+            {
+                token = accessToken,
+                refreshToken = refreshToken.Token,
+                expiresAt = refreshToken.ExpiresAt
+            });
+        }
+
+        [HttpPost("refresh")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Refresh([FromBody] RefreshRequest request)
+        {
+            if (string.IsNullOrEmpty(request.RefreshToken))
+            {
+                return BadRequest(new { message = "Refresh token is required." });
+            }
+
+            var storedToken = await _context.RefreshTokens
+                .Include(rt => rt.User)
+                .ThenInclude(u => u!.Role)
+                .FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken);
+
+            if (storedToken == null || storedToken.IsRevoked || storedToken.ExpiresAt < DateTime.UtcNow)
+            {
+                return Unauthorized(new { message = "Invalid or expired refresh token." });
+            }
+
+            if (storedToken.User == null || !storedToken.User.IsActive)
+            {
+                return Unauthorized(new { message = "User is inactive or not found." });
+            }
+
+            var jwtSettings = _configuration.GetSection("Jwt").Get<JwtSettings>();
+            if (jwtSettings == null)
+            {
+                return StatusCode(500, new { message = "JWT settings missing." });
+            }
+
+            // Revoke old refresh token (rotation)
+            storedToken.IsRevoked = true;
+
+            var newAccessToken = GenerateJwtToken(storedToken.User, jwtSettings);
+            var newRefreshToken = await GenerateAndStoreRefreshToken(storedToken.User.UserId);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                token = newAccessToken,
+                refreshToken = newRefreshToken.Token,
+                expiresAt = newRefreshToken.ExpiresAt
+            });
+        }
+
+        [HttpPost("logout")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout([FromBody] RefreshRequest request)
+        {
+            if (string.IsNullOrEmpty(request.RefreshToken))
+            {
+                return BadRequest(new { message = "Refresh token is required." });
+            }
+
+            var storedToken = await _context.RefreshTokens
+                .FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken);
+
+            if (storedToken != null)
+            {
+                storedToken.IsRevoked = true;
+                await _context.SaveChangesAsync();
+            }
+
+            return Ok(new { message = "Logged out successfully." });
+        }
+
+        private async Task<RefreshToken> GenerateAndStoreRefreshToken(int userId)
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = GenerateSecureRandomToken(),
+                UserId = userId,
+                ExpiresAt = DateTime.UtcNow.AddDays(30),
+                CreatedAt = DateTime.UtcNow,
+                IsRevoked = false
+            };
+
+            _context.RefreshTokens.Add(refreshToken);
+            await _context.SaveChangesAsync();
+
+            return refreshToken;
+        }
+
+        private static string GenerateSecureRandomToken()
+        {
+            var randomBytes = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomBytes);
+            return Convert.ToBase64String(randomBytes);
         }
 
         private string GenerateJwtToken(User user, JwtSettings settings)
@@ -73,4 +173,3 @@ namespace HospitalManagement.API.Controllers
         }
     }
 }
-
