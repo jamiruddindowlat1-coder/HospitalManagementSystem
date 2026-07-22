@@ -1,269 +1,129 @@
-/* ==========================
-   HMS Sidebar Design
-========================== */
-
+/* ============================================================
+   HMS Grouped 2-Row Top Navigation Design
+   ============================================================ */
 
 .sidebar {
-
-    width:260px;
-
-    height:100vh;
-
-    position:fixed;
-
-    top:0;
-
-    left:0;
-
-
-    padding:25px 18px;
-
-
-    background:
-
-    linear-gradient(
-        180deg,
-        #0f172a 0%,
-        #2563eb 50%,
-        #7c3aed 100%
-    );
-
-
-    color:white;
-
-
-    box-sizing:border-box;
-
-
-    box-shadow:
-
-    8px 0 30px rgba(0,0,0,.25);
-
-
-    z-index:1000;
-
-
-    overflow-y:auto;
-
+    width: 100%;
+    background: #0f172a; /* Sleek dark mode slate */
+    color: white;
+    box-sizing: border-box;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+    z-index: 100;
+    margin-top: 15px;
+    border-radius: 20px;
+    padding: 12px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-
-
-/* HMS Logo */
-
-.logo {
-
-    text-align:center;
-
-
-    font-size:32px;
-
-
-    font-weight:900;
-
-
-    margin-bottom:35px;
-
-
-    color:white;
-
-
-    letter-spacing:1px;
-
-
+/* Horizontal rows */
+.nav-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap; /* Wraps gracefully if screen width is narrow */
+    width: 100%;
 }
 
+/* Styled categorized borders */
+.nav-group {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1.5px solid rgba(59, 130, 246, 0.2); /* Default blue-ish border */
+    padding: 3px 8px;
+    border-radius: 12px;
+    gap: 4px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
 
+/* Labeled Section Headers inside Navbar */
+.group-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #3b82f6; /* Cyan / Blue accent */
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-right: 6px;
+    border-right: 1.5px solid rgba(255, 255, 255, 0.15);
+    padding-right: 8px;
+    white-space: nowrap;
+    user-select: none;
+}
 
-/* Menu */
-
+/* Individual navigation link tabs */
 .menu {
-
-
-    display:flex;
-
-
-    align-items:center;
-
-
-    gap:14px;
-
-
-    padding:14px 16px;
-
-
-    margin-bottom:10px;
-
-
-    border-radius:16px;
-
-
-    color:white;
-
-
-    text-decoration:none;
-
-
-    font-size:16px;
-
-
-    font-weight:500;
-
-
-    transition:.3s;
-
-
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    color: #94a3b8; /* Dim slate for inactive */
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-
 
 .menu svg {
-
-
-    font-size:21px;
-
-
+    font-size: 14px;
 }
 
-
-
-/* Hover */
-
+/* Hover effect */
 .menu:hover {
-
-
-    background:
-
-    rgba(255,255,255,.20);
-
-
-    transform:translateX(7px);
-
-
-    color:white;
-
-
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    transform: translateY(-1px);
 }
 
-
-
-/* Active */
-
+/* Active tab style */
 .menu.active {
-
-
-    background:white;
-
-
-    color:#2563eb;
-
-
-    box-shadow:
-
-
-    0 8px 20px rgba(0,0,0,.20);
-
-
+    background: white;
+    color: #0f172a;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-
-
-/* Logout */
-
+/* Far-right Logout button */
 .logout-btn {
-
-
-    width:100%;
-
-
-    margin-top:40px;
-
-
-    padding:14px;
-
-
-    display:flex;
-
-
-    align-items:center;
-
-
-    justify-content:center;
-
-
-    gap:10px;
-
-
-    border:none;
-
-
-    border-radius:16px;
-
-
-    cursor:pointer;
-
-
-    font-size:16px;
-
-
-    color:white;
-
-
-    background:
-
-
-    rgba(255,255,255,.18);
-
-
-    transition:.3s;
-
-
+    margin-left: auto; /* Push logout to the far right of Row 2 */
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 10px;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: all 0.25s ease;
 }
-
-
 
 .logout-btn:hover {
-
-
-    background:#dc2626;
-
-
-    transform:translateY(-3px);
-
-
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+    transform: translateY(-1px);
 }
 
-
-
-/* Scrollbar */
-
-.sidebar::-webkit-scrollbar{
-
-    width:5px;
-
+/* Webkit scrollbar for overflowing nav-groups on small screens */
+.nav-group::-webkit-scrollbar {
+    display: none; /* Hide scrollbars inside groups for cleaner look */
 }
 
-
-.sidebar::-webkit-scrollbar-thumb{
-
-    background:rgba(255,255,255,.4);
-
-    border-radius:10px;
-
-}
-
-
-
-/* Mobile */
-
-@media(max-width:900px){
-
-
-.sidebar{
-
-    width:220px;
-
-}
-
-
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .nav-row {
+        justify-content: flex-start;
+    }
+    .logout-btn {
+        margin-left: 0; /* Align along other elements on wrap */
+    }
 }

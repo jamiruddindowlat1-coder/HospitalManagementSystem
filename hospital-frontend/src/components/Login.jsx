@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { saveToken } from '../services/auth';
+import { saveToken, saveRefreshToken } from '../services/auth';
 
 function Login({ onLogin }) {
   const [email, setEmail] = useState('');
@@ -26,6 +26,7 @@ console.log("LOGIN RESPONSE:", response.data);
 
 
 saveToken(response.data.token);
+saveRefreshToken(response.data.refreshToken);
 
 
 localStorage.setItem(

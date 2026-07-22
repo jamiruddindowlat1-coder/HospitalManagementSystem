@@ -10,40 +10,26 @@
 
 /* Main Body */
 
-.main-content {
-
-
-    margin-left:260px;
-
-
-    width:calc(100% - 260px);
-
-
+.main-content, .main-content-wide {
     min-height:100vh;
-
-
     padding:25px;
-
-
     box-sizing:border-box;
-
-
-    background:
-
-
-    linear-gradient(
-
+    background: linear-gradient(
         135deg,
-
         #e0f2fe,
-
         #eef2ff,
-
         #f5f3ff
-
     );
+}
 
+.main-content {
+    margin-left:260px;
+    width:calc(100% - 260px);
+}
 
+.main-content-wide {
+    margin-left:0;
+    width:100%;
 }
 
 

@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+﻿import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
 import {
@@ -22,249 +22,208 @@ import {
   FaFileInvoiceDollar,
   FaBed,
   FaXRay,
-  FaBoxes
+  FaBoxes,
+  FaMobileAlt
 } from "react-icons/fa";
 
-
 export default function Sidebar() {
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("user");
-
-    window.location.href = "/login";
+  const handleLogout = async () => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    try {
+      if (refreshToken) {
+        await fetch("http://localhost:5151/api/auth/logout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refreshToken }),
+        });
+      }
+    } catch (err) {
+      console.error("Logout revoke failed:", err);
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("role");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+    }
   };
-
 
   const menuClass = ({ isActive }) =>
     isActive ? "menu active" : "menu";
 
-
   return (
     <aside className="sidebar">
-
-      <div>
-
-        <div className="logo">
-          Hospital HMS
-        </div>
-
-
-        <nav>
-
-
-          {/* Dashboard */}
+      {/* Row 1: Core Portal, Doctors/Nurses & Patients */}
+      <div className="nav-row">
+        
+        {/* Core Group */}
+        <div className="nav-group">
+          <span className="group-label">Core</span>
           <NavLink to="/" end className={menuClass}>
             <FaTachometerAlt />
             <span>Dashboard</span>
           </NavLink>
+          <NavLink to="/departments" className={menuClass}>
+            <FaBuilding />
+            <span>Depts</span>
+          </NavLink>
+        </div>
 
-
-          {/* Hospital Management */}
-
+        {/* Patients & Doctors Group */}
+        <div className="nav-group">
+          <span className="group-label" style={{ color: "#10b981" }}>Patients & Clinical</span>
           <NavLink to="/patients" className={menuClass}>
             <FaUserInjured />
             <span>Patients</span>
           </NavLink>
-
-
           <NavLink to="/doctors" className={menuClass}>
             <FaUserMd />
             <span>Doctors</span>
           </NavLink>
-
-
           <NavLink to="/appointments" className={menuClass}>
             <FaCalendarCheck />
-            <span>Appointments</span>
+            <span>Appts</span>
           </NavLink>
-
-
           <NavLink to="/admissions" className={menuClass}>
             <FaHospital />
             <span>Admissions</span>
           </NavLink>
-
-
-          <NavLink to="/departments" className={menuClass}>
-            <FaBuilding />
-            <span>Departments</span>
-          </NavLink>
-
-
-          <NavLink to="/medicines" className={menuClass}>
-            <FaPills />
-            <span>Medicines</span>
-          </NavLink>
-
-          <NavLink to="/pharmacy" className={menuClass}>
-            <FaPills />
-            <span>Pharmacy Workflow</span>
-          </NavLink>
-
-          <NavLink to="/ward-dashboard" className={menuClass}>
-            <FaBed />
-            <span>Ward Dashboard</span>
-          </NavLink>
-
-          <NavLink to="/mobile" className={menuClass}>
-            <FaUserNurse />
-            <span>Mobile App Portal</span>
-          </NavLink>
-
-
-
-          {/* Laboratory */}
-
-          <NavLink to="/lab-tests" className={menuClass}>
-            <FaFileMedicalAlt />
-            <span>Lab Tests</span>
-          </NavLink>
-
-
-          <NavLink to="/lab-results" className={menuClass}>
-            <FaFlask />
-            <span>Lab Results</span>
-          </NavLink>
-
-
-          <NavLink to="/test-categories" className={menuClass}>
-            <FaVials />
-            <span>Test Categories</span>
-          </NavLink>
-
-
-          {/* Radiology */}
-
-          <NavLink to="/radiology" className={menuClass}>
-            <FaXRay />
-            <span>Radiology Tests</span>
-          </NavLink>
-
-
-          {/* Inventory */}
-
-          <NavLink to="/inventory" className={menuClass}>
-            <FaBoxes />
-            <span>Inventory</span>
-          </NavLink>
-
-
-
-          {/* Medical */}
-
           <NavLink to="/medical-records" className={menuClass}>
             <FaNotesMedical />
-            <span>Medical Records</span>
+            <span>Records</span>
           </NavLink>
+        </div>
 
-
+        {/* Nursing Group */}
+        <div className="nav-group" style={{ borderColor: "#f59e0b" }}>
+          <span className="group-label" style={{ color: "#f59e0b" }}>Nursing & Wards</span>
           <NavLink to="/nurses" className={menuClass}>
             <FaUserNurse />
             <span>Nurses</span>
           </NavLink>
-
           <NavLink to="/rooms" className={menuClass}>
             <FaHospital />
             <span>Rooms</span>
           </NavLink>
-
           <NavLink to="/beds" className={menuClass}>
             <FaBed />
             <span>Beds</span>
           </NavLink>
-
+          <NavLink to="/ward-dashboard" className={menuClass}>
+            <FaBed />
+            <span>Ward Board</span>
+          </NavLink>
           <NavLink to="/nurse-assignments" className={menuClass}>
             <FaUserNurse />
-            <span>Nurse Assignments</span>
+            <span>Assigns</span>
           </NavLink>
-
           <NavLink to="/nursing-notes" className={menuClass}>
             <FaNotesMedical />
-            <span>Nursing Notes</span>
+            <span>Notes</span>
           </NavLink>
+        </div>
+      </div>
 
+      {/* Row 2: Pharmacy, Labs, Accounts & Admin */}
+      <div className="nav-row" style={{ marginTop: "5px" }}>
+        
+        {/* Pharmacy & Labs Group */}
+        <div className="nav-group" style={{ borderColor: "#a855f7" }}>
+          <span className="group-label" style={{ color: "#a855f7" }}>Pharmacy & Lab</span>
+          <NavLink to="/medicines" className={menuClass}>
+            <FaPills />
+            <span>Meds</span>
+          </NavLink>
+          <NavLink to="/pharmacy" className={menuClass}>
+            <FaPills />
+            <span>Pharmacy Board</span>
+          </NavLink>
+          <NavLink to="/lab-tests" className={menuClass}>
+            <FaFileMedicalAlt />
+            <span>Tests</span>
+          </NavLink>
+          <NavLink to="/lab-results" className={menuClass}>
+            <FaFlask />
+            <span>Results</span>
+          </NavLink>
+          <NavLink to="/test-categories" className={menuClass}>
+            <FaVials />
+            <span>Cats</span>
+          </NavLink>
+          <NavLink to="/radiology" className={menuClass}>
+            <FaXRay />
+            <span>Radiology</span>
+          </NavLink>
+          <NavLink to="/inventory" className={menuClass}>
+            <FaBoxes />
+            <span>Inventory</span>
+          </NavLink>
+        </div>
 
-
-          {/* Accounts */}
-
+        {/* Finance & Accounts Group */}
+        <div className="nav-group" style={{ borderColor: "#06b6d4" }}>
+          <span className="group-label" style={{ color: "#06b6d4" }}>Accounts</span>
           <NavLink to="/accounts/dashboard" className={menuClass}>
             <FaMoneyBillWave />
-            <span>Accounts Dashboard</span>
+            <span>Dashboard</span>
           </NavLink>
-
-
           <NavLink to="/accounts/income" className={menuClass}>
             <FaMoneyBillWave />
             <span>Income</span>
           </NavLink>
-
-
           <NavLink to="/accounts/expense" className={menuClass}>
             <FaMoneyBillWave />
             <span>Expense</span>
           </NavLink>
-
-
           <NavLink to="/accounts/salary" className={menuClass}>
             <FaMoneyBillWave />
-            <span>Salary Payments</span>
+            <span>Salary</span>
           </NavLink>
-
-
           <NavLink to="/accounts/ledger" className={menuClass}>
             <FaMoneyBillWave />
             <span>Ledger</span>
           </NavLink>
+          <NavLink to="/billing" className={menuClass}>
+            <FaFileInvoiceDollar />
+            <span>Billing</span>
+          </NavLink>
+        </div>
 
-
-
-          {/* Reports */}
-
+        {/* Admin Group */}
+        <div className="nav-group" style={{ borderColor: "#64748b" }}>
+          <span className="group-label" style={{ color: "#94a3b8" }}>Admin</span>
           <NavLink to="/reports" className={menuClass}>
             <FaChartBar />
             <span>Reports</span>
           </NavLink>
-
-
           <NavLink to="/financial-reports" className={menuClass}>
             <FaFileInvoiceDollar />
-            <span>Financial Reports</span>
+            <span>Fin Reports</span>
           </NavLink>
-
-
-
-          {/* Admin */}
-
           <NavLink to="/users" className={menuClass}>
             <FaUserCog />
-            <span>User Management</span>
+            <span>Users</span>
           </NavLink>
-
-
           <NavLink to="/activity-logs" className={menuClass}>
             <FaClock />
-            <span>Activity Log</span>
+            <span>Logs</span>
           </NavLink>
+          <NavLink to="/mobile" className={menuClass}>
+            <FaMobileAlt />
+            <span>Mobile</span>
+          </NavLink>
+        </div>
 
-
-
-          {/* Logout */}
-
-          <button
-            onClick={handleLogout}
-            className="menu logout-btn"
-          >
-            <FaSignOutAlt />
-            <span>Logout</span>
-          </button>
-
-
-        </nav>
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="logout-btn"
+        >
+          <FaSignOutAlt />
+          <span>Logout</span>
+        </button>
 
       </div>
-
     </aside>
   );
 }
