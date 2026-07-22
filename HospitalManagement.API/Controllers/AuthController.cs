@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using Microsoft.AspNetCore.RateLimiting;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -25,9 +26,10 @@ namespace HospitalManagement.API.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost("login")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+           [HttpPost("login")]
+           [AllowAnonymous]
+           [EnableRateLimiting("LoginPolicy")]
+           public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

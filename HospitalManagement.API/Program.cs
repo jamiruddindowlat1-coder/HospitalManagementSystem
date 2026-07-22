@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
+using FluentValidation;
 using System.Text;
 using HospitalManagement.API.Data;
 using HospitalManagement.API.Models;
@@ -26,6 +28,27 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // SERVICES
 
 builder.Services.AddHttpContextAccessor();
+
+// RATE LIMITING
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("LoginPolicy", opt =>
+    {
+        opt.PermitLimit = 5;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueLimit = 0;
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = 429;
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsync(
+            "{\"message\":\"Too many login attempts. Please try again after a minute.\"}",
+            cancellationToken: token);
+    };
+});
 
 builder.Services.AddScoped<ReportExportService>();
 builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
@@ -214,6 +237,9 @@ app.UseHttpsRedirection();
 
 
 app.UseCors("AllowReactApp");
+
+
+app.UseRateLimiter();
 
 
 app.UseAuthentication();
