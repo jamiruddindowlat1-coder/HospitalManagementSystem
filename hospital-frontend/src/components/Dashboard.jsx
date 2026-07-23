@@ -227,14 +227,15 @@ return(
 
   <div className="charts-grid">
 
-    <DashboardChart data={chartData} />
-    <AppointmentChart data={dashboard.appointmentStatus} />
-    <MonthlyRevenueChart data={chartsData.monthlyRevenue} />
-    <PatientGrowthChart data={chartsData.patientGrowth} />
-    <DepartmentDoctorsChart data={chartsData.doctorsByDepartment} />
-    <MedicineStockChart data={chartsData.medicineStock} />
-    <RoomOccupancyChart data={chartsData.roomOccupancy} />
-  </div>
+  <DashboardChart data={chartData} />
+  <AppointmentChart data={dashboard.appointmentStatus} />
+  <MonthlyRevenueChart data={chartsData.monthlyRevenue} />
+  <PatientGrowthChart data={chartsData.patientGrowth} />
+  <DepartmentDoctorsChart data={chartsData.doctorsByDepartment} />
+  <MedicineStockChart data={chartsData.medicineStock} />
+  <RoomOccupancyChart data={chartsData.roomOccupancy} />
+
+</div>
 
   <div className="lists-grid">
     <div className="list-wrapper">

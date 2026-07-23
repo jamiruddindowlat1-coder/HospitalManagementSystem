@@ -1,46 +1,53 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import api from '../services/api';
-import { saveToken, saveRefreshToken } from '../services/auth';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import api from "../services/api";
+import { saveToken, saveRefreshToken } from "../services/auth";
 
 function Login({ onLogin }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
-      const response = await api.post('/auth/login', { 
-    email, 
-    password 
-});
+      const response = await api.post("/Auth/login", {
+        email,
+        password,
+      });
 
+      const data = response.data;
 
-console.log("LOGIN RESPONSE:", response.data);
+      // Save JWT Token
+      if (data.token) {
+        saveToken(data.token);
+      }
 
+      // Save Refresh Token (if available)
+      if (data.refreshToken) {
+        saveRefreshToken(data.refreshToken);
+      }
 
-saveToken(response.data.token);
-saveRefreshToken(response.data.refreshToken);
+      // Notify parent component
+      if (onLogin) {
+        onLogin(data);
+      }
 
-
-localStorage.setItem(
-    "role",
-    response.data.role
-);
-
-
-onLogin();
-
-navigate('/');
+      // Redirect
+      navigate("/dashboard");
     } catch (err) {
-      setError('লগইন ব্যর্থ হয়েছে। ইমেইল/পাসওয়ার্ড চেক করুন।');
-      console.error(err);
+      console.error("Login Error:", err);
+
+      setError(
+        err.response?.data?.message ||
+          "লগইন ব্যর্থ হয়েছে। ইমেইল বা পাসওয়ার্ড সঠিক নয়।"
+      );
     } finally {
       setLoading(false);
     }
@@ -49,6 +56,7 @@ navigate('/');
   return (
     <div className="login-wrapper">
       <h2>লগইন করুন</h2>
+
       <form onSubmit={handleSubmit} className="login-form">
         <div className="form-group">
           <label>ইমেইল</label>
@@ -79,12 +87,21 @@ navigate('/');
         </p>
 
         <div className="login-hint">
-          <p>ডেমো লগইন: <strong>admin@hospital.local</strong> / <strong>Admin123!</strong></p>
-          <p>অথবা <strong>sarah.khan@hospital.local</strong> / <strong>Doctor123!</strong></p>
+          <p>
+            ডেমো লগইন:
+            <strong> admin@hospital.local</strong> /
+            <strong> Admin123!</strong>
+          </p>
+
+          <p>
+            অথবা
+            <strong> sarah.khan@hospital.local</strong> /
+            <strong> Doctor123!</strong>
+          </p>
         </div>
 
         <button type="submit" disabled={loading}>
-          {loading ? 'প্রক্রিয়াজাত হচ্ছে...' : 'লগইন'}
+          {loading ? "প্রক্রিয়াজাত হচ্ছে..." : "লগইন"}
         </button>
       </form>
     </div>
@@ -92,5 +109,3 @@ navigate('/');
 }
 
 export default Login;
-
-
