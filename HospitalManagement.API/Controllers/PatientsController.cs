@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HospitalManagement.API.Data;
 using HospitalManagement.API.Models;
@@ -10,7 +10,7 @@ namespace HospitalManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin,Doctor,Nurse,Receptionist,Patient")]
     public class PatientsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -97,7 +97,7 @@ namespace HospitalManagement.API.Controllers
             bool hasAppointments = await _context.Appointments.AnyAsync(a => a.PatientId == id);
             if (hasAppointments)
             {
-                return BadRequest(new { message = "এই Patient-এর সাথে Appointment record যুক্ত আছে, তাই delete করা যাবে না। আগে সংশ্লিষ্ট Appointment(গুলো) মুছুন বা reassign করুন।" });
+                return BadRequest(new { message = "?? Patient-?? ???? Appointment record ????? ???, ??? delete ??? ???? ??? ??? ????????? Appointment(????) ????? ?? reassign ?????" });
             }
 
             try
@@ -109,7 +109,7 @@ namespace HospitalManagement.API.Controllers
             }
             catch (DbUpdateException)
             {
-                return BadRequest(new { message = "এই Patient-এর সাথে অন্য কোনো record যুক্ত থাকায় delete করা সম্ভব হয়নি।" });
+                return BadRequest(new { message = "?? Patient-?? ???? ???? ???? record ????? ?????? delete ??? ????? ??????" });
             }
         }
     }

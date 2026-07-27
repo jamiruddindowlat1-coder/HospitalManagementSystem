@@ -17,15 +17,23 @@ namespace HospitalManagement.API.Controllers
             _context = context;
         }
 
+
         [HttpGet("summary")]
         public async Task<IActionResult> Summary()
         {
             var today = DateTime.Today;
 
+
             var appointmentStatus = await _context.Appointments
                 .GroupBy(a => a.Status)
-                .Select(g => new { name = g.Key, value = g.Count() })
+                .Select(g => new
+                {
+                    name = g.Key,
+                    value = g.Count()
+                })
                 .ToListAsync();
+
+
 
             var todaysAppointments = await _context.Appointments
                 .Include(a => a.Patient)
@@ -34,13 +42,15 @@ namespace HospitalManagement.API.Controllers
                 .Select(a => new
                 {
                     a.AppointmentId,
-                    PatientName =  a.Patient!.FullName,
+                    PatientName = a.Patient!.FullName,
                     DoctorName = a.Doctor!.FullName,
                     a.AppointmentDate,
                     a.AppointmentTime,
                     a.Status
                 })
                 .ToListAsync();
+
+
 
             var recentAdmissions = await _context.Admissions
                 .Include(a => a.Patient)
@@ -50,12 +60,14 @@ namespace HospitalManagement.API.Controllers
                 .Select(a => new
                 {
                     a.AdmissionId,
-                    PatientName =  a.Patient!.FullName,
+                    PatientName = a.Patient!.FullName,
                     RoomNumber = a.Room!.RoomNumber,
                     a.AdmissionDate,
                     a.Status
                 })
                 .ToListAsync();
+
+
 
             var emergencyPatients = await _context.Admissions
                 .Include(a => a.Patient)
@@ -64,11 +76,13 @@ namespace HospitalManagement.API.Controllers
                 .Select(a => new
                 {
                     a.AdmissionId,
-                    PatientName =  a.Patient!.FullName,
+                    PatientName = a.Patient!.FullName,
                     RoomNumber = a.Room!.RoomNumber,
                     a.AdmissionDate
                 })
                 .ToListAsync();
+
+
 
             var result = new
             {
@@ -79,14 +93,32 @@ namespace HospitalManagement.API.Controllers
                 Admissions = await _context.Admissions.CountAsync(),
                 Medicines = await _context.Medicines.CountAsync(),
 
+
+                // Billing Table Fix
                 TotalBills = await _context.Billings.CountAsync(),
-                PaidBills = await _context.Billings.Where(x => x.PaymentStatus == "Paid").CountAsync(),
-                PendingBills = await _context.Billings.Where(x => x.PaymentStatus != "Paid").CountAsync(),
-                TotalRevenue = await _context.Billings.SumAsync(x => x.TotalAmount),
+
+                PaidBills = await _context.Billings
+                    .Where(x => x.PaymentStatus == "Paid")
+                    .CountAsync(),
+
+                PendingBills = await _context.Billings
+                    .Where(x => x.PaymentStatus != "Paid")
+                    .CountAsync(),
+
+                TotalRevenue = await _context.Billings
+                    .SumAsync(x => x.TotalAmount),
+
+
 
                 TotalRooms = await _context.Rooms.CountAsync(),
-                OccupiedRooms = await _context.Rooms.Where(r => r.IsOccupied).CountAsync(),
-                AvailableRooms = await _context.Rooms.Where(r => !r.IsOccupied).CountAsync(),
+                OccupiedRooms = await _context.Rooms
+                    .Where(r => r.IsOccupied)
+                    .CountAsync(),
+
+                AvailableRooms = await _context.Rooms
+                    .Where(r => !r.IsOccupied)
+                    .CountAsync(),
+
 
                 TodaysAppointments = todaysAppointments,
                 EmergencyPatients = emergencyPatients,
@@ -95,22 +127,41 @@ namespace HospitalManagement.API.Controllers
                 AppointmentStatus = appointmentStatus
             };
 
+
             return Ok(result);
         }
+
+
 
         [HttpGet("monthly-revenue")]
         public async Task<IActionResult> MonthlyRevenue()
         {
             var sixMonthsAgo = DateTime.Today.AddMonths(-5);
-            var startDate = new DateTime(sixMonthsAgo.Year, sixMonthsAgo.Month, 1);
+
+            var startDate = new DateTime(
+                sixMonthsAgo.Year,
+                sixMonthsAgo.Month,
+                1
+            );
+
 
             var bills = await _context.Billings
                 .Where(b => b.BillDate >= startDate)
-                .Select(b => new { b.BillDate, b.TotalAmount })
+                .Select(b => new
+                {
+                    b.BillDate,
+                    b.TotalAmount
+                })
                 .ToListAsync();
 
+
+
             var grouped = bills
-                .GroupBy(b => new { b.BillDate.Year, b.BillDate.Month })
+                .GroupBy(b => new
+                {
+                    b.BillDate.Year,
+                    b.BillDate.Month
+                })
                 .Select(g => new
                 {
                     Year = g.Key.Year,
@@ -119,11 +170,19 @@ namespace HospitalManagement.API.Controllers
                 })
                 .ToList();
 
+
+
             var result = Enumerable.Range(0, 6)
                 .Select(i => startDate.AddMonths(i))
                 .Select(d =>
                 {
-                    var match = grouped.FirstOrDefault(g => g.Year == d.Year && g.Month == d.Month);
+                    var match = grouped
+                        .FirstOrDefault(g =>
+                            g.Year == d.Year &&
+                            g.Month == d.Month
+                        );
+
+
                     return new
                     {
                         month = d.ToString("MMM yyyy"),
@@ -132,22 +191,37 @@ namespace HospitalManagement.API.Controllers
                 })
                 .ToList();
 
+
             return Ok(result);
         }
+
+
 
         [HttpGet("patient-growth")]
         public async Task<IActionResult> PatientGrowth()
         {
             var sixMonthsAgo = DateTime.Today.AddMonths(-5);
-            var startDate = new DateTime(sixMonthsAgo.Year, sixMonthsAgo.Month, 1);
+
+            var startDate = new DateTime(
+                sixMonthsAgo.Year,
+                sixMonthsAgo.Month,
+                1
+            );
+
 
             var patients = await _context.Patients
                 .Where(p => p.RegisteredAt >= startDate)
                 .Select(p => p.RegisteredAt)
                 .ToListAsync();
 
+
+
             var grouped = patients
-                .GroupBy(d => new { d.Year, d.Month })
+                .GroupBy(d => new
+                {
+                    d.Year,
+                    d.Month
+                })
                 .Select(g => new
                 {
                     Year = g.Key.Year,
@@ -156,11 +230,19 @@ namespace HospitalManagement.API.Controllers
                 })
                 .ToList();
 
+
+
             var result = Enumerable.Range(0, 6)
                 .Select(i => startDate.AddMonths(i))
                 .Select(d =>
                 {
-                    var match = grouped.FirstOrDefault(g => g.Year == d.Year && g.Month == d.Month);
+                    var match = grouped
+                        .FirstOrDefault(g =>
+                            g.Year == d.Year &&
+                            g.Month == d.Month
+                        );
+
+
                     return new
                     {
                         month = d.ToString("MMM yyyy"),
@@ -169,15 +251,22 @@ namespace HospitalManagement.API.Controllers
                 })
                 .ToList();
 
+
             return Ok(result);
         }
+
+
 
         [HttpGet("doctors-by-department")]
         public async Task<IActionResult> DoctorsByDepartment()
         {
             var result = await _context.Doctors
                 .Include(d => d.Department)
-                .GroupBy(d => d.Department != null ? d.Department.DepartmentName : "Unassigned")
+                .GroupBy(d =>
+                    d.Department != null
+                    ? d.Department.DepartmentName
+                    : "Unassigned"
+                )
                 .Select(g => new
                 {
                     department = g.Key,
@@ -185,8 +274,11 @@ namespace HospitalManagement.API.Controllers
                 })
                 .ToListAsync();
 
+
             return Ok(result);
         }
+
+
 
         [HttpGet("medicine-stock")]
         public async Task<IActionResult> MedicineStock()
@@ -200,15 +292,24 @@ namespace HospitalManagement.API.Controllers
                 })
                 .ToListAsync();
 
+
             return Ok(result);
         }
+
+
 
         [HttpGet("room-occupancy")]
         public async Task<IActionResult> RoomOccupancy()
         {
             var rooms = await _context.Rooms
-                .Select(r => new { r.RoomType, r.IsOccupied })
+                .Select(r => new
+                {
+                    r.RoomType,
+                    r.IsOccupied
+                })
                 .ToListAsync();
+
+
 
             var result = rooms
                 .GroupBy(r => r.RoomType)
@@ -219,6 +320,7 @@ namespace HospitalManagement.API.Controllers
                     available = g.Count(x => !x.IsOccupied)
                 })
                 .ToList();
+
 
             return Ok(result);
         }

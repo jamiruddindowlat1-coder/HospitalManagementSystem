@@ -8,7 +8,7 @@ namespace HospitalManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin,Doctor,Nurse,Receptionist,Patient")]
     public class RoomsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

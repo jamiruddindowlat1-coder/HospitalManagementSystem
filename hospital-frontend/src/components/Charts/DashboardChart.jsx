@@ -23,7 +23,7 @@ export default function DashboardChart({data}) {
 
       <ResponsiveContainer
         width="100%"
-        height={350}
+        height={90}
       >
 
         <BarChart data={data}>

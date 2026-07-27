@@ -13,7 +13,7 @@ export default function RoomOccupancyChart({ data = [] }) {
   return (
     <div className="dashboard-chart">
       <h3>🛏️ Room Occupancy</h3>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={90}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="roomType" />

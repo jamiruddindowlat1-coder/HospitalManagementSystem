@@ -14,9 +14,13 @@ namespace HospitalManagement.API.Migrations
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
+        
+        
         {
+            
 #pragma warning disable 612, 618
             modelBuilder
+            
                 .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -1786,6 +1790,7 @@ namespace HospitalManagement.API.Migrations
 
                     b.Navigation("Beds");
                 });
+                
 
             modelBuilder.Entity("HospitalManagement.API.Models.User", b =>
                 {

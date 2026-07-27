@@ -12,7 +12,7 @@ export default function PatientGrowthChart({ data = [] }) {
   return (
     <div className="dashboard-chart">
       <h3>📈 Patient Growth</h3>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={90}>
         <AreaChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" />

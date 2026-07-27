@@ -1,0 +1,110 @@
+warning: in the working copy of 'DEPLOY.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Controllers/AccountsDashboardController.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Controllers/InventoryController.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Controllers/NurseAssignmentsController.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Controllers/NursingNotesController.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Controllers/PharmacyController.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Controllers/RadiologyTestsController.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/DTOs/InventoryItemDto.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/DTOs/RadiologyTestDto.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Dockerfile', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Models/Bed.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Models/InventoryItem.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Models/NurseAssignment.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Models/NursingNote.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Models/RadiologyTest.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Program.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/Services/Reports/ReportExportService.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.API/appsettings.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.IntegrationTests/CustomWebApplicationFactory.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.IntegrationTests/LoginResponseDto.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.IntegrationTests/MedicinesControllerTests.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'HospitalManagement.Tests/PharmacyControllerTests.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docker-compose.yml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/.oxlintrc.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/Dockerfile', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/index.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/nginx.conf', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/public/icons.svg', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/App.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/assets/vite.svg', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/AppointmentList.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/BedList.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/BillingList.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/DepartmentList.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/EmployeeList.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/FinancialReports/FinancialReports.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/ForgotPassword.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/InventoryList.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/InvoiceModal.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/Layout/AppLayout.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/Layout/AppLayout.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/Layout/Layout.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/Layout/Sidebar.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/Layout/Sidebar.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/MedicalRecordList.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/Medicine.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/MedicineList.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/MobilePortal.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/NurseAssignmentList.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/NursingNoteList.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/PatientList.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/PharmacyDashboard.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/RadiologyList.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/ResetPassword.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/RoomList.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/SharedList.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/UI/StatCard.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/components/WardDashboard.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/index.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/main.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/services/auth.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/services/bedService.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/services/departmentService.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/services/inventoryService.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/services/nurseAssignmentService.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/services/nurseService.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/services/nursingNoteService.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/services/radiologyService.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/services/roomService.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/src/services/testCategoryService.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'hospital-frontend/vite.config.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it
+HospitalManagement.API/Controllers/AdmissionsController.cs
+HospitalManagement.API/Controllers/AppointmentsController.cs
+HospitalManagement.API/Controllers/AuthController.cs
+HospitalManagement.API/Controllers/BedsController.cs
+HospitalManagement.API/Controllers/BillingController.cs
+HospitalManagement.API/Controllers/DashboardController.cs
+HospitalManagement.API/Controllers/MedicalRecordsController.cs
+HospitalManagement.API/Controllers/PatientsController.cs
+HospitalManagement.API/Controllers/RolePermissionsController.cs
+HospitalManagement.API/Controllers/RoomsController.cs
+HospitalManagement.API/Data/ApplicationDbContext.cs
+HospitalManagement.API/Migrations/ApplicationDbContextModelSnapshot.cs
+START.cmd
+hospital-frontend/src/App.jsx
+hospital-frontend/src/components/Charts/AppointmentChart.jsx
+hospital-frontend/src/components/Charts/DashboardChart.jsx
+hospital-frontend/src/components/Charts/DepartmentDoctorsChart.jsx
+hospital-frontend/src/components/Charts/MedicineStockChart.jsx
+hospital-frontend/src/components/Charts/MonthlyRevenueChart.jsx
+hospital-frontend/src/components/Charts/PatientGrowthChart.jsx
+hospital-frontend/src/components/Charts/RoomOccupancyChart.jsx
+hospital-frontend/src/components/Dashboard.css
+hospital-frontend/src/components/Dashboard.jsx
+hospital-frontend/src/components/Layout/AppLayout.css
+hospital-frontend/src/components/Layout/AppLayout.jsx
+hospital-frontend/src/components/Layout/Layout.css
+hospital-frontend/src/components/Layout/Sidebar.css
+hospital-frontend/src/components/Layout/Sidebar.jsx
+hospital-frontend/src/components/Login.jsx
+hospital-frontend/src/components/Permissioncontext.jsx
+hospital-frontend/src/components/Permissionroute.jsx
+hospital-frontend/src/components/UI/StatCard.css
+hospital-frontend/src/components/UI/StatCard.jsx

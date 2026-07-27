@@ -51,7 +51,9 @@ namespace HospitalManagement.API.Data
 
 
         // Accounts
+        // SQL Table: dbo.Billing
         public DbSet<Billing> Billings { get; set; }
+
         public DbSet<Income> Incomes { get; set; }
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<SalaryPayment> SalaryPayments { get; set; }
@@ -84,6 +86,23 @@ namespace HospitalManagement.API.Data
         // Logs
         public DbSet<ActivityLog> ActivityLogs { get; set; }
 
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+
+            // Existing SQL Server Table Names
+
+            modelBuilder.Entity<Billing>()
+                .ToTable("Billing");
+
+
+            modelBuilder.Entity<ActivityLog>()
+                .ToTable("ActivityLog");
+
+        }
 
     }
 }

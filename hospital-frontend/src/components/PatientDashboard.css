@@ -1,0 +1,144 @@
+.patient-dashboard {
+  padding: 25px;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+
+.patient-dashboard h2 {
+  margin-bottom: 25px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+
+
+/* Card Area */
+
+.card-grid {
+
+  display: grid;
+
+  grid-template-columns:
+  repeat(auto-fit, minmax(220px,1fr));
+
+  gap: 20px;
+
+  margin-bottom: 35px;
+
+}
+
+
+
+/* Patient Module */
+
+.patient-module-grid {
+
+  display: grid;
+
+  grid-template-columns:
+  repeat(auto-fit, minmax(220px,1fr));
+
+  gap: 20px;
+
+}
+
+
+
+
+.patient-box {
+
+  background: white;
+
+  border-radius: 15px;
+
+  padding: 25px;
+
+  text-align: center;
+
+  box-shadow:
+  0 4px 15px rgba(0,0,0,0.08);
+
+  transition: 0.3s;
+
+  cursor: pointer;
+
+}
+
+
+
+.patient-box:hover {
+
+  transform: translateY(-5px);
+
+  box-shadow:
+  0 8px 25px rgba(0,0,0,0.15);
+
+}
+
+
+
+
+.patient-box svg {
+
+  font-size: 40px;
+
+  color: #2563eb;
+
+  margin-bottom: 15px;
+
+}
+
+
+
+.patient-box h3 {
+
+  margin: 10px 0;
+
+  font-size: 20px;
+
+  color:#1e293b;
+
+}
+
+
+
+.patient-box p {
+
+  color:#64748b;
+
+  font-size:14px;
+
+}
+
+
+
+
+/* Mobile Responsive */
+
+@media(max-width:768px){
+
+.patient-dashboard{
+
+padding:15px;
+
+}
+
+
+.patient-dashboard h2{
+
+font-size:22px;
+
+}
+
+
+.card-grid,
+.patient-module-grid{
+
+grid-template-columns:1fr;
+
+}
+
+
+}

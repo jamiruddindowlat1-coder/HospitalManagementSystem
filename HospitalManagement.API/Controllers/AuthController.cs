@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -54,7 +54,8 @@ namespace HospitalManagement.API.Controllers
             {
                 token = accessToken,
                 refreshToken = refreshToken.Token,
-                expiresAt = refreshToken.ExpiresAt
+                expiresAt = refreshToken.ExpiresAt,
+                role = user.Role?.RoleName
             });
         }
 
@@ -100,7 +101,8 @@ namespace HospitalManagement.API.Controllers
             {
                 token = newAccessToken,
                 refreshToken = newRefreshToken.Token,
-                expiresAt = newRefreshToken.ExpiresAt
+                expiresAt = newRefreshToken.ExpiresAt,
+                role = storedToken.User.Role?.RoleName
             });
         }
 

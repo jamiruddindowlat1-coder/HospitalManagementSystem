@@ -6,40 +6,23 @@ import {
   Legend,
   ResponsiveContainer
 } from "recharts";
-
-
 export default function AppointmentChart({ data = [] }) {
-
-
   return (
-
-    <div
-      style={{
-        width: "100%",
-        height: 350,
-        marginTop: "30px"
-      }}
-    >
-
+    <div className="dashboard-chart" style={{ width: "100%" }}>
       <h3>
         📅 Appointment Status
       </h3>
-
-
-      <ResponsiveContainer width="100%" height="100%">
-
+      <ResponsiveContainer width="100%" height={90}>
         <PieChart>
-
           <Pie
             data={data}
             dataKey="value"
             nameKey="name"
             cx="50%"
             cy="50%"
-            outerRadius={100}
+            outerRadius={35}
             label
           >
-
             {
               data.map((entry,index)=>(
                 <Cell
@@ -47,22 +30,11 @@ export default function AppointmentChart({ data = [] }) {
                 />
               ))
             }
-
           </Pie>
-
-
           <Tooltip />
-
           <Legend />
-
         </PieChart>
-
-
       </ResponsiveContainer>
-
-
     </div>
-
   );
-
 }

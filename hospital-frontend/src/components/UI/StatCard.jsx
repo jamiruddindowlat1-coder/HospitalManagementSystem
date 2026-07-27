@@ -7,10 +7,17 @@ export default function StatCard({
   color = "#2563eb",
 }) {
   return (
-    <div className="stat-card">
+    <div
+      className="stat-card"
+      style={{
+        background: `linear-gradient(135deg, ${color}, ${color}CC)`,
+      }}
+    >
       <div
         className="stat-icon"
-        style={{ backgroundColor: color }}
+        style={{
+          background: "rgba(255,255,255,.25)",
+        }}
       >
         {icon}
       </div>
