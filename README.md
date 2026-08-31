@@ -103,3 +103,5 @@ GitHub: https://github.com/jamiruddindowlat1-coder
 
 ## License
 MIT License - feel free to use it as a learning reference or a base for your own hospital/clinic management system.
+## Portfolio / Case Study
+[Full Project Case Study (PDF)](./docs/hms-case-study.pdf)
