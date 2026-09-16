@@ -1,4 +1,5 @@
-﻿import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { usePermissions } from "../PermissionContext.jsx";
 
 import {
   FaTachometerAlt, FaUserInjured, FaUserMd, FaCalendarCheck,
@@ -10,9 +11,7 @@ import {
 } from "react-icons/fa";
 
 export default function Sidebar() {
-  const userRole = localStorage.getItem("role") || "";
-  const userName = localStorage.getItem("user") || userRole || "User";
-  const hasRole = (...roles) => roles.includes(userRole) || userRole === "Admin";
+  const { hasAccessForPath, loading } = usePermissions();
 
   const handleLogout = async () => {
     const refreshToken = localStorage.getItem("refreshToken");
@@ -37,6 +36,17 @@ export default function Sidebar() {
 
   const menuClass = ({ isActive }) => isActive ? "menu active" : "menu";
 
+  // Permission load হওয়ার আগে sidebar দেখাবে না
+  if (loading) {
+    return (
+      <aside className="sidebar">
+        <div style={{ padding: "20px 10px", color: "#475569", fontSize: "12px" }}>
+          Loading...
+        </div>
+      </aside>
+    );
+  }
+
   return (
     <aside className="sidebar">
 
@@ -46,41 +56,44 @@ export default function Sidebar() {
         {/* Core */}
         <div className="nav-group">
           <span className="group-label">Core</span>
-          <NavLink to="/" end className={menuClass}>
-            <FaTachometerAlt /><span>Dashboard</span>
-          </NavLink>
-          {hasRole("Receptionist") && (
-            <NavLink to="/departments" className={menuClass}>
-              <FaBuilding /><span>Depts</span>
+          {hasAccessForPath("/") && (
+            <NavLink to="/" end className={menuClass}>
+              <FaTachometerAlt /><span>Dashboard</span>
             </NavLink>
           )}
         </div>
 
         {/* Patients & Clinical */}
-        {hasRole("Doctor","Nurse","Receptionist","Patient") && (
+        {(
+          hasAccessForPath("/patients") ||
+          hasAccessForPath("/doctors") ||
+          hasAccessForPath("/appointments") ||
+          hasAccessForPath("/admissions") ||
+          hasAccessForPath("/medical-records")
+        ) && (
           <div className="nav-group">
             <span className="group-label">Patients & Clinical</span>
-            {hasRole("Doctor","Nurse","Receptionist") && (
+            {hasAccessForPath("/patients") && (
               <NavLink to="/patients" className={menuClass}>
                 <FaUserInjured /><span>Patients</span>
               </NavLink>
             )}
-            {hasRole("Receptionist","Patient") && (
+            {hasAccessForPath("/doctors") && (
               <NavLink to="/doctors" className={menuClass}>
                 <FaUserMd /><span>Doctors</span>
               </NavLink>
             )}
-            {hasRole("Doctor","Receptionist","Patient") && (
+            {hasAccessForPath("/appointments") && (
               <NavLink to="/appointments" className={menuClass}>
                 <FaCalendarCheck /><span>Appts</span>
               </NavLink>
             )}
-            {hasRole("Nurse","Receptionist","Patient") && (
+            {hasAccessForPath("/admissions") && (
               <NavLink to="/admissions" className={menuClass}>
                 <FaHospital /><span>Admissions</span>
               </NavLink>
             )}
-            {hasRole("Doctor","Nurse","Patient") && (
+            {hasAccessForPath("/medical-records") && (
               <NavLink to="/medical-records" className={menuClass}>
                 <FaNotesMedical /><span>Records</span>
               </NavLink>
@@ -89,122 +102,167 @@ export default function Sidebar() {
         )}
 
         {/* Nursing & Wards */}
-        {hasRole("Doctor","Nurse","Receptionist") && (
+        {(
+          hasAccessForPath("/nurses") ||
+          hasAccessForPath("/rooms") ||
+          hasAccessForPath("/beds")
+        ) && (
           <div className="nav-group">
             <span className="group-label">Nursing & Wards</span>
-            {hasRole("Receptionist") && (
+            {hasAccessForPath("/nurses") && (
               <NavLink to="/nurses" className={menuClass}>
                 <FaUserNurse /><span>Nurses</span>
               </NavLink>
             )}
-            {hasRole("Nurse","Receptionist") && (
-              <>
-                <NavLink to="/rooms" className={menuClass}>
-                  <FaHospital /><span>Rooms</span>
-                </NavLink>
-                <NavLink to="/beds" className={menuClass}>
-                  <FaBed /><span>Beds</span>
-                </NavLink>
-              </>
-            )}
-            {hasRole("Nurse","Doctor") && (
-              <NavLink to="/ward-dashboard" className={menuClass}>
-                <FaBed /><span>Ward Board</span>
+            {hasAccessForPath("/rooms") && (
+              <NavLink to="/rooms" className={menuClass}>
+                <FaHospital /><span>Rooms</span>
               </NavLink>
             )}
-            {hasRole("Nurse") && (
-              <NavLink to="/nurse-assignments" className={menuClass}>
-                <FaUserNurse /><span>Assigns</span>
+            {hasAccessForPath("/beds") && (
+              <NavLink to="/beds" className={menuClass}>
+                <FaBed /><span>Beds</span>
               </NavLink>
             )}
-            {hasRole("Nurse","Doctor") && (
-              <NavLink to="/nursing-notes" className={menuClass}>
-                <FaNotesMedical /><span>Notes</span>
-              </NavLink>
-            )}
+            <NavLink to="/ward-dashboard" className={menuClass}>
+              <FaBed /><span>Ward Board</span>
+            </NavLink>
+            <NavLink to="/nurse-assignments" className={menuClass}>
+              <FaUserNurse /><span>Assigns</span>
+            </NavLink>
+            <NavLink to="/nursing-notes" className={menuClass}>
+              <FaNotesMedical /><span>Notes</span>
+            </NavLink>
           </div>
         )}
 
         {/* Pharmacy & Lab */}
-        {hasRole("Doctor","Nurse","Patient") && (
+        {(
+          hasAccessForPath("/medicines") ||
+          hasAccessForPath("/lab-tests") ||
+          hasAccessForPath("/lab-results") ||
+          hasAccessForPath("/radiology") ||
+          hasAccessForPath("/inventory")
+        ) && (
           <div className="nav-group">
             <span className="group-label">Pharmacy & Lab</span>
-            {hasRole("Doctor","Nurse") && (
+            {hasAccessForPath("/medicines") && (
               <NavLink to="/medicines" className={menuClass}>
                 <FaPills /><span>Meds</span>
               </NavLink>
             )}
-            {hasRole("Doctor","Nurse") && (
+            {hasAccessForPath("/lab-tests") && (
               <NavLink to="/lab-tests" className={menuClass}>
                 <FaFileMedicalAlt /><span>Tests</span>
               </NavLink>
             )}
-            {hasRole("Doctor","Nurse","Patient") && (
+            {hasAccessForPath("/lab-results") && (
               <NavLink to="/lab-results" className={menuClass}>
                 <FaFlask /><span>Results</span>
               </NavLink>
             )}
-            {hasRole("Doctor") && (
+            {hasAccessForPath("/radiology") && (
               <NavLink to="/radiology" className={menuClass}>
                 <FaXRay /><span>Radiology</span>
+              </NavLink>
+            )}
+            {hasAccessForPath("/inventory") && (
+              <NavLink to="/inventory" className={menuClass}>
+                <FaBoxes /><span>Inventory</span>
+              </NavLink>
+            )}
+            {hasAccessForPath("/pharmacy") && (
+              <NavLink to="/pharmacy" className={menuClass}>
+                <FaPills /><span>Pharmacy</span>
               </NavLink>
             )}
           </div>
         )}
 
         {/* Accounts */}
-        {hasRole("Receptionist","Patient") && (
+        {(
+          hasAccessForPath("/billing") ||
+          hasAccessForPath("/accounts/dashboard")
+        ) && (
           <div className="nav-group">
             <span className="group-label">Accounts</span>
-            <NavLink to="/accounts/dashboard" className={menuClass}>
-              <FaMoneyBillWave /><span>Dashboard</span>
-            </NavLink>
-            <NavLink to="/accounts/income" className={menuClass}>
-              <FaMoneyBillWave /><span>Income</span>
-            </NavLink>
-            <NavLink to="/accounts/expense" className={menuClass}>
-              <FaMoneyBillWave /><span>Expense</span>
-            </NavLink>
-            <NavLink to="/accounts/salary" className={menuClass}>
-              <FaMoneyBillWave /><span>Salary</span>
-            </NavLink>
-            <NavLink to="/accounts/ledger" className={menuClass}>
-              <FaMoneyBillWave /><span>Ledger</span>
-            </NavLink>
-            <NavLink to="/billing" className={menuClass}>
-              <FaFileInvoiceDollar /><span>Billing</span>
-            </NavLink>
+            {hasAccessForPath("/accounts/dashboard") && (
+              <NavLink to="/accounts/dashboard" className={menuClass}>
+                <FaMoneyBillWave /><span>Dashboard</span>
+              </NavLink>
+            )}
+            {hasAccessForPath("/accounts/income") && (
+              <NavLink to="/accounts/income" className={menuClass}>
+                <FaMoneyBillWave /><span>Income</span>
+              </NavLink>
+            )}
+            {hasAccessForPath("/accounts/expense") && (
+              <NavLink to="/accounts/expense" className={menuClass}>
+                <FaMoneyBillWave /><span>Expense</span>
+              </NavLink>
+            )}
+            {hasAccessForPath("/accounts/salary") && (
+              <NavLink to="/accounts/salary" className={menuClass}>
+                <FaMoneyBillWave /><span>Salary</span>
+              </NavLink>
+            )}
+            {hasAccessForPath("/accounts/ledger") && (
+              <NavLink to="/accounts/ledger" className={menuClass}>
+                <FaMoneyBillWave /><span>Ledger</span>
+              </NavLink>
+            )}
+            {hasAccessForPath("/billing") && (
+              <NavLink to="/billing" className={menuClass}>
+                <FaFileInvoiceDollar /><span>Billing</span>
+              </NavLink>
+            )}
           </div>
         )}
 
         {/* Admin */}
-        {hasRole() && (
+        {(
+          hasAccessForPath("/reports") ||
+          hasAccessForPath("/users") ||
+          hasAccessForPath("/employees")
+        ) && (
           <div className="nav-group">
             <span className="group-label">Admin</span>
-            <NavLink to="/reports" className={menuClass}>
-              <FaChartBar /><span>Reports</span>
-            </NavLink>
+            {hasAccessForPath("/reports") && (
+              <NavLink to="/reports" className={menuClass}>
+                <FaChartBar /><span>Reports</span>
+              </NavLink>
+            )}
             <NavLink to="/financial-reports" className={menuClass}>
               <FaFileInvoiceDollar /><span>Fin Reports</span>
             </NavLink>
-            <NavLink to="/users" className={menuClass}>
-              <FaUserCog /><span>Users</span>
-            </NavLink>
-            <NavLink to="/employees" className={menuClass}>
-              <FaUserCog /><span>Employees</span>
-            </NavLink>
-            <NavLink to="/attendance" className={menuClass}>
-              <FaUserClock /><span>Attendance</span>
-            </NavLink>
-            <NavLink to="/payroll" className={menuClass}>
-              <FaMoneyCheckAlt /><span>Payroll</span>
-            </NavLink>
+            {hasAccessForPath("/users") && (
+              <NavLink to="/users" className={menuClass}>
+                <FaUserCog /><span>Users</span>
+              </NavLink>
+            )}
+            {hasAccessForPath("/employees") && (
+              <NavLink to="/employees" className={menuClass}>
+                <FaUserCog /><span>Employees</span>
+              </NavLink>
+            )}
+            {hasAccessForPath("/attendance") && (
+              <NavLink to="/attendance" className={menuClass}>
+                <FaUserClock /><span>Attendance</span>
+              </NavLink>
+            )}
+            {hasAccessForPath("/payroll") && (
+              <NavLink to="/payroll" className={menuClass}>
+                <FaMoneyCheckAlt /><span>Payroll</span>
+              </NavLink>
+            )}
             <NavLink to="/leaves" className={menuClass}>
               <FaClock /><span>Leaves</span>
             </NavLink>
-            <NavLink to="/activity-logs" className={menuClass}>
-              <FaClock /><span>Logs</span>
-            </NavLink>
+            {hasAccessForPath("/activity-logs") && (
+              <NavLink to="/activity-logs" className={menuClass}>
+                <FaClock /><span>Logs</span>
+              </NavLink>
+            )}
             <NavLink to="/mobile" className={menuClass}>
               <FaMobileAlt /><span>Mobile</span>
             </NavLink>

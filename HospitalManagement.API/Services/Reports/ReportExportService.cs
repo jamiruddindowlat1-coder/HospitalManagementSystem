@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
@@ -16,10 +16,19 @@ namespace HospitalManagement.API.Services.Reports
                 {
                     page.Margin(30);
 
-                    page.Header()
-                        .Text(title)
-                        .FontSize(20)
-                        .Bold();
+                    page.Header().Row(row =>
+                    {
+                        var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "shms_logo.jpg");
+                        if (File.Exists(imagePath))
+                        {
+                            row.ConstantItem(40).Image(imagePath);
+                            row.Spacing(10);
+                        }
+                        row.RelativeItem().Column(col => 
+                        {
+                            col.Item().Text(title).FontSize(20).Bold();
+                        });
+                    });
 
 
                     page.Content()
@@ -35,7 +44,7 @@ namespace HospitalManagement.API.Services.Reports
 
                     page.Footer()
                         .AlignCenter()
-                        .Text("Hospital Management System");
+                        .Text("Sayan Hospital Management System");
                 });
             });
 
@@ -56,10 +65,20 @@ namespace HospitalManagement.API.Services.Reports
                 workbook.Worksheets.Add(title);
 
 
-            sheet.Cell(1,1).Value = title;
+            var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "shms_logo.jpg");
+            if (File.Exists(imagePath))
+            {
+                sheet.AddPicture(imagePath).MoveTo(sheet.Cell(1, 1)).Scale(0.2);
+                sheet.Row(1).Height = 40;
+                sheet.Cell(2, 1).Value = title;
+                sheet.Cell(2, 1).Style.Font.Bold = true;
+            }
+            else
+            {
+                sheet.Cell(1, 1).Value = title;
+            }
 
-
-            int row = 3;
+            int row = 4;
 
 
             foreach(var item in data)

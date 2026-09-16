@@ -285,3 +285,16 @@ html, body, #root {
   padding-top: 8px;
   border-top: 1px solid rgba(255,255,255,0.07);
 }
+
+/* =====================================
+   MOBILE TOGGLE
+   ===================================== */
+.mobile-menu-toggle {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+}

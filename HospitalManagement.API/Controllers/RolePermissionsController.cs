@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HospitalManagement.API.Data;
 using HospitalManagement.API.Models;
+using System.Security.Claims;
 
 namespace HospitalManagement.API.Controllers
 {
@@ -50,7 +51,6 @@ namespace HospitalManagement.API.Controllers
             "Activity Logs"
         };
 
-
         private static readonly Dictionary<string, string[]> DefaultAccess =
             new()
             {
@@ -58,56 +58,32 @@ namespace HospitalManagement.API.Controllers
                     "Doctor",
                     new[]
                     {
-                        "Dashboard",
-                        "Patients",
-                        "Doctors",
-                        "Appointments",
-                        "Admissions",
-                        "Medical Records",
-                        "Nursing Notes",
-                        "Medicines",
-                        "Lab Tests",
-                        "Lab Results",
-                        "Radiology"
+                        "Dashboard", "Patients", "Doctors", "Appointments",
+                        "Admissions", "Medical Records", "Nursing Notes",
+                        "Medicines", "Lab Tests", "Lab Results", "Radiology"
                     }
                 },
-
                 {
                     "Receptionist",
                     new[]
                     {
-                        "Dashboard",
-                        "Patients",
-                        "Appointments",
-                        "Admissions",
-                        "Billing"
+                        "Dashboard", "Patients", "Appointments",
+                        "Admissions", "Billing"
                     }
                 },
-
                 {
                     "Nurse",
                     new[]
                     {
-                        "Dashboard",
-                        "Patients",
-                        "Admissions",
-                        "Medical Records",
-                        "Nursing Notes",
-                        "Nurse Assignments",
-                        "Medicines",
-                        "Ward Dashboard"
+                        "Dashboard", "Patients", "Admissions", "Medical Records",
+                        "Nursing Notes", "Nurse Assignments", "Medicines", "Ward Dashboard"
                     }
                 },
-
                 {
                     "Patient",
-                    new[]
-                    {
-                        "Dashboard"
-                    }
+                    new[] { "Dashboard" }
                 }
             };
-
 
         public RolePermissionsController(ApplicationDbContext context)
         {
@@ -115,172 +91,131 @@ namespace HospitalManagement.API.Controllers
         }
 
 
-
-        // Get permissions by role
+        // ── Get permissions by role (Admin only) ──
         [HttpGet("role/{roleId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetByRole(int roleId)
         {
-
             var role = await _context.Roles
                 .FirstOrDefaultAsync(x => x.RoleId == roleId);
 
-
-            if(role == null)
-            {
+            if (role == null)
                 return NotFound("Role not found");
-            }
-
 
             var saved = await _context.RolePermissions
                 .Where(x => x.RoleId == roleId)
                 .ToListAsync();
 
-
-
             var result = AllModules.Select(module => new
             {
                 RolePermissionId =
-                    saved.FirstOrDefault(x=>x.ModuleName==module)
+                    saved.FirstOrDefault(x => x.ModuleName == module)
                     ?.RolePermissionId ?? 0,
-
                 RoleId = roleId,
-
                 ModuleName = module,
-
                 HasAccess =
-                    saved.FirstOrDefault(x=>x.ModuleName==module)
+                    saved.FirstOrDefault(x => x.ModuleName == module)
                     ?.HasAccess ?? false
             });
-
 
             return Ok(result);
         }
 
 
-
-
-        // Update single permission
+        // ── Update single permission (Admin only) ──
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(
             int id,
-            [FromBody] bool hasAccess)
+            [FromBody] UpdatePermissionDto dto)  // FIX: object দিয়ে receive
         {
+            var permission = await _context.RolePermissions
+                .FirstOrDefaultAsync(x => x.RolePermissionId == id);
 
-            var permission =
-                await _context.RolePermissions
-                .FirstOrDefaultAsync(x=>x.RolePermissionId==id);
-
-
-            if(permission==null)
-            {
+            if (permission == null)
                 return NotFound();
-            }
 
-
-            permission.HasAccess = hasAccess;
-
-
+            permission.HasAccess = dto.HasAccess;
             await _context.SaveChangesAsync();
-
 
             return Ok(permission);
         }
 
 
-
-
-        // Create missing permissions
+        // ── Seed default permissions ──
         [HttpPost("seed")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Seed()
         {
+            var roles = await _context.Roles.ToListAsync();
 
-            var roles =
-                await _context.Roles.ToListAsync();
-
-
-            foreach(var role in roles)
+            foreach (var role in roles)
             {
-
-                var oldPermissions =
-                    await _context.RolePermissions
-                    .Where(x=>x.RoleId==role.RoleId)
+                var oldPermissions = await _context.RolePermissions
+                    .Where(x => x.RoleId == role.RoleId)
                     .ToListAsync();
 
-
-
-                foreach(var module in AllModules)
+                foreach (var module in AllModules)
                 {
-
-                    if(oldPermissions.Any(x=>x.ModuleName==module))
+                    if (oldPermissions.Any(x => x.ModuleName == module))
                         continue;
-
-
 
                     bool access = false;
 
-
-                    if(role.RoleName.Equals(
-                        "Admin",
-                        StringComparison.OrdinalIgnoreCase))
-                    {
+                    if (role.RoleName.Equals("Admin", StringComparison.OrdinalIgnoreCase))
                         access = true;
-                    }
+                    else if (DefaultAccess.ContainsKey(role.RoleName))
+                        access = DefaultAccess[role.RoleName].Contains(module);
 
-
-                    else if(DefaultAccess
-                        .ContainsKey(role.RoleName))
+                    _context.RolePermissions.Add(new RolePermission
                     {
-                        access =
-                        DefaultAccess[role.RoleName]
-                        .Contains(module);
-                    }
-
-
-
-                    _context.RolePermissions.Add(
-                        new RolePermission
-                        {
-                            RoleId = role.RoleId,
-                            ModuleName = module,
-                            HasAccess = access
-                        });
+                        RoleId = role.RoleId,
+                        ModuleName = module,
+                        HasAccess = access
+                    });
                 }
             }
 
-
             await _context.SaveChangesAsync();
-
-
-            return Ok(new
-            {
-                message="Permission seed completed"
-            });
+            return Ok(new { message = "Permission seed completed" });
         }
 
 
-
-
-        // Current logged user permission
+        // ── Current logged-in user এর permission ──  FIX: JWT থেকে role নেয়
         [HttpGet("my-permissions")]
         public async Task<IActionResult> MyPermissions()
         {
+            // JWT token থেকে role নেওয়া
+            var roleName = User.FindFirstValue(ClaimTypes.Role)
+                        ?? User.FindFirstValue("role")
+                        ?? "";
 
-            var user =
-                await _context.Users
-                .FirstOrDefaultAsync();
+            if (string.IsNullOrEmpty(roleName))
+                return Unauthorized("Role not found in token");
 
+            var role = await _context.Roles
+                .FirstOrDefaultAsync(x => x.RoleName == roleName);
 
-            return Ok(
-                await _context.RolePermissions
-                .Where(x=>x.HasAccess)
-                .Select(x=>new
+            if (role == null)
+                return NotFound("Role not found");
+
+            var permissions = await _context.RolePermissions
+                .Where(x => x.RoleId == role.RoleId)
+                .Select(x => new
                 {
                     x.ModuleName,
                     x.HasAccess
                 })
-                .ToListAsync()
-            );
-        }
+                .ToListAsync();
 
+            return Ok(permissions);
+        }
+    }
+
+
+    // ── DTO for Update ──
+    public class UpdatePermissionDto
+    {
+        public bool HasAccess { get; set; }
     }
 }

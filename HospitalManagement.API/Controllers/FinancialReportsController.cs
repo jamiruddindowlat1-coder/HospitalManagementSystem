@@ -80,7 +80,19 @@ namespace HospitalManagement.API.Controllers
                     page.Margin(30);
                     page.DefaultTextStyle(x => x.FontSize(11));
 
-                    page.Header().Text("Financial Report").FontSize(18).Bold();
+                    page.Header().Row(row =>
+                    {
+                        var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "shms_logo.jpg");
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            row.ConstantItem(40).Image(imagePath);
+                            row.Spacing(10);
+                        }
+                        row.RelativeItem().Column(col => 
+                        {
+                            col.Item().Text("Sayan Hospital Management System - Financial Report").FontSize(18).Bold();
+                        });
+                    });
 
                     page.Content().Column(col =>
                     {
@@ -131,6 +143,7 @@ namespace HospitalManagement.API.Controllers
                     {
                         x.Span("Generated on ");
                         x.Span(DateTime.Now.ToString("dd MMM yyyy HH:mm"));
+                        x.Span(" | Sayan Hospital Management System");
                     });
                 });
             });
@@ -149,16 +162,35 @@ namespace HospitalManagement.API.Controllers
 
             // Summary sheet
             var summarySheet = workbook.Worksheets.Add("Summary");
-            summarySheet.Cell(1, 1).Value = "Financial Report Summary";
-            summarySheet.Cell(1, 1).Style.Font.Bold = true;
-            summarySheet.Cell(2, 1).Value = "Period";
-            summarySheet.Cell(2, 2).Value = $"{startDate:dd MMM yyyy} - {endDate:dd MMM yyyy}";
-            summarySheet.Cell(3, 1).Value = "Total Income";
-            summarySheet.Cell(3, 2).Value = report.TotalIncome;
-            summarySheet.Cell(4, 1).Value = "Total Expense";
-            summarySheet.Cell(4, 2).Value = report.TotalExpense;
-            summarySheet.Cell(5, 1).Value = "Net Profit/Loss";
-            summarySheet.Cell(5, 2).Value = report.NetProfitLoss;
+            var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "shms_logo.jpg");
+            if (System.IO.File.Exists(imagePath))
+            {
+                summarySheet.AddPicture(imagePath).MoveTo(summarySheet.Cell(1, 1)).Scale(0.2);
+                summarySheet.Row(1).Height = 40;
+                summarySheet.Cell(2, 1).Value = "Sayan Hospital Management System - Financial Report Summary";
+                summarySheet.Cell(2, 1).Style.Font.Bold = true;
+                summarySheet.Cell(3, 1).Value = "Period";
+                summarySheet.Cell(3, 2).Value = $"{startDate:dd MMM yyyy} - {endDate:dd MMM yyyy}";
+                summarySheet.Cell(4, 1).Value = "Total Income";
+                summarySheet.Cell(4, 2).Value = report.TotalIncome;
+                summarySheet.Cell(5, 1).Value = "Total Expense";
+                summarySheet.Cell(5, 2).Value = report.TotalExpense;
+                summarySheet.Cell(6, 1).Value = "Net Profit/Loss";
+                summarySheet.Cell(6, 2).Value = report.NetProfitLoss;
+            }
+            else
+            {
+                summarySheet.Cell(1, 1).Value = "Sayan Hospital Management System - Financial Report Summary";
+                summarySheet.Cell(1, 1).Style.Font.Bold = true;
+                summarySheet.Cell(2, 1).Value = "Period";
+                summarySheet.Cell(2, 2).Value = $"{startDate:dd MMM yyyy} - {endDate:dd MMM yyyy}";
+                summarySheet.Cell(3, 1).Value = "Total Income";
+                summarySheet.Cell(3, 2).Value = report.TotalIncome;
+                summarySheet.Cell(4, 1).Value = "Total Expense";
+                summarySheet.Cell(4, 2).Value = report.TotalExpense;
+                summarySheet.Cell(5, 1).Value = "Net Profit/Loss";
+                summarySheet.Cell(5, 2).Value = report.NetProfitLoss;
+            }
             summarySheet.Columns().AdjustToContents();
 
             // Income sheet

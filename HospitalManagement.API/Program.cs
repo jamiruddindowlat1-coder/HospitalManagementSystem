@@ -1,4 +1,5 @@
-﻿using System.Threading.RateLimiting;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using FluentValidation;
 using System.Text;
@@ -12,6 +13,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+
+// JWT claim type mapping বন্ধ — ClaimTypes.Role সরাসরি কাজ করবে
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +60,7 @@ builder.Services.AddScoped<NurseService>();
 builder.Services.AddScoped<LabTestService>();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddScoped<IFinancialReportService, FinancialReportService>();
+
 // CONTROLLERS
 
 builder.Services
